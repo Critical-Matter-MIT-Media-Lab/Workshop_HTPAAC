@@ -1,9 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="background-color: #000; margin: 0; padding: 0;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HOW TO PROTOTYPE (ALMOST) ANY CIRCUIT</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23FF1493'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' fill='%23FF1493'/%3E%3C/svg%3E">
+    <meta name="theme-color" content="#FF1493">
+    <style>
+        /* Critical CSS to prevent flickering - loaded immediately */
+        html, body {
+            background-color: #000 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+            height: 100vh !important;
+            width: 100vw !important;
+        }
+        * {
+            box-sizing: border-box;
+        }
+    </style>
     <!-- Google Fonts for programming fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,54 +29,38 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Loading overlay -->
+    <div class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
     <div class="slideshow-container">
         <div id="slide-1.1" class="slide active">
             <h1>HOW TO PROTOTYPE (ALMOST) ANY CIRCUIT</h1>
             <p>from the perspective of designer and maker</p>
             <div style="margin-top: 60px;">
-                <p style="font-size: 1.2em; color: #FF1493;">Yuxiang Cheng</p>
+                <p style="font-size: 1.2em; color: #FF1493;">by Yuxiang Cheng</p>
             </div>
+        </div>
+
+        <div id="slide-1.0" class="slide">
+            <h1>Part 1</h1>
+            <h2 style="margin-top: 40px; font-size: 2em; color: #FF1493;">EE Speedrun</h2>
+            <div style="margin-top: 60px;">
+                <p style="font-size: 1.5em; font-style: italic; color: #ddd; line-height: 1.4;">
+                    "All computing is physical."<br>
+                    <span style="font-size: 0.8em; color: #FF1493;">—— Tom Igoe</span>
+                </p>
+            </div>
+        </div>
+
+        <div id="slide-1.1" class="slide">
+            <h1>We have all played with this, right?</h1>
+            <img data-src="https://www.makerspaces.com/wp-content/uploads/2017/05/2-Blink-an-LED_LARGE.jpg" alt="Arduino Breadboard Projects" class="lazy-image centered-image" style="max-width: 80%; height: auto; margin: 40px auto 0 auto; display: block; border-radius: 10px; box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/800x600/333/fff?text=Arduino+Breadboard+Projects'">
         </div>
 
         <div id="slide-1.2" class="slide">
-            <h1>We have all played with this, right?</h1>
-            <img src="https://www.makerspaces.com/wp-content/uploads/2017/05/2-Blink-an-LED_LARGE.jpg" alt="Arduino Breadboard Projects" style="max-width: 80%; height: auto; margin-top: 40px; border-radius: 10px; box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/800x600/333/fff?text=Arduino+Breadboard+Projects'">
-        </div>
-
-        <div id="slide-1.3" class="slide">
-            <h1>Design Process</h1>
-            <div class="features">
-                <div class="feature-box">
-                    <h3>📝 Concept</h3>
-                    <p>Define requirements & constraints</p>
-                </div>
-                <div class="feature-box">
-                    <h3>⚡ Breadboard</h3>
-                    <p>Quick functional prototype</p>
-                </div>
-                <div class="feature-box">
-                    <h3>🔧 Refine</h3>
-                    <p>Test, iterate, improve</p>
-                </div>
-            </div>
-        </div>
-
-        <div id="slide-2.1" class="slide">
-            <h1>Essential Tools & Materials</h1>
-            <div class="features">
-                <div class="feature-box">
-                    <h3>🔌 Hardware</h3>
-                    <p>Breadboards, jumper wires, multimeter, oscilloscope</p>
-                </div>
-                <div class="feature-box">
-                    <h3>💻 Software</h3>
-                    <p>KiCad, Altium, LTSpice, Arduino IDE</p>
-                </div>
-                <div class="feature-box">
-                    <h3>🧰 Components</h3>
-                    <p>Resistors, capacitors, ICs, connectors</p>
-                </div>
-            </div>
+            <h1>Parts</h1>
+            <img data-src="https://www.ultralibrarian.com/wp-content/uploads/2022/06/shutterstock_7865275181.jpg" alt="Electronic Components" class="lazy-image centered-image" style="max-width: 80%; height: auto; margin: 40px auto 0 auto; display: block; border-radius: 10px; box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/800x600/333/fff?text=Electronic+Components'">
         </div>
 
         <div id="slide-2.2" class="slide">
