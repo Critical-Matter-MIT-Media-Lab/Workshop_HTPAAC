@@ -24,32 +24,12 @@ HTPAAC/
 └── LICENSE             # License file
 ```
 
-### Presentation Structure (17 Slides)
-
-1. **Intro** - Title slide
-2. **Why Prototype?** - Importance of prototyping
-3. **Design Process** - Design workflow overview
-4. **Tools & Materials** - Required tools and components
-5. **Breadboarding** - Breadboard prototyping techniques
-6. **PCB Basics** - PCB design fundamentals
-7. **Schematic Design** - Schematic design principles
-8. **Layout Tips** - PCB layout design tips
-9. **Component Selection** - Component selection criteria
-10. **Testing & Debug** - Testing and debugging methods
-11. **Power Design** - Power supply design considerations
-12. **Signal Integrity** - High-speed signal integrity
-13. **Manufacturing** - Manufacturing considerations
-14. **Iteration** - Iterative improvement process
-15. **Case Studies** - Real-world examples
-16. **Resources** - Learning resources and tools
-17. **Q&A** - Questions and discussion
-
 ### Design Features
 
 #### Visual Design
 
 - Dark theme background (#000)
-- Pink-purple color scheme (#C71585)
+- Deep pink color scheme (#FF1493)
 - Glass morphism effects and smooth animations
 - Responsive design for mobile devices
 
@@ -91,3 +71,63 @@ HTPAAC/
 - Ensure cross-browser compatibility
 - Optimize loading performance
 - Preserve responsive design
+
+## Presentation Structure
+
+0 **Intro** - Title slide
+- Structure: Three lines of text
+- Title: "HOW TO PROTOTYPE (ALMOST) ANY CIRCUIT"
+- Subtitle: "from the perspective of designer and maker"
+- Author: Yuxiang Cheng
+
+1.0 **Part 1** - Part 1 Cover
+- Structure: cover page plus a quote at the bottom
+- Title:”EE Speedrun"
+- Quote:”All computing is physical. —— Tom Igoe"
+
+1.1 **Arduino** - drawing on students’ past experiences
+- Structure: a heading and a big image
+- Heading: We have all played with this, right?
+- Image: https://www.makerspaces.com/wp-content/uploads/2017/05/2-Blink-an-LED_LARGE.jpg
+
+1.2 **Parts** - quick intro of electric and electronic parts
+- Structure: a heading and a big image
+- 
+- Image: https://www.ultralibrarian.com/wp-content/uploads/2022/06/shutterstock_7865275181.jpg
+
+1.3 **Laws** - quick intro of related physics
+- Structure: Iceberg Chart
+
+1.4 **MCU** - quick intro of microcontrollers
+- Structure: 
+
+1.5 **Prototyping** - prototyping methods and tools
+- Structure:
+
+1.6 **Production** - methods to design production-ready and robust circuits
+- Structure:
+
+1.7 **Protocol** - signal/communication protocols and method
+- Structure:
+
+1.8 **Networking** - methods to (wirelessly) interconnect hardware
+- Structure:
+
+1.9 **Best Practice** - final notes
+- Structure:
+
+
+2.0 **Part 2** - Part 2 Cover
+- Structure: cover page
+- Title: “Meet the Sensors and Actuators"
+- Subtitle: “and the cybernetic systems we rely on"
+
+2.5 **Biometric** - highlighting the biometric sensors
+- Structure:
+
+
+3.0 **Part 3** - Part 3 Cover
+- Structure:
+
+3.1 **Workshop** - 
+- Structure:

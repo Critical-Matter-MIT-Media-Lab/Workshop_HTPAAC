@@ -13,13 +13,13 @@ let keyHoldTimeout = null;
 let isKeyHeld = false;
 let keyRepeatInterval = null;
 let lastKeyPressed = null;
-const keyHoldWaitTime = 5000; // Wait 5 seconds before starting fast flip (ms)
+const keyHoldWaitTime = 1000; // Wait 1 second before starting fast flip (ms)
 const fastFlipInterval = 150; // Fast flip interval when held (ms)
 
 // Slide titles
 const slideTitles = [
   "Intro",
-  "Why Prototype?",
+  "Arduino",
   "Design Process",
   "Tools & Materials",
   "Breadboarding",
@@ -179,8 +179,8 @@ document.addEventListener("keyup", function (event) {
 function handleArrowKeyPress(direction) {
   const currentKey = direction > 0 ? "ArrowRight" : "ArrowLeft";
 
-  // If this is the first press of this key, or we switched keys
-  if (!isKeyHeld || lastKeyPressed !== currentKey) {
+  // If this is the very first press, or we switched keys
+  if (lastKeyPressed === null || lastKeyPressed !== currentKey) {
     // Always navigate immediately on first press
     changeSlide(direction);
     lastKeyPressed = currentKey;
@@ -194,18 +194,19 @@ function handleArrowKeyPress(direction) {
       keyRepeatInterval = null;
     }
 
-    // Set up hold detection - wait 1 second, then start fast flipping
-    if (!isKeyHeld) {
-      keyHoldTimeout = setTimeout(() => {
-        isKeyHeld = true;
-        // Start fast continuous flipping
-        keyRepeatInterval = setInterval(() => {
-          changeSlide(direction);
-        }, fastFlipInterval);
-      }, keyHoldWaitTime);
-    }
+    // Reset hold state for new key
+    isKeyHeld = false;
+
+    // Set up hold detection - wait 2 seconds, then start fast flipping
+    keyHoldTimeout = setTimeout(() => {
+      isKeyHeld = true;
+      // Start fast continuous flipping
+      keyRepeatInterval = setInterval(() => {
+        changeSlide(direction);
+      }, fastFlipInterval);
+    }, keyHoldWaitTime);
   }
-  // If key is already being held, ignore repeated keydown events
+  // If key is already being processed, ignore repeated keydown events
 }
 
 function handleArrowKeyRelease() {
@@ -303,7 +304,7 @@ document.addEventListener("click", function (event) {
 });
 
 console.log("Slideshow initialized. Controls:");
-console.log("- Arrow keys: Fast click = instant, hold 5sec = fast flip");
+console.log("- Arrow keys: Fast click = instant, hold 1sec = fast flip");
 console.log("- Space/Enter: Next slide");
 console.log("- Number keys: Jump to slide");
 console.log("- P: Toggle auto-play");
