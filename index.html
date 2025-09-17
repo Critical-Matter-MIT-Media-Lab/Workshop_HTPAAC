@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOW TO PROTOTYPE (ALMOST) ANY CIRCUIT</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="slideshow-container">
+        <div id="slide-1.1" class="slide active">
+            <h1>HOW TO PROTOTYPE (ALMOST) ANY CIRCUIT</h1>
+            <p>from the perspective of designer and maker</p>
+        </div>
+
+        <div id="slide-1.2" class="slide">
+            <h1>Why Prototype?</h1>
+            <ul>
+                <li>💡 Test ideas quickly and cheaply</li>
+                <li>🔧 Find design flaws early</li>
+                <li>📊 Validate functionality before production</li>
+                <li>💰 Save time and money in the long run</li>
+                <li>🎯 Communicate ideas effectively</li>
+            </ul>
+        </div>
+
+        <div id="slide-1.3" class="slide">
+            <h1>Design Process</h1>
+            <div class="features">
+                <div class="feature-box">
+                    <h3>📝 Concept</h3>
+                    <p>Define requirements & constraints</p>
+                </div>
+                <div class="feature-box">
+                    <h3>⚡ Breadboard</h3>
+                    <p>Quick functional prototype</p>
+                </div>
+                <div class="feature-box">
+                    <h3>🔧 Refine</h3>
+                    <p>Test, iterate, improve</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-2.1" class="slide">
+            <h1>Essential Tools & Materials</h1>
+            <div class="features">
+                <div class="feature-box">
+                    <h3>🔌 Hardware</h3>
+                    <p>Breadboards, jumper wires, multimeter, oscilloscope</p>
+                </div>
+                <div class="feature-box">
+                    <h3>💻 Software</h3>
+                    <p>KiCad, Altium, LTSpice, Arduino IDE</p>
+                </div>
+                <div class="feature-box">
+                    <h3>🧰 Components</h3>
+                    <p>Resistors, capacitors, ICs, connectors</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-2.2" class="slide">
+            <h1>Breadboarding Basics</h1>
+            <h2>Best Practices</h2>
+            <ul>
+                <li>🔌 Keep power rails organized</li>
+                <li>🌈 Use color-coded wires</li>
+                <li>📎 Keep connections short and neat</li>
+                <li>🔍 Test power distribution first</li>
+                <li>📝 Document your connections</li>
+            </ul>
+        </div>
+
+        <div id="slide-2.3" class="slide">
+            <h1>PCB Design Fundamentals</h1>
+            <div class="features">
+                <div class="feature-box">
+                    <h3>🗺️ Layer Stack</h3>
+                    <p>2-layer for simple, 4+ for complex</p>
+                </div>
+                <div class="feature-box">
+                    <h3>🔌 Trace Width</h3>
+                    <p>Consider current capacity</p>
+                </div>
+                <div class="feature-box">
+                    <h3>🎯 Via Placement</h3>
+                    <p>Minimize layer transitions</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-3.1" class="slide">
+            <h1>Schematic Design</h1>
+            <pre><code>Key Principles:
+
+• Left to right signal flow
+• Top to bottom power flow  
+• Group related components
+• Clear net labels
+• Consistent symbol usage</code></pre>
+            <p>Clean, readable schematics save debugging time</p>
+        </div>
+
+        <div id="slide-3.2" class="slide">
+            <h1>Layout Design Tips</h1>
+            <h2>Critical Considerations</h2>
+            <ul>
+                <li>⚡ Keep high-speed signals short</li>
+                <li>🌊 Avoid 90° angles on traces</li>
+                <li>🔌 Separate analog and digital grounds</li>
+                <li>🎯 Place decoupling caps close to ICs</li>
+                <li>🔥 Consider thermal management</li>
+            </ul>
+        </div>
+
+        <div id="slide-4.1" class="slide">
+            <h1>Component Selection</h1>
+            <ul>
+                <li>📊 Check electrical specifications</li>
+                <li>💰 Consider cost vs. performance</li>
+                <li>🚚 Verify availability and lead times</li>
+                <li>📎 Package size and footprint</li>
+                <li>🌡️ Temperature and environmental ratings</li>
+            </ul>
+        </div>
+
+        <div id="slide-4.2" class="slide">
+            <h1>Testing & Debugging</h1>
+            <div class="features">
+                <div class="feature-box">
+                    <h3>🔍 Visual Inspection</h3>
+                    <p>Check for shorts, opens</p>
+                </div>
+                <div class="feature-box">
+                    <h3>⚡ Power Testing</h3>
+                    <p>Verify voltage levels</p>
+                </div>
+                <div class="feature-box">
+                    <h3>📊 Signal Analysis</h3>
+                    <p>Use oscilloscope, logic analyzer</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-4.3" class="slide">
+            <h1>Power Supply Design</h1>
+            <ul>
+                <li>⚡ Calculate total current requirements</li>
+                <li>🔋 Choose appropriate voltage regulators</li>
+                <li>🔌 Add filtering and decoupling</li>
+                <li>📈 Consider power sequencing</li>
+                <li>🔥 Plan for thermal dissipation</li>
+            </ul>
+        </div>
+
+        <div id="slide-5.1" class="slide">
+            <h1>Signal Integrity</h1>
+            <pre><code>High-Speed Design Rules:
+
+• Match trace lengths for differential pairs
+• Control impedance (50Ω, 100Ω diff)
+• Minimize via count on critical signals
+• Guard traces for sensitive signals
+• Consider crosstalk between traces</code></pre>
+            <p>Critical for high-frequency and digital circuits</p>
+        </div>
+
+        <div id="slide-5.2" class="slide">
+            <h1>Manufacturing Considerations</h1>
+            <div class="features">
+                <div class="feature-box">
+                    <h3>🏭 DFM Rules</h3>
+                    <p>Design for Manufacturing</p>
+                </div>
+                <div class="feature-box">
+                    <h3>🔧 Assembly</h3>
+                    <p>Component placement, soldering</p>
+                </div>
+                <div class="feature-box">
+                    <h3>📊 Testing</h3>
+                    <p>In-circuit test, functional test</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-5.3" class="slide">
+            <h1>Iteration & Improvement</h1>
+            <ul>
+                <li>🔄 Build, test, learn, repeat</li>
+                <li>📝 Document lessons learned</li>
+                <li>🔍 Identify failure modes</li>
+                <li>🎯 Focus on critical improvements</li>
+                <li>🚀 Plan for next revision</li>
+            </ul>
+        </div>
+
+        <div id="slide-6.1" class="slide">
+            <h1>Case Study Examples</h1>
+            <div class="features">
+                <div class="feature-box">
+                    <h3>🤖 IoT Sensor</h3>
+                    <p>Low power, wireless connectivity</p>
+                </div>
+                <div class="feature-box">
+                    <h3>🎵 Audio Amplifier</h3>
+                    <p>Analog design, thermal management</p>
+                </div>
+                <div class="feature-box">
+                    <h3>📊 Motor Controller</h3>
+                    <p>High current, switching circuits</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-6.2" class="slide">
+            <h1>Useful Resources</h1>
+            <div class="features">
+                <div class="feature-box">
+                    <h3>📚 Learning</h3>
+                    <p>YouTube channels, online courses, books</p>
+                </div>
+                <div class="feature-box">
+                    <h3>🛍️ Suppliers</h3>
+                    <p>Digi-Key, Mouser, LCSC, JLCPCB</p>
+                </div>
+                <div class="feature-box">
+                    <h3>💻 Tools</h3>
+                    <p>KiCad, Fusion 360, LTSpice, Falstad</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-6.3" class="slide">
+            <h1>Questions & Discussion</h1>
+            <p>🔧 Ready to prototype your next circuit?</p>
+            <p>💡 Let's discuss your projects and challenges!</p>
+            <div class="features">
+                <div class="feature-box">
+                    <h3>📧 Contact</h3>
+                    <p>Reach out for collaboration</p>
+                </div>
+                <div class="feature-box">
+                    <h3>🔗 Connect</h3>
+                    <p>Follow for more tips & tricks</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn prev" onclick="changeSlide(-1)">&#10094;</button>
+            <button class="nav-btn next" onclick="changeSlide(1)">&#10095;</button>
+        </div>
+
+        <div class="progress-container">
+            <div class="revolver-progress">
+                <div class="revolver-center">
+                    <div id="slide-number-display">1</div>
+                    <div id="slide-title">Welcome</div>
+                </div>
+                <div class="revolver-wheel">
+                    <div class="chamber active" data-slide="0"></div>
+                    <div class="chamber" data-slide="1"></div>
+                    <div class="chamber" data-slide="2"></div>
+                    <div class="chamber" data-slide="3"></div>
+                    <div class="chamber" data-slide="4"></div>
+                    <div class="chamber" data-slide="5"></div>
+                    <div class="chamber" data-slide="6"></div>
+                    <div class="chamber" data-slide="7"></div>
+                    <div class="chamber" data-slide="8"></div>
+                    <div class="chamber" data-slide="9"></div>
+                    <div class="chamber" data-slide="10"></div>
+                    <div class="chamber" data-slide="11"></div>
+                    <div class="chamber" data-slide="12"></div>
+                    <div class="chamber" data-slide="13"></div>
+                    <div class="chamber" data-slide="14"></div>
+                    <div class="chamber" data-slide="15"></div>
+                    <div class="chamber" data-slide="16"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
