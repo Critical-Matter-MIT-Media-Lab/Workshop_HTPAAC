@@ -502,45 +502,33 @@ function handlePartsSlideState(state) {
     // State 2: Show 2x2 named matrix of two-image units
     contentContainer.innerHTML = `
       <h1>and Modules</h1>
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 60px; margin-top: 40px; max-width: 1000px; margin-left: auto; margin-right: auto;">
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 20px 80px; margin-top: 50px; max-width: 1600px; margin-left: auto; margin-right: auto;">
         <div style="text-align: center;">
-          <h3 style="color: #FF1493; margin-bottom: 20px; font-size: 1.4em;">Evaluation Board</h3>
-          <div style="display: flex; gap: 25px; justify-content: center;">
-            <img src="img/Eval.jpg" alt="Evaluation Board" style="height: 200px; width: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 5px 20px rgba(255, 255, 255, 0.15);" onerror="this.src='https://via.placeholder.com/250x200/333/fff?text=Eval+Board'">
-            <img src="img/Eval.gif" alt="Evaluation Board Demo" style="height: 200px; width: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 5px 20px rgba(255, 255, 255, 0.15);" onerror="this.src='https://via.placeholder.com/250x200/333/fff?text=Eval+Demo'">
+          <h3 style="color: #FF1493; margin-bottom: 25px; font-size: 1.8em;">Evaluation Board</h3>
+          <div style="display: flex; gap: 5px; justify-content: center;">
+            <img src="img/Eval.jpg" alt="Evaluation Board" style="height: 220px; width: auto; object-fit: contain; border-radius: 15px; box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/280x220/333/fff?text=Eval+Board'">
+            <img src="img/Eval.gif" alt="Evaluation Board Demo" style="height: 220px; width: auto; object-fit: contain; border-radius: 15px; box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/280x220/333/fff?text=Eval+Demo'">
           </div>
         </div>
         <div style="text-align: center;">
-          <h3 style="color: #FF1493; margin-bottom: 20px; font-size: 1.4em;">Connector</h3>
-          <div style="display: flex; gap: 25px; justify-content: center;">
-            <div style="height: 200px; width: 220px; background: rgba(255, 255, 255, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 20px rgba(255, 255, 255, 0.15);">
-              <p style="color: #ddd; text-align: center; font-size: 1.1em;">[Connector Image 1]</p>
-            </div>
-            <div style="height: 200px; width: 220px; background: rgba(255, 255, 255, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 20px rgba(255, 255, 255, 0.15);">
-              <p style="color: #ddd; text-align: center; font-size: 1.1em;">[Connector Image 2]</p>
-            </div>
+          <h3 style="color: #FF1493; margin-bottom: 25px; font-size: 1.8em;">Connector</h3>
+          <div style="display: flex; gap: 5px; justify-content: center;">
+            <img src="img/connector.jpg" alt="Connector" style="height: 220px; width: auto; object-fit: contain; border-radius: 15px; box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/280x220/333/fff?text=Connector'">
+            <img src="img/otherConn.jpg" alt="Other Connector" style="height: 220px; width: auto; object-fit: contain; border-radius: 15px; box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/280x220/333/fff?text=Other+Connector'">
           </div>
         </div>
         <div style="text-align: center;">
-          <h3 style="color: #FF1493; margin-bottom: 20px; font-size: 1.4em;">[Module Type 3]</h3>
-          <div style="display: flex; gap: 25px; justify-content: center;">
-            <div style="height: 200px; width: 220px; background: rgba(255, 255, 255, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 20px rgba(255, 255, 255, 0.15);">
-              <p style="color: #ddd; text-align: center; font-size: 1.1em;">[Module 3 Image 1]</p>
-            </div>
-            <div style="height: 200px; width: 220px; background: rgba(255, 255, 255, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 20px rgba(255, 255, 255, 0.15);">
-              <p style="color: #ddd; text-align: center; font-size: 1.1em;">[Module 3 Image 2]</p>
-            </div>
+          <h3 style="color: #FF1493; margin-bottom: 25px; font-size: 1.8em;">Power</h3>
+          <div style="display: flex; gap: 5px; justify-content: center;">
+            <img src="img/pwr1.jpg" alt="Power Module 1" style="height: 220px; width: auto; object-fit: contain; border-radius: 15px; box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/280x220/333/fff?text=Pwr1'">
+            <img src="img/pwr2.webp" alt="Power Module 2" style="height: 220px; width: auto; object-fit: contain; border-radius: 15px; box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/280x220/333/fff?text=Pwr2'">
           </div>
         </div>
         <div style="text-align: center;">
-          <h3 style="color: #FF1493; margin-bottom: 20px; font-size: 1.4em;">[Module Type 4]</h3>
-          <div style="display: flex; gap: 25px; justify-content: center;">
-            <div style="height: 200px; width: 220px; background: rgba(255, 255, 255, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 20px rgba(255, 255, 255, 0.15);">
-              <p style="color: #ddd; text-align: center; font-size: 1.1em;">[Module 4 Image 1]</p>
-            </div>
-            <div style="height: 200px; width: 220px; background: rgba(255, 255, 255, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 20px rgba(255, 255, 255, 0.15);">
-              <p style="color: #ddd; text-align: center; font-size: 1.1em;">[Module 4 Image 2]</p>
-            </div>
+          <h3 style="color: #FF1493; margin-bottom: 25px; font-size: 1.8em;">Actuator</h3>
+          <div style="display: flex; gap: 5px; justify-content: center;">
+            <img src="img/act1.jpg" alt="Actuator 1" style="height: 220px; width: auto; object-fit: contain; border-radius: 15px; box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/280x220/333/fff?text=Act1'">
+            <img src="img/act4.webp" alt="Actuator 4" style="height: 220px; width: auto; object-fit: contain; border-radius: 15px; box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/280x220/333/fff?text=Act4'">
           </div>
         </div>
       </div>
@@ -715,10 +703,10 @@ function handleMCUSlideState(state) {
     contentContainer.innerHTML = `
       <div style="display: flex; flex-direction: column; align-items: center; margin-top: 50px;">
         <div style="max-width: 1000px; width: 100%;">
-          <!-- Top half: MCUs -->
+        <!-- Top half: MCUs -->
           <div style="text-align: center; margin-bottom: 40px;">
-            <div style="background: rgba(255, 20, 147, 0.1); border-radius: 10px; padding: 20px;">
-              <h3 style="color: #FF1493; margin-bottom: 20px; font-size: 1.6em; text-align: left;">MCU Chips</h3>
+          <div style="background: rgba(255, 20, 147, 0.1); border-radius: 10px; padding: 20px;">
+            <h3 style="color: #FF1493; margin-bottom: 20px; font-size: 1.6em; text-align: left;">MCU Chips</h3>
             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; text-align: left;">
               <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 12px;">
                 <h4 style="color: #FF1493; font-size: 1.3em; margin-bottom: 10px;">ARM Cortex-M</h4>
@@ -752,13 +740,13 @@ function handleMCUSlideState(state) {
                 <p style="color: #f44336; font-size: 1em; margin-bottom: 6px;">✗ Limited performance</p>
                 <p style="color: #f44336; font-size: 1em;">✗ 8-bit architecture</p>
               </div>
+              </div>
             </div>
           </div>
-            </div>
-          </div>
-          <!-- Bottom half: Dev Boards -->
-          <div style="text-align: center;">
-            <div style="background: rgba(255, 20, 147, 0.1); border-radius: 10px; padding: 20px;">
+        </div>
+        <!-- Bottom half: Dev Boards -->
+        <div style="text-align: center;">
+          <div style="background: rgba(255, 20, 147, 0.1); border-radius: 10px; padding: 20px;">
             <h3 style="color: #FF1493; margin-bottom: 20px; font-size: 1.6em; text-align: left;">Development Boards</h3>
             <div style="display: grid; grid-template-columns: 1fr; grid-template-rows: auto auto; gap: 15px; text-align: left;">
               <!-- Top row: Seeed Studio Xiao with left text and right images -->
@@ -804,6 +792,7 @@ function handleMCUSlideState(state) {
                     STM32 Nucleo/Discovery<br>
                     <span style="font-size: 1.1em; color: #bbb;">(STMicroelectronics)</span>
                   </p>
+                </div>
                 </div>
               </div>
             </div>

@@ -203,8 +203,9 @@ HTPAAC/
 - Structure: title and big image(state 1), title 2x2 named matrix of two-image units(state 2)
 - State 1 image: https://www.ultralibrarian.com/wp-content/uploads/2022/06/shutterstock_7865275181.jpg
 - State 1 Notes: title “Vendors”, Item: Digikey, Mouser
-- State 2: Use title “and Modules”. The four units(wraps) in the matrix are: Eval.jpg and Eval.gif with name “Evaluation Board"; with name “Connector"
+- State 2: Use title “and Modules”. The four units(wraps) in the matrix are: Eval.jpg and Eval.gif with name “Evaluation Board”; connector.jpg and otherConn.jpg with name “Connector”; Pwr1 and Pwr2 with name “Power”; act1.jpg and act4.webp with name “Actuator"
 - State 2 Notes: title “Vendors”, Item: Adafruit, Sparkfun, Seeed Studio
+<!-- We can think them as modules                  this is the framework which I think is the best fit for us to design and implement circuits.  -->
 
   1.3 **Laws** - quick intro of related physics
 
