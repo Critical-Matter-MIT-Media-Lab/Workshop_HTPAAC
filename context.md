@@ -179,6 +179,7 @@ HTPAAC/
 ## Presentation
 
 0 **Intro** - Title slide
+
 - Structure: Three lines of text
 - Title: "HOW TO PROTOTYPE (ALMOST) ANY CIRCUIT"
 - Subtitle: "from the perspective of designer and maker"
@@ -186,16 +187,19 @@ HTPAAC/
   <!-- I’ll be talking about how we should be unapologetically unprofessional in dealing with electronics.-->
 
   1.0 **Part 1** - Part 1 Cover
+
 - Structure: cover page plus a quote at the bottom
 - Title:”Part 1: EE Speedrun"
 - Quote:”All computing is physical. —— Tom Igoe"
 
   1.1 **Arduino** - drawing on past experiences
+
 - Structure: a heading and a big image
 - Heading: We have all played with this
 - Image: https://www.makerspaces.com/wp-content/uploads/2017/05/2-Blink-an-LED_LARGE.jpg
 
   1.2 **Parts** - quick intro of electric and electronic parts
+
 - Structure: title and big image(state 1), title 2x2 named matrix of two-image units(state 2)
 - State 1 image: https://www.ultralibrarian.com/wp-content/uploads/2022/06/shutterstock_7865275181.jpg
 - State 1 Notes: title “Vendors”, Item: Digikey, Mouser
@@ -203,35 +207,47 @@ HTPAAC/
 - State 2 Notes: title “Vendors”, Item: Adafruit, Sparkfun, Seeed Studio
 
   1.3 **Laws** - quick intro of related physics
+
 - Structure: Iceberg Chart
 
-  1.4 **MCU** - quick intro of microcontrollers
-- Structure: image collage with text on top(state 1) and selection (state 2)
-- State 1: image at /img/MCU.jpg, text: ”Arduino” or “microcontroller” = MCU Chip + Development Board + Peripherals
-- State 2: cut in half with top half for MCU and bottom half for Dev boards.
-- MCU: four horizontal grids,
-- DevBoard: one top grid two bottom grid
-  Top grid divide in left text and right images: Seeed Stuio Xiao, Points: - Xiǎo 小, small; - Researcher’s favorite. Image with citation annotation (1x3): Retnanto et al., 2024; Brooks et al., 2024; Kong et al., 2024;
-- State 2 Notes: no title, Item: Seeed Studio Xiao https://www.seeedstudio.com/xiao-series-page, Adafruit QT Py https://www.adafruit.com/product/4600, Teensy https://www.pjrc.com/teensy/
+  1.4 **MCU** - microcontroller systems and development platforms
+
+- Structure: conceptual overview with glassmorphism design (state 1) and detailed technical comparison (state 2)
+- State 1: MCU collage with floating equation
+  Image: MCU.jpg collage showing various microcontroller examples
+  Overlay: Pink glassmorphism text box positioned above image (-80px from top)
+  Equation: "Arduino" or "microcontroller" = MCU Chip + Development Board + Peripherals
+  Design: 60% opacity pink background with blur effects, white text, enhanced shadows
+- State 2: Comprehensive MCU comparison matrix
+  Layout: Top section (MCU Chips) with 4-column grid comparison
+  MCU Types: ARM Cortex-M, ESP32/ESP8266, RISC-V, AVR architectures
+  Features: Pros/cons analysis with enlarged text (1.3em headers, 1em content)
+  Development Boards: Bottom section with platform examples and research citations
+  Notes: Links to Seeed Studio Xiao, Adafruit QT Py, Teensy platforms
 
   1.5 **Prototyping** - prototyping methods and tools
+
 - Structure: list with images on the left and text on the right
 
   1.6 **Software** - programming environments and tools for hardware
+
 - Structure: list with images on the left and text on the right
 
   1.7 **Protocol** - signal/communication protocols and method
-Structure: list with images on the left and text on the right
+  Structure: list with images on the left and text on the right
 
   1.8 **Networking** - methods to (wirelessly) interconnect hardware
+
 - Structure: list with images on the left and text on the right
 
   2.0 **Part 2** - Part 2 Cover
+
 - Structure: cover page
 - Title: “Inputs and Outputs"
 - Subtitle: “and the cybernetic systems we rely on"
 
   2.1 **Actuator** - intro to actuators
+
 - Structure: 3-state system with introduction, detailed categories, and specialized types
 - State 0: Introduction with scope overview
   Content: "Output devices that convert electrical signals into physical actions"
@@ -247,6 +263,7 @@ Structure: list with images on the left and text on the right
   Images: 4 placeholder images (bottom row)
 
   2.2 **Sensor** - intro to sensors
+
 - Structure: 3-state system with introduction, detailed categories, and specialized types
 - State 0: Introduction with scope overview
   Content: "Input devices that convert physical phenomena into electrical signals"
@@ -262,26 +279,32 @@ Structure: list with images on the left and text on the right
   Images: MEMS0, MEMS1, MEMS2, MEMS3 (bottom row, 200px height)
 
   2.3 **Biometric** - highlighting the biometric sensors
+
 - Structure: dual image layout (state 1) and organized sensor categories (state 2)
 - State 1: Two side-by-side images without glow effects
   Images: biometrics.png (left) + face.png (right), 45% width each
 - State 2: Structured content with 2-column grid layout
-  Identity & Access: Fingerprint sensors, Iris/retina scanners, Facial recognition, Voice recognition
-  Health & Monitoring: Heart rate monitors, DNA analysis, Body temperature, and more
-  Images: 4 placeholder images (Fingerprint Scanner, Facial Recognition, Heart Rate Monitor, DNA Analyzer)
+  Bio-electric: GSR(Galvanic Skin Response), PPG(Photoplethysmogram), EMG(Electromyography), EEG(Electroencephalography)
+  Identity & Access: Camera (Facial recognition), Microphone (Voiceprint Recognition)
+  Images:
 
   3.0 **Part 3** - Part 3 Cover
+
 - Structure: cover page
 - Title: "Part 3: Get ready for the Workshop" (enlarged text - 2.8em)
 
   3.1 **Your Kit** - introducing the kit
+
 - Structure: image (state 1) and form (state 2)
 
   3.2 **Warm-up** - initial exercise for hardware (15min)
+
 - Structure: image (state 1) and form (state 2)
 
   3.3 **Hard Mode** - hard task covering many topics covered (45min)
+
 - Structure: image (state 1) and form (state 2)
 
   3.4 **System Diagram** - Hardware-web system and signal flow
+
 - Structure: image (state 1) and form (state 2)

@@ -602,62 +602,45 @@ function handleFabricationSlideState(state) {
           <div style="color: #f44336; font-size: 1.1em; font-weight: bold; margin-top: 20px;">Hard</div>
         </div>
         
-        <!-- Prototyping methods list with external images -->
-        <div style="display: flex; flex-direction: column; gap: 25px;">
-          <!-- 1. Connectors -->
-          <div style="display: flex; align-items: stretch; gap: 30px;">
-            <div style="flex: 1; background: rgba(76, 175, 80, 0.1); border-left: 4px solid #4CAF50; padding: 20px; border-radius: 8px;">
-              <h3 style="color: #4CAF50; font-size: 1.4em; margin-bottom: 10px; text-align: left;">1. Connectors</h3>
-              <p style="color: #ddd; font-size: 1.1em; line-height: 1.5; text-align: left;">
-                Plug-and-play modules with standard connectors. No soldering required.
-                Perfect for quick concept validation and system testing.
+        <!-- Prototyping methods text content -->
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; max-width: 800px; margin-left: auto; margin-right: auto;">
+          <div style="background: rgba(76, 175, 80, 0.1); border-left: 4px solid #4CAF50; padding: 8px 25px; border-radius: 8px;">
+            <h3 style="color: #4CAF50; font-size: 1.3em; margin-bottom: 6px; text-align: left;">1. Connectors</h3>
+            <p style="color: #ddd; font-size: 1em; line-height: 1.3; text-align: left; margin: 0;">
+              Plug-and-play modules with standard connectors. No soldering required. Perfect for quick concept validation and system testing.
               </p>
             </div>
-            <div style="width: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-              <p style="color: #ddd; text-align: center; font-size: 1em;">[Connector Image]</p>
-            </div>
-          </div>
-          <!-- 2. Breadboards -->
-          <div style="display: flex; align-items: stretch; gap: 30px;">
-            <div style="flex: 1; background: rgba(76, 175, 80, 0.08); border-left: 4px solid #8BC34A; padding: 20px; border-radius: 8px;">
-              <h3 style="color: #8BC34A; font-size: 1.4em; margin-bottom: 10px; text-align: left;">2. Breadboards</h3>
-              <p style="color: #ddd; font-size: 1.1em; line-height: 1.5; text-align: left;">
-                Solderless prototyping with jumper wires. Rapid iteration and circuit testing.
-                Great for learning and experimenting with different configurations.
+          <div style="background: rgba(76, 175, 80, 0.08); border-left: 4px solid #8BC34A; padding: 8px 25px; border-radius: 8px;">
+            <h3 style="color: #8BC34A; font-size: 1.3em; margin-bottom: 6px; text-align: left;">2. Breadboards</h3>
+            <p style="color: #ddd; font-size: 1em; line-height: 1.3; text-align: left; margin: 0;">
+              Solderless prototyping with jumper wires. Rapid iteration and circuit testing. Great for learning and experimenting.
               </p>
             </div>
-            <div style="width: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-              <p style="color: #ddd; text-align: center; font-size: 1em;">[Breadboard Image]</p>
-            </div>
-          </div>
-          <!-- 3. Proto & Perf Boards -->
-          <div style="display: flex; align-items: stretch; gap: 30px;">
-            <div style="flex: 1; background: rgba(255, 152, 0, 0.1); border-left: 4px solid #FF9800; padding: 20px; border-radius: 8px;">
-              <h3 style="color: #FF9800; font-size: 1.4em; margin-bottom: 10px; text-align: left;">3. Proto & Perf Boards</h3>
-              <p style="color: #ddd; font-size: 1.1em; line-height: 1.5; text-align: left;">
-                Perforated boards for permanent prototypes. Proto boards have some traces, 
-                perf boards are blank. Both require soldering skills and careful planning.
+          <div style="background: rgba(255, 152, 0, 0.1); border-left: 4px solid #FF9800; padding: 8px 25px; border-radius: 8px;">
+            <h3 style="color: #FF9800; font-size: 1.3em; margin-bottom: 6px; text-align: left;">3. Proto & Perf Boards</h3>
+            <p style="color: #ddd; font-size: 1em; line-height: 1.3; text-align: left; margin: 0;">
+              Perforated boards for permanent prototypes. Proto boards have some traces, perf boards are blank. Requires soldering skills.
               </p>
             </div>
-            <div style="width: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-              <p style="color: #ddd; text-align: center; font-size: 1em;">[Proto Board Image]</p>
+          
+          <!-- First three images after perf board text -->
+          <div class="image-group-wrapper" style="display: flex; gap: 15px; justify-content: center; align-items: flex-end;">
+            <img src="img/connector.jpg" alt="Connector" style="height: 180px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/180x180/333/fff?text=Connector'">
+            <img src="img/breadboard.jpeg" alt="Breadboard" style="height: 180px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/180x180/333/fff?text=Breadboard'">
+            <img src="img/perf.webp" alt="Perf Board" style="height: 180px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/180x180/333/fff?text=Perf+Board'">
             </div>
-          </div>
-          <!-- 4. ????? (Mystery/Fun) -->
-          <div style="display: flex; align-items: stretch; gap: 30px;">
-            <div style="flex: 1; background: rgba(244, 67, 54, 0.15); border-left: 4px solid #f44336; padding: 20px; border-radius: 8px; box-shadow: 0 0 15px rgba(244, 67, 54, 0.3);">
-              <h3 style="color: #f44336; font-size: 1.4em; margin-bottom: 10px; text-align: left;">4. ?????</h3>
-              <p style="color: #ddd; font-size: 1.1em; line-height: 1.5; text-align: left;">
+          
+          <!-- Mystery section with inline images -->
+          <div style="display: flex; align-items: stretch; gap: 20px;">
+            <div style="flex: 1; background: rgba(244, 67, 54, 0.15); border-left: 4px solid #f44336; padding: 12px 25px; border-radius: 8px; box-shadow: 0 0 15px rgba(244, 67, 54, 0.3);">
+              <h3 style="color: #f44336; font-size: 1.3em; margin-bottom: 8px; text-align: left;">4. ?????</h3>
+              <p style="color: #ddd; font-size: 1em; line-height: 1.4; text-align: left; margin: 0;">
                 Something cool and mysterious... 🔥
               </p>
             </div>
-            <div style="display: flex; gap: 15px;">
-              <div style="width: 150px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 15px rgba(244, 67, 54, 0.5);">
-                <p style="color: #ddd; text-align: center; font-size: 0.9em;">[Mystery Image 1]</p>
-              </div>
-              <div style="width: 150px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 15px rgba(244, 67, 54, 0.5);">
-                <p style="color: #ddd; text-align: center; font-size: 0.9em;">[Mystery Image 2]</p>
-              </div>
+            <div style="display: flex; gap: 15px; align-items: center;">
+              <img src="img/%3F%3F%3F.jpg" alt="Mystery 1" style="height: 140px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 0 15px rgba(244, 67, 54, 0.5);" onerror="this.src='https://via.placeholder.com/140x140/333/fff?text=Mystery+1'">
+              <img src="img/%3F%3F%3F%3F%3F.jpg" alt="Mystery 2" style="height: 140px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 0 15px rgba(244, 67, 54, 0.5);" onerror="this.src='https://via.placeholder.com/140x140/333/fff?text=Mystery+2'">
             </div>
           </div>
         </div>
@@ -715,66 +698,67 @@ function handleMCUSlideState(state) {
   if (state === 0) {
     // State 1: image collage with text on top
     contentContainer.innerHTML = `
-      <h1>MCU</h1>
-      <div style="position: relative; margin-top: 30px;">
-        <div style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10; text-align: center;">
-          <h2 style="color: #FF1493; font-size: 1.8em; margin-bottom: 10px;">Arduino</h2>
-          <p style="color: #ddd; font-size: 1.2em; background: rgba(0,0,0,0.7); padding: 10px 20px; border-radius: 8px;">
-            "microcontroller" = MCU Chip + Development Board + Peripherals
+      <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
+        <h1 style="margin-bottom: 30px;">MCU</h1>
+        <div style="text-align: center; margin-bottom: 30px; width: 90%;">
+          <p style="color: #fff; font-size: 1.4em; background: rgba(255, 20, 147, 0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 20, 147, 0.7); padding: 15px 30px; border-radius: 12px; margin: 0; box-shadow: 0 8px 32px rgba(255, 20, 147, 0.4);">
+            "Arduino" or "microcontroller" = MCU Chip + Development Board + Peripherals
           </p>
         </div>
         <img src="img/MCU.jpg" alt="MCU Collage" class="centered-image" 
-             style="max-width: 80%; height: auto; margin: 0 auto; display: block; border-radius: 10px; box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);" 
+             style="max-width: 80%; height: auto; border-radius: 10px; box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);" 
              onerror="this.src='https://via.placeholder.com/800x500/333/fff?text=MCU+Collage'">
       </div>
     `;
   } else if (state === 1) {
     // State 2: selection - cut in half with MCUs top and Dev boards bottom
     contentContainer.innerHTML = `
-      <div style="display: flex; flex-direction: column; gap: 40px; margin-top: 50px;">
-        <!-- Top half: MCUs -->
-        <div style="text-align: center;">
-          <div style="background: rgba(255, 20, 147, 0.1); border-radius: 10px; padding: 20px;">
-            <h3 style="color: #FF1493; margin-bottom: 20px; font-size: 1.6em; text-align: left;">MCU Chips</h3>
+      <div style="display: flex; flex-direction: column; align-items: center; margin-top: 50px;">
+        <div style="max-width: 1000px; width: 100%;">
+          <!-- Top half: MCUs -->
+          <div style="text-align: center; margin-bottom: 40px;">
+            <div style="background: rgba(255, 20, 147, 0.1); border-radius: 10px; padding: 20px;">
+              <h3 style="color: #FF1493; margin-bottom: 20px; font-size: 1.6em; text-align: left;">MCU Chips</h3>
             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; text-align: left;">
               <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 12px;">
-                <h4 style="color: #FF1493; font-size: 1.1em; margin-bottom: 8px;">ARM Cortex-M</h4>
-                <p style="color: #4CAF50; font-size: 0.8em; margin-bottom: 6px;">✓ Industry standard</p>
-                <p style="color: #4CAF50; font-size: 0.8em; margin-bottom: 6px;">✓ Excellent tools</p>
-                <p style="color: #4CAF50; font-size: 0.8em; margin-bottom: 8px;">✓ Wide ecosystem</p>
-                <p style="color: #f44336; font-size: 0.8em; margin-bottom: 4px;">✗ Complex setup</p>
-                <p style="color: #f44336; font-size: 0.8em;">✗ Higher cost</p>
+                <h4 style="color: #FF1493; font-size: 1.3em; margin-bottom: 10px;">ARM Cortex-M</h4>
+                <p style="color: #4CAF50; font-size: 1em; margin-bottom: 8px;">✓ Industry standard</p>
+                <p style="color: #4CAF50; font-size: 1em; margin-bottom: 8px;">✓ Excellent tools</p>
+                <p style="color: #4CAF50; font-size: 1em; margin-bottom: 10px;">✓ Wide ecosystem</p>
+                <p style="color: #f44336; font-size: 1em; margin-bottom: 6px;">✗ Complex setup</p>
+                <p style="color: #f44336; font-size: 1em;">✗ Higher cost</p>
               </div>
               <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 12px;">
-                <h4 style="color: #FF1493; font-size: 1.1em; margin-bottom: 8px;">ESP32/ESP8266</h4>
-                <p style="color: #4CAF50; font-size: 0.8em; margin-bottom: 6px;">✓ Built-in Wi-Fi/BT</p>
-                <p style="color: #4CAF50; font-size: 0.8em; margin-bottom: 6px;">✓ Low cost</p>
-                <p style="color: #4CAF50; font-size: 0.8em; margin-bottom: 8px;">✓ Easy to use</p>
-                <p style="color: #f44336; font-size: 0.8em; margin-bottom: 4px;">✗ Power hungry</p>
-                <p style="color: #f44336; font-size: 0.8em;">✗ Limited I/O</p>
+                <h4 style="color: #FF1493; font-size: 1.3em; margin-bottom: 10px;">ESP32/ESP8266</h4>
+                <p style="color: #4CAF50; font-size: 1em; margin-bottom: 8px;">✓ Built-in Wi-Fi/BT</p>
+                <p style="color: #4CAF50; font-size: 1em; margin-bottom: 8px;">✓ Low cost</p>
+                <p style="color: #4CAF50; font-size: 1em; margin-bottom: 10px;">✓ Easy to use</p>
+                <p style="color: #f44336; font-size: 1em; margin-bottom: 6px;">✗ Power hungry</p>
+                <p style="color: #f44336; font-size: 1em;">✗ Limited I/O</p>
               </div>
               <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 12px;">
-                <h4 style="color: #FF1493; font-size: 1.1em; margin-bottom: 8px;">RISC-V</h4>
-                <p style="color: #4CAF50; font-size: 0.8em; margin-bottom: 6px;">✓ Open source</p>
-                <p style="color: #4CAF50; font-size: 0.8em; margin-bottom: 6px;">✓ Future-proof</p>
-                <p style="color: #4CAF50; font-size: 0.8em; margin-bottom: 8px;">✓ Customizable</p>
-                <p style="color: #f44336; font-size: 0.8em; margin-bottom: 4px;">✗ Limited tools</p>
-                <p style="color: #f44336; font-size: 0.8em;">✗ Smaller ecosystem</p>
+                <h4 style="color: #FF1493; font-size: 1.3em; margin-bottom: 10px;">RISC-V</h4>
+                <p style="color: #4CAF50; font-size: 1em; margin-bottom: 8px;">✓ Open source</p>
+                <p style="color: #4CAF50; font-size: 1em; margin-bottom: 8px;">✓ Future-proof</p>
+                <p style="color: #4CAF50; font-size: 1em; margin-bottom: 10px;">✓ Customizable</p>
+                <p style="color: #f44336; font-size: 1em; margin-bottom: 6px;">✗ Limited tools</p>
+                <p style="color: #f44336; font-size: 1em;">✗ Smaller ecosystem</p>
               </div>
               <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 12px;">
-                <h4 style="color: #FF1493; font-size: 1.1em; margin-bottom: 8px;">AVR</h4>
-                <p style="color: #4CAF50; font-size: 0.8em; margin-bottom: 6px;">✓ Simple & reliable</p>
-                <p style="color: #4CAF50; font-size: 0.8em; margin-bottom: 6px;">✓ Arduino compatible</p>
-                <p style="color: #4CAF50; font-size: 0.8em; margin-bottom: 8px;">✓ Low power</p>
-                <p style="color: #f44336; font-size: 0.8em; margin-bottom: 4px;">✗ Limited performance</p>
-                <p style="color: #f44336; font-size: 0.8em;">✗ 8-bit architecture</p>
+                <h4 style="color: #FF1493; font-size: 1.3em; margin-bottom: 10px;">AVR</h4>
+                <p style="color: #4CAF50; font-size: 1em; margin-bottom: 8px;">✓ Simple & reliable</p>
+                <p style="color: #4CAF50; font-size: 1em; margin-bottom: 8px;">✓ Arduino compatible</p>
+                <p style="color: #4CAF50; font-size: 1em; margin-bottom: 10px;">✓ Low power</p>
+                <p style="color: #f44336; font-size: 1em; margin-bottom: 6px;">✗ Limited performance</p>
+                <p style="color: #f44336; font-size: 1em;">✗ 8-bit architecture</p>
               </div>
             </div>
           </div>
-        </div>
-        <!-- Bottom half: Dev Boards -->
-        <div style="text-align: center;">
-          <div style="background: rgba(255, 20, 147, 0.1); border-radius: 10px; padding: 20px;">
+            </div>
+          </div>
+          <!-- Bottom half: Dev Boards -->
+          <div style="text-align: center;">
+            <div style="background: rgba(255, 20, 147, 0.1); border-radius: 10px; padding: 20px;">
             <h3 style="color: #FF1493; margin-bottom: 20px; font-size: 1.6em; text-align: left;">Development Boards</h3>
             <div style="display: grid; grid-template-columns: 1fr; grid-template-rows: auto auto; gap: 15px; text-align: left;">
               <!-- Top row: Seeed Studio Xiao with left text and right images -->
@@ -854,14 +838,14 @@ function handleSensorSlideState(state) {
               <div style="color: #FF1493; font-size: 1.2em; margin-bottom: 8px;">• Thin-Film</div>
               <div style="color: #FF1493; font-size: 1.2em; margin-bottom: 8px;">• MEMS</div>
               <div style="color: #FF1493; font-size: 1.2em; margin-bottom: 8px;">• Biometric</div>
-            </div>
+          </div>
             <div style="text-align: left;">
               <div style="color: #888; font-size: 1.1em; margin-bottom: 8px;">• LiDAR sensors</div>
               <div style="color: #888; font-size: 1.1em; margin-bottom: 8px;">• Ultrasonic sensors</div>
               <div style="color: #888; font-size: 1.1em; margin-bottom: 8px;">• Hall effect sensors</div>
               <div style="color: #888; font-size: 1.1em; margin-bottom: 8px;">• Capacitive touch sensors</div>
-            </div>
           </div>
+        </div>
         </div>
       </div>
     `;
@@ -880,13 +864,13 @@ function handleSensorSlideState(state) {
                   <div style="color: #ddd; font-size: 1.1em; line-height: 1.5;">
                     <div style="margin-bottom: 8px;">• Thermistor</div>
                     <div style="margin-bottom: 8px;">• Photocell</div>
-                  </div>
+          </div>
                   <div style="color: #ddd; font-size: 1.1em; line-height: 1.5;">
                     <div style="margin-bottom: 8px;">• Chemresistor</div>
                     <div style="margin-bottom: 8px;">• Gas Sensors</div>
-                  </div>
-                </div>
-              </div>
+        </div>
+          </div>
+          </div>
               <div style="background: rgba(255, 20, 147, 0.1); border-left: 4px solid #FF1493; padding: 25px; border-radius: 10px;">
                 <h4 style="color: #FF1493; font-size: 1.4em; margin-bottom: 15px;">Thin-Film</h4>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
@@ -894,14 +878,14 @@ function handleSensorSlideState(state) {
                     <div style="margin-bottom: 8px;">• FSR (Force)</div>
                     <div style="margin-bottom: 8px;">• Strain Gauge</div>
                     <div style="margin-bottom: 8px;">• Soft Potentiometer</div>
-                  </div>
+        </div>
                   <div style="color: #ddd; font-size: 1.1em; line-height: 1.5;">
                     <div style="margin-bottom: 8px;">• Soft Piezo</div>
                     <div style="margin-bottom: 8px; font-style: italic; color: #FF1493;">• and more</div>
-                  </div>
-                </div>
-              </div>
-            </div>
+      </div>
+        </div>
+          </div>
+        </div>
           </div>
         </div>
         <div class="image-group-wrapper" style="display: flex; gap: 20px; margin-top: 30px; justify-content: center; align-items: flex-end;">
@@ -925,19 +909,19 @@ function handleSensorSlideState(state) {
                 <div style="color: #ddd; font-size: 1.2em; line-height: 1.5;">
                   <div style="margin-bottom: 10px;">• IMU (Inertia Measuring Unit)</div>
                   <div style="margin-bottom: 10px;">• Microphone</div>
-                </div>
+          </div>
                 <div style="color: #ddd; font-size: 1.2em; line-height: 1.5;">
                   <div style="margin-bottom: 10px;">• Magnetometers</div>
                   <div style="margin-bottom: 10px;">• Barometric</div>
-                </div>
+          </div>
                 <div style="color: #ddd; font-size: 1.2em; line-height: 1.5;">
                   <div style="margin-bottom: 10px;">• Pressure</div>
                   <div style="margin-bottom: 10px; font-weight: bold; color: #FF1493;">• and many more</div>
-                </div>
-              </div>
-            </div>
+        </div>
           </div>
         </div>
+          </div>
+          </div>
         <div class="image-group-wrapper" style="display: flex; gap: 20px; margin-top: 30px; justify-content: center; align-items: flex-end;">
           <img src="img/MEMS0.jpg" alt="MEMS0" style="height: 200px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/200x200/333/fff?text=MEMS0'">
           <img src="img/MEMS1.webp" alt="MEMS1" style="height: 200px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/200x200/333/fff?text=MEMS1'">
@@ -973,14 +957,14 @@ function handleActuatorSlideState(state) {
               <div style="color: #FF1493; font-size: 1.2em; margin-bottom: 8px;">• Electromagnets</div>
               <div style="color: #4CAF50; font-size: 1.2em; margin-bottom: 8px;">• Servo Motor</div>
               <div style="color: #4CAF50; font-size: 1.2em; margin-bottom: 8px;">• Linear Motor</div>
-            </div>
+          </div>
             <div style="text-align: left;">
               <div style="color: #888; font-size: 1.1em; margin-bottom: 8px;">• Pneumatic actuators</div>
               <div style="color: #888; font-size: 1.1em; margin-bottom: 8px;">• Hydraulic systems</div>
               <div style="color: #888; font-size: 1.1em; margin-bottom: 8px;">• Thermal actuators</div>
               <div style="color: #888; font-size: 1.1em; margin-bottom: 8px;">• Piezoelectric actuators</div>
               <div style="color: #888; font-size: 1.1em; margin-bottom: 8px;">• Shape-changing material</div>
-            </div>
+          </div>
           </div>
         </div>
       </div>
@@ -1002,24 +986,24 @@ function handleActuatorSlideState(state) {
                   <div style="margin-bottom: 8px;">• Brushed DC motors</div>
                   <div style="margin-bottom: 8px;">• BLDC motors</div>
                   <div style="margin-bottom: 8px;">• Linear motors</div>
-                </div>
-              </div>
+          </div>
+          </div>
               <div style="background: rgba(255, 20, 147, 0.1); border-left: 4px solid #FF1493; padding: 25px; border-radius: 10px;">
                 <h4 style="color: #FF1493; font-size: 1.4em; margin-bottom: 15px;">Electromagnets</h4>
                 <div style="color: #ddd; font-size: 1.1em; line-height: 1.5;">
                   <div style="margin-bottom: 8px;">• Push/Pull Solenoids</div>
                   <div style="margin-bottom: 8px;">• Relay Coils</div>
                   <div style="margin-bottom: 8px;">* PCB magnets</div>
-                </div>
-              </div>
+        </div>
+          </div>
               <!-- Green block (single) -->
               <div style="background: rgba(76, 175, 80, 0.1); border-left: 4px solid #4CAF50; padding: 12px 20px; border-radius: 10px;">
                 <h4 style="color: #4CAF50; font-size: 1.2em; margin-bottom: 8px;">Servo Motor</h4>
                 <div style="color: #ddd; font-size: 0.6em; line-height: 1.2;">
                   <p style="margin: 0;">A servo motor is not just a motor, but a complete system that combines a motor with an encoder to provide feedback for precise position control.</p>
-                </div>
-              </div>
-            </div>
+        </div>
+          </div>
+          </div>
           </div>
         </div>
         <div class="image-group-wrapper" style="display: flex; gap: 20px; margin-top: 30px; justify-content: center; align-items: flex-end;">
@@ -1043,15 +1027,15 @@ function handleActuatorSlideState(state) {
                 <div style="color: #ddd; font-size: 1.2em; line-height: 1.5;">
                   <div style="margin-bottom: 10px;">• LED Arrays</div>
                   <div style="margin-bottom: 10px;">• OLED Displays</div>
-                </div>
+          </div>
                 <div style="color: #ddd; font-size: 1.2em; line-height: 1.5;">
                   <div style="margin-bottom: 10px;">• LCD Screens</div>
                   <div style="margin-bottom: 10px;">• E-Paper Displays</div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
+          </div>
+        </div>
+          </div>
         <div class="image-group-wrapper" style="display: flex; gap: 20px; margin-top: 30px; justify-content: center; align-items: flex-end;">
           <img src="img/Photo1.gif" alt="Photo1" style="height: 200px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/200x200/333/fff?text=Photo1'">
           <img src="img/Photo2.gif" alt="Photo2" style="height: 200px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/200x200/333/fff?text=Photo2'">
@@ -1091,49 +1075,36 @@ function handleBiometricSlideState(state) {
           <h2 style="color: #FF1493; margin-bottom: 10px;">Biometric Sensors</h2>
           <p style="color: #ddd; font-size: 1.2em;">identity verification and health monitoring</p>
           <div style="margin-top: 30px; max-width: 1200px;">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; text-align: left;">
+            <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; text-align: left;">
               <div style="background: rgba(255, 20, 147, 0.1); border-left: 4px solid #FF1493; padding: 25px; border-radius: 10px;">
-                <h4 style="color: #FF1493; font-size: 1.4em; margin-bottom: 15px;">Identity & Access</h4>
+                <h4 style="color: #FF1493; font-size: 1.4em; margin-bottom: 15px;">Bio-electric</h4>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                   <div style="color: #ddd; font-size: 1.1em; line-height: 1.5;">
-                    <div style="margin-bottom: 8px;">👆 Fingerprint sensors</div>
-                    <div style="margin-bottom: 8px;">👁️ Iris/retina scanners</div>
+                    <div style="margin-bottom: 8px;">• GSR (Galvanic Skin Response)</div>
+                    <div style="margin-bottom: 8px;">• PPG (Photoplethysmogram)</div>
                   </div>
                   <div style="color: #ddd; font-size: 1.1em; line-height: 1.5;">
-                    <div style="margin-bottom: 8px;">📷 Facial recognition</div>
-                    <div style="margin-bottom: 8px;">🗣️ Voice recognition</div>
+                    <div style="margin-bottom: 8px;">• EMG (Electromyography)</div>
+                    <div style="margin-bottom: 8px;">• EEG (Electroencephalography)</div>
                   </div>
                 </div>
               </div>
               <div style="background: rgba(255, 20, 147, 0.1); border-left: 4px solid #FF1493; padding: 25px; border-radius: 10px;">
-                <h4 style="color: #FF1493; font-size: 1.4em; margin-bottom: 15px;">Health & Monitoring</h4>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                  <div style="color: #ddd; font-size: 1.1em; line-height: 1.5;">
-                    <div style="margin-bottom: 8px;">❤️ Heart rate monitors</div>
-                    <div style="margin-bottom: 8px;">🧬 DNA analysis</div>
-                  </div>
-                  <div style="color: #ddd; font-size: 1.1em; line-height: 1.5;">
-                    <div style="margin-bottom: 8px;">🌡️ Body temperature</div>
-                    <div style="margin-bottom: 8px; font-style: italic; color: #FF1493;">• and more</div>
-                  </div>
+                <h4 style="color: #FF1493; font-size: 1.4em; margin-bottom: 15px;">Identity & Access</h4>
+                <div style="color: #ddd; font-size: 1.1em; line-height: 1.5;">
+                  <div style="margin-bottom: 8px;">• Camera (Facial recognition)</div>
+                  <div style="margin-bottom: 8px;">• Microphone (Voiceprint Recognition)</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div class="image-group-wrapper" style="display: flex; gap: 20px; margin-top: 30px; justify-content: center; align-items: flex-end;">
-          <div style="height: 200px; width: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);">
-            <p style="color: #ddd; text-align: center; font-size: 0.9em;">[Fingerprint Scanner]</p>
-          </div>
-          <div style="height: 200px; width: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);">
-            <p style="color: #ddd; text-align: center; font-size: 0.9em;">[Facial Recognition]</p>
-          </div>
-          <div style="height: 200px; width: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);">
-            <p style="color: #ddd; text-align: center; font-size: 0.9em;">[Heart Rate Monitor]</p>
-          </div>
-          <div style="height: 200px; width: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);">
-            <p style="color: #ddd; text-align: center; font-size: 0.9em;">[DNA Analyzer]</p>
-          </div>
+          <img src="img/bio1.jpg" alt="Bio1" style="height: 200px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/200x200/333/fff?text=Bio1'">
+          <img src="img/bio2.jpg" alt="Bio2" style="height: 200px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/200x200/333/fff?text=Bio2'">
+          <img src="img/bio3.jpg" alt="Bio3" style="height: 200px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/200x200/333/fff?text=Bio3'">
+          <img src="img/bio4.png" alt="Bio4" style="height: 200px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/200x200/333/fff?text=Bio4'">
+          <img src="img/bio5.webp" alt="Bio5" style="height: 200px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/200x200/333/fff?text=Bio5'">
         </div>
       </div>
     `;
