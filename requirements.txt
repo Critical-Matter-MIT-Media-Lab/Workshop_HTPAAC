@@ -1,0 +1,17 @@
+# Website to PDF Converter - Requirements
+# Install with: pip install -r requirements.txt
+
+# Option 1: Playwright (Recommended - best rendering quality)
+playwright>=1.40.0
+
+# Option 2: pdfkit (requires wkhtmltopdf system package)
+pdfkit>=1.0.0
+
+# Option 3: WeasyPrint (pure Python, good for simple pages)
+weasyprint>=60.0
+
+# Note: You only need to install one of the above, but having multiple
+# gives you fallback options. The script will auto-detect what's available.
+
+# After installing playwright, also run:
+# playwright install chromium
