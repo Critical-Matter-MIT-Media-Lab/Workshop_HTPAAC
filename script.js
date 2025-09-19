@@ -1,5 +1,32 @@
-// Load saved slide position or default to 0
+/**
+ * HTPAAC Slideshow Controller
+ * Interactive presentation system with multi-state slides and multiple input methods
+ */
+
+// =============================================================================
+// CONFIGURATION & STATE
+// =============================================================================
+
+const CONFIG = {
+  SLIDE_COUNT: 19,
+  KEY_HOLD_WAIT_TIME: 1000,
+  FAST_FLIP_INTERVAL: 150,
+  EDGE_THRESHOLD: 120,
+  CLICK_ZONE_WIDTH: 60,
+  GLOW_DETECTION_WIDTH: 200,
+  BUTTON_HIDE_DELAY: 2000,
+  PROGRESS_HIDE_DELAY: 500,
+  NOTE_HIDE_DELAY: 3000,
+};
+
+// Global state variables
 let currentSlide = parseInt(localStorage.getItem("htpaac-current-slide")) || 0;
+let slideStates =
+  JSON.parse(localStorage.getItem("htpaac-slide-states")) ||
+  new Array(CONFIG.SLIDE_COUNT).fill(0);
+let maxSlideStates = new Array(CONFIG.SLIDE_COUNT).fill(1);
+
+// DOM elements
 const slides = document.querySelectorAll(".slide");
 const navButtons = document.querySelectorAll(".nav-btn");
 const chambers = document.querySelectorAll(".chamber");
@@ -8,31 +35,26 @@ const progressContainer = document.querySelector(".progress-container");
 const slideTitleElement = document.getElementById("slide-title");
 const slideNumberDisplay = document.getElementById("slide-number-display");
 const slideNote = document.getElementById("slide-note");
-let hideProgressTimeout;
-let hideNoteTimeout;
 
-// Lazy loading management
+// Timeout and interval management
+let hideProgressTimeout, hideNoteTimeout, hideButtonsTimeout;
+let keyHoldTimeout = null,
+  keyRepeatInterval = null;
+let isKeyHeld = false,
+  lastKeyPressed = null;
+
+// Image loading system
 const loadedImages = new Set();
 const loadingImages = new Set();
 
-// Slide State Management (SSM) - handles internal slide interactions
-let slideStates =
-  JSON.parse(localStorage.getItem("htpaac-slide-states")) ||
-  new Array(16).fill(0); // Track state for each slide (16 slides total)
-let maxSlideStates = new Array(16).fill(1); // Max states per slide (default 1)
-
 // Gamepad support
-let gamepadIndex = -1;
-let gamepadConnected = false;
+let gamepadIndex = -1,
+  gamepadConnected = false;
 let lastGamepadState = {};
 
-// Arrow key navigation optimization
-let keyHoldTimeout = null;
-let isKeyHeld = false;
-let keyRepeatInterval = null;
-let lastKeyPressed = null;
-const keyHoldWaitTime = 1000; // Wait 1 second before starting fast flip (ms)
-const fastFlipInterval = 150; // Fast flip interval when held (ms)
+// Auto-play system
+let autoPlayInterval,
+  isAutoPlaying = false;
 
 // Slide titles (ordered by page number)
 const slideTitles = [
@@ -47,11 +69,14 @@ const slideTitles = [
   "Protocol", // 1.7
   "Networking", // 1.8
   "Part 2", // 2.0
-  "Sensor", // 2.1
-  "Actuator", // 2.2
+  "Actuator", // 2.1
+  "Sensor", // 2.2
   "Biometric", // 2.3
   "Part 3", // 3.0
-  "Kit", // 3.1
+  "Your Kit", // 3.1
+  "Warm-up", // 3.2
+  "Hard Mode", // 3.3
+  "System Diagram", // 3.4
 ];
 
 // Slide numbers as defined in markdown (ordered)
@@ -67,14 +92,19 @@ const slideNumbers = [
   "1.7", // Protocol
   "1.8", // Networking
   "2.0", // Part 2
-  "2.1", // Sensor
-  "2.2", // Actuator
+  "2.1", // Actuator
+  "2.2", // Sensor
   "2.3", // Biometric
   "3.0", // Part 3
-  "3.1", // Kit
+  "3.1", // Your Kit
+  "3.2", // Warm-up
+  "3.3", // Hard Mode
+  "3.4", // System Diagram
 ];
 
-let hideButtonsTimeout;
+// =============================================================================
+// NAVIGATION & UI FUNCTIONS
+// =============================================================================
 
 function showNavigationButtons() {
   navButtons.forEach((btn) => btn.classList.add("visible"));
@@ -82,36 +112,38 @@ function showNavigationButtons() {
   clearTimeout(hideButtonsTimeout);
   hideButtonsTimeout = setTimeout(() => {
     navButtons.forEach((btn) => btn.classList.remove("visible"));
-  }, 2000);
+  }, CONFIG.BUTTON_HIDE_DELAY);
 }
+
+// =============================================================================
+// INPUT HANDLING
+// =============================================================================
 
 document.addEventListener("mousemove", function (event) {
   const mouseX = event.clientX;
   const mouseY = event.clientY;
   const screenWidth = window.innerWidth;
   const screenHeight = window.innerHeight;
-  const edgeThreshold = 120;
-  const clickZoneWidth = 60;
-  const glowDetectionWidth = 200; // Much larger detection area for glow effect
   const slideshowContainer = document.querySelector(".slideshow-container");
 
   // Show navigation buttons when near edges
-  if (mouseX < edgeThreshold || mouseX > screenWidth - edgeThreshold) {
+  if (
+    mouseX < CONFIG.EDGE_THRESHOLD ||
+    mouseX > screenWidth - CONFIG.EDGE_THRESHOLD
+  ) {
     showNavigationButtons();
   }
 
-  // Control edge zone glow based on mouse position (larger detection area)
+  // Control edge zone glow based on mouse position
   if (slideshowContainer) {
-    // Remove all edge classes first
     slideshowContainer.classList.remove(
       "left-edge-active",
       "right-edge-active"
     );
 
-    // Add appropriate class based on mouse position (using larger detection area)
-    if (mouseX < glowDetectionWidth) {
+    if (mouseX < CONFIG.GLOW_DETECTION_WIDTH) {
       slideshowContainer.classList.add("left-edge-active");
-    } else if (mouseX > screenWidth - glowDetectionWidth) {
+    } else if (mouseX > screenWidth - CONFIG.GLOW_DETECTION_WIDTH) {
       slideshowContainer.classList.add("right-edge-active");
     }
   }
@@ -132,6 +164,10 @@ navButtons.forEach((btn) => {
   });
 });
 
+// =============================================================================
+// PROGRESS & NAVIGATION SYSTEM
+// =============================================================================
+
 function updateProgressBar() {
   chambers.forEach((chamber, index) => {
     if (index === currentSlide) {
@@ -142,7 +178,7 @@ function updateProgressBar() {
   });
 
   // Rotate the wheel to bring active chamber to top
-  const rotationAngle = -currentSlide * (360 / 17); // 360/17 = 21.18 degrees per chamber
+  const rotationAngle = -currentSlide * (360 / 20); // 360/20 = 18 degrees per chamber
   revolverWheel.style.transform = `rotate(${rotationAngle}deg)`;
 
   // Update slide title and number
@@ -167,25 +203,27 @@ function showRevolver() {
   progressContainer.classList.add("visible");
   progressContainer.classList.remove("hidden");
 
-  // Hide after 0.5 seconds
+  // Hide after configured delay
   clearTimeout(hideProgressTimeout);
   hideProgressTimeout = setTimeout(() => {
     progressContainer.classList.add("hidden");
     progressContainer.classList.remove("visible");
-  }, 500);
+  }, CONFIG.PROGRESS_HIDE_DELAY);
 }
 
-// Note management functions
+// =============================================================================
+// NOTES SYSTEM
+// =============================================================================
 function showNote(content) {
   if (slideNote) {
     slideNote.querySelector(".note-content").innerHTML = content;
     slideNote.classList.add("visible");
 
-    // Auto-hide after 3 seconds
+    // Auto-hide after configured delay
     clearTimeout(hideNoteTimeout);
     hideNoteTimeout = setTimeout(() => {
       hideNote();
-    }, 3000);
+    }, CONFIG.NOTE_HIDE_DELAY);
   }
 }
 
@@ -230,7 +268,10 @@ function updateSlideNote(slideIndex, state = 0) {
   }
 }
 
-// Initialize progress bar on DOM ready
+// =============================================================================
+// INITIALIZATION & SETUP
+// =============================================================================
+
 document.addEventListener("DOMContentLoaded", function () {
   updateProgressBar();
 
@@ -243,10 +284,13 @@ document.addEventListener("DOMContentLoaded", function () {
   setSlideMaxStates(3, 2); // Slide 1.2 (Parts) has 2 states: image view and text view
   setSlideMaxStates(5, 2); // Slide 1.4 (MCU) has 2 states: image collage and description
   setSlideMaxStates(6, 2); // Slide 1.5 (Fabrication) has 2 states: fabrication methods and manufacturing
-  setSlideMaxStates(11, 3); // Slide 2.1 (Sensor) has 3 states: analog, MEMS1, MEMS2
-  setSlideMaxStates(12, 3); // Slide 2.2 (Actuator) has 3 states: electromagnetic, photo, etc
+  setSlideMaxStates(11, 3); // Slide 2.1 (Actuator) has 3 states: intro, electromagnetic, photo
+  setSlideMaxStates(12, 3); // Slide 2.2 (Sensor) has 3 states: intro, analog, MEMS
   setSlideMaxStates(13, 2); // Slide 2.3 (Biometric) has 2 states: image and list
-  setSlideMaxStates(15, 2); // Slide 3.1 (Kit) has 2 states: image and form
+  setSlideMaxStates(15, 2); // Slide 3.1 (Your Kit) has 2 states: image and form
+  setSlideMaxStates(16, 2); // Slide 3.2 (Warm-up) has 2 states: image and form
+  setSlideMaxStates(17, 2); // Slide 3.3 (Hard Mode) has 2 states: image and form
+  setSlideMaxStates(18, 2); // Slide 3.4 (System Diagram) has 2 states: image and form
 
   // Restore saved slide position
   if (currentSlide > 0 && currentSlide < slides.length) {
@@ -310,7 +354,10 @@ window.addEventListener("load", function () {
   }, 100);
 });
 
-// Slide State Management (SSM) Functions
+// =============================================================================
+// SLIDE STATE MANAGEMENT (SSM)
+// =============================================================================
+
 function toggleSlideState() {
   const currentState = slideStates[currentSlide];
   const maxState = maxSlideStates[currentSlide];
@@ -360,17 +407,26 @@ function resetSlideState(slideIndex) {
     // Slide 1.5 (Fabrication)
     handleFabricationSlideState(0);
   } else if (slideIndex === 11) {
-    // Slide 2.1 (Sensor)
-    handleSensorSlideState(0);
-  } else if (slideIndex === 12) {
-    // Slide 2.2 (Actuator)
+    // Slide 2.1 (Actuator)
     handleActuatorSlideState(0);
+  } else if (slideIndex === 12) {
+    // Slide 2.2 (Sensor)
+    handleSensorSlideState(0);
   } else if (slideIndex === 13) {
     // Slide 2.3 (Biometric)
     handleBiometricSlideState(0);
   } else if (slideIndex === 15) {
-    // Slide 3.1 (Kit)
+    // Slide 3.1 (Your Kit)
     handleKitSlideState(0);
+  } else if (slideIndex === 16) {
+    // Slide 3.2 (Warm-up)
+    handleWarmupSlideState(0);
+  } else if (slideIndex === 17) {
+    // Slide 3.3 (Hard Mode)
+    handleHardModeSlideState(0);
+  } else if (slideIndex === 18) {
+    // Slide 3.4 (System Diagram)
+    handleSystemDiagramSlideState(0);
   }
 }
 
@@ -397,17 +453,26 @@ function triggerSlideStateChange(slideIndex, newState) {
     // Slide 1.5 (Fabrication)
     handleFabricationSlideState(newState);
   } else if (slideIndex === 11) {
-    // Slide 2.1 (Sensor)
-    handleSensorSlideState(newState);
-  } else if (slideIndex === 12) {
-    // Slide 2.2 (Actuator)
+    // Slide 2.1 (Actuator)
     handleActuatorSlideState(newState);
+  } else if (slideIndex === 12) {
+    // Slide 2.2 (Sensor)
+    handleSensorSlideState(newState);
   } else if (slideIndex === 13) {
     // Slide 2.3 (Biometric)
     handleBiometricSlideState(newState);
   } else if (slideIndex === 15) {
-    // Slide 3.1 (Kit)
+    // Slide 3.1 (Your Kit)
     handleKitSlideState(newState);
+  } else if (slideIndex === 16) {
+    // Slide 3.2 (Warm-up)
+    handleWarmupSlideState(newState);
+  } else if (slideIndex === 17) {
+    // Slide 3.3 (Hard Mode)
+    handleHardModeSlideState(newState);
+  } else if (slideIndex === 18) {
+    // Slide 3.4 (System Diagram)
+    handleSystemDiagramSlideState(newState);
   }
 
   // Dispatch custom event for external listeners
@@ -493,11 +558,11 @@ function initializeSlideStates() {
   // Initialize MCU slide (index 5)
   handleMCUSlideState(slideStates[5] || 0);
 
-  // Initialize Sensor slide (index 11)
-  handleSensorSlideState(slideStates[11] || 0);
+  // Initialize Actuator slide (index 11)
+  handleActuatorSlideState(slideStates[11] || 0);
 
-  // Initialize Actuator slide (index 12)
-  handleActuatorSlideState(slideStates[12] || 0);
+  // Initialize Sensor slide (index 12)
+  handleSensorSlideState(slideStates[12] || 0);
 
   // Initialize Biometric slide (index 13)
   handleBiometricSlideState(slideStates[13] || 0);
@@ -507,6 +572,11 @@ function initializeSlideStates() {
 
   // Initialize Kit slide (index 15)
   handleKitSlideState(slideStates[15] || 0);
+
+  // Initialize new Part 3 slides
+  handleWarmupSlideState(slideStates[16] || 0);
+  handleHardModeSlideState(slideStates[17] || 0);
+  handleSystemDiagramSlideState(slideStates[18] || 0);
 }
 
 // Additional slide state handlers
@@ -762,7 +832,7 @@ function handleMCUSlideState(state) {
 
 function handleSensorSlideState(state) {
   console.log(`Handling SENSOR slide state: ${state}`);
-  const sensorSlide = slides[11]; // Slide 2.1 (Sensor)
+  const sensorSlide = slides[12]; // Slide 2.2 (Sensor)
   const contentContainer = sensorSlide.querySelector(".slide-content");
 
   if (!contentContainer) {
@@ -771,81 +841,108 @@ function handleSensorSlideState(state) {
   }
 
   if (state === 0) {
-    // State 1: Analog Sensors
+    // State 0: Sensor Introduction
     contentContainer.innerHTML = `
-      <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
-        <div class="image-group-wrapper" style="display: flex; gap: 30px; margin-bottom: 20px; justify-content: center; align-items: flex-end;">
-          <div style="height: 280px; width: auto; min-width: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 20px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);">
-            <p style="color: #ddd; text-align: center;">[Placeholder: Analog Sensor Image 1]</p>
-          </div>
-          <div style="height: 280px; width: auto; min-width: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 20px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);">
-            <p style="color: #ddd; text-align: center;">[Placeholder: Analog Sensor Image 2]</p>
-          </div>
-        </div>
-        <div style="text-align: center; margin: 20px 0;">
-          <h2 style="color: #FF1493; margin-bottom: 10px;">Analog Sensors</h2>
-          <p style="color: #ddd; font-size: 1.2em;">basically family of weird resistors</p>
-          <div style="margin-top: 20px;">
-            <p>[Placeholder: State 1 items - organized text in middle]</p>
-          </div>
-        </div>
-        <div class="image-group-wrapper" style="display: flex; gap: 30px; margin-top: 20px; justify-content: center; align-items: flex-end;">
-          <div style="height: 280px; width: auto; min-width: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 20px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);">
-            <p style="color: #ddd; text-align: center;">[Placeholder: Analog Sensor Image 3]</p>
-          </div>
-          <div style="height: 280px; width: auto; min-width: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 20px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);">
-            <p style="color: #ddd; text-align: center;">[Placeholder: Analog Sensor Image 4]</p>
+      <div style="display: flex; flex-direction: column; align-items: center; margin-top: 40px;">
+        <div style="text-align: center; max-width: 1200px;">
+          <p style="color: #ddd; font-size: 1.6em; line-height: 1.5; margin-bottom: 40px;">
+            Input devices that convert physical phenomena into electrical signals
+          </p>
+          <div style="display: flex; justify-content: center; gap: 40px; margin-top: 15px;">
+            <div style="text-align: left;">
+              <div style="color: #FF1493; font-size: 1.2em; margin-bottom: 8px;">• Environmental</div>
+              <div style="color: #FF1493; font-size: 1.2em; margin-bottom: 8px;">• Thin-Film</div>
+              <div style="color: #FF1493; font-size: 1.2em; margin-bottom: 8px;">• MEMS</div>
+              <div style="color: #FF1493; font-size: 1.2em; margin-bottom: 8px;">• Biometric</div>
+            </div>
+            <div style="text-align: left;">
+              <div style="color: #888; font-size: 1.1em; margin-bottom: 8px;">• LiDAR sensors</div>
+              <div style="color: #888; font-size: 1.1em; margin-bottom: 8px;">• Ultrasonic sensors</div>
+              <div style="color: #888; font-size: 1.1em; margin-bottom: 8px;">• Hall effect sensors</div>
+              <div style="color: #888; font-size: 1.1em; margin-bottom: 8px;">• Capacitive touch sensors</div>
+            </div>
           </div>
         </div>
       </div>
     `;
   } else if (state === 1) {
-    // State 2: MEMS Sensors
+    // State 1: Analog Sensors
     contentContainer.innerHTML = `
       <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
-        <div class="image-group-wrapper" style="display: flex; gap: 30px; margin-bottom: 20px; justify-content: center; align-items: flex-end;">
-          <img src="img/MEMS3.png" alt="MEMS3" style="height: 220px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);"            onerror="this.src='https://via.placeholder.com/280x220/333/fff?text=MEMS3'">
-          <img src="img/MEMS2.jpg" alt="MEMS2" style="height: 220px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/280x220/333/fff?text=MEMS2'">
-        </div>
         <div style="text-align: center; margin: 20px 0;">
-          <h2 style="color: #FF1493; margin-bottom: 10px;">MEMS Sensors</h2>
-          <p style="color: #ddd; font-size: 1.2em;">Micro-Electro-Mechanical Systems</p>
-          <div style="margin-top: 20px;">
-            <p>[Placeholder: State 2 items - organized text in middle]</p>
+          <h2 style="color: #FF1493; margin-bottom: 10px;">Analog Sensors</h2>
+          <p style="color: #ddd; font-size: 1.2em;">basically family of weird resistors</p>
+          <div style="margin-top: 30px; max-width: 1200px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; text-align: left;">
+              <div style="background: rgba(255, 20, 147, 0.1); border-left: 4px solid #FF1493; padding: 25px; border-radius: 10px;">
+                <h4 style="color: #FF1493; font-size: 1.4em; margin-bottom: 15px;">Environmental</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                  <div style="color: #ddd; font-size: 1.1em; line-height: 1.5;">
+                    <div style="margin-bottom: 8px;">• Thermistor</div>
+                    <div style="margin-bottom: 8px;">• Photocell</div>
+                  </div>
+                  <div style="color: #ddd; font-size: 1.1em; line-height: 1.5;">
+                    <div style="margin-bottom: 8px;">• Chemresistor</div>
+                    <div style="margin-bottom: 8px;">• Gas Sensors</div>
+                  </div>
+                </div>
+              </div>
+              <div style="background: rgba(255, 20, 147, 0.1); border-left: 4px solid #FF1493; padding: 25px; border-radius: 10px;">
+                <h4 style="color: #FF1493; font-size: 1.4em; margin-bottom: 15px;">Thin-Film</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                  <div style="color: #ddd; font-size: 1.1em; line-height: 1.5;">
+                    <div style="margin-bottom: 8px;">• FSR (Force)</div>
+                    <div style="margin-bottom: 8px;">• Strain Gauge</div>
+                    <div style="margin-bottom: 8px;">• Soft Potentiometer</div>
+                  </div>
+                  <div style="color: #ddd; font-size: 1.1em; line-height: 1.5;">
+                    <div style="margin-bottom: 8px;">• Soft Piezo</div>
+                    <div style="margin-bottom: 8px; font-style: italic; color: #FF1493;">• and more</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="image-group-wrapper" style="display: flex; gap: 30px; margin-top: 20px; justify-content: center; align-items: flex-end;">
-          <img src="img/MEMS0.jpg" alt="MEMS0" style="height: 280px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/350x280/333/fff?text=MEMS0'">
-          <img src="img/MEMS1.webp" alt="MEMS1" style="height: 280px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/350x280/333/fff?text=MEMS1'">
+        <div class="image-group-wrapper" style="display: flex; gap: 20px; margin-top: 30px; justify-content: center; align-items: flex-end;">
+          <img src="img/R1.jpeg" alt="R1" style="height: 200px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/200x200/333/fff?text=R1'">
+          <img src="img/R2.jpg" alt="R2" style="height: 200px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/200x200/333/fff?text=R2'">
+          <img src="img/Film1.jpg" alt="Film1" style="height: 200px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/200x200/333/fff?text=Film1'">
+          <img src="img/Film2.png" alt="Film2" style="height: 200px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/200x200/333/fff?text=Film2'">
         </div>
       </div>
     `;
   } else if (state === 2) {
-    // State 3: Additional sensor types
+    // State 2: MEMS Sensors
     contentContainer.innerHTML = `
       <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
-        <div style="display: flex; gap: 30px; margin-bottom: 20px; justify-content: center;">
-          <div style="max-width: 250px; max-height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 20px;">
-            <p style="color: #ddd; text-align: center;">[Placeholder: Additional Sensor Image 1]</p>
-          </div>
-          <div style="max-width: 250px; max-height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 20px;">
-            <p style="color: #ddd; text-align: center;">[Placeholder: Additional Sensor Image 2]</p>
-          </div>
-        </div>
         <div style="text-align: center; margin: 20px 0;">
-          <h2 style="color: #FF1493; margin-bottom: 10px;">Additional Sensors</h2>
-          <p style="color: #ddd; font-size: 1.2em;">[Placeholder: subtitle]</p>
-          <div style="margin-top: 20px;">
-            <p>[Placeholder: State 3 items - organized text in middle]</p>
+          <h2 style="color: #FF1493; margin-bottom: 10px;">MEMS Sensors</h2>
+          <p style="color: #ddd; font-size: 1.2em;">Micro-Electro-Mechanical Systems</p>
+          <div style="margin-top: 30px; max-width: 1200px;">
+            <div style="background: rgba(255, 20, 147, 0.1); border-left: 4px solid #FF1493; padding: 30px; border-radius: 10px; text-align: left;">
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                <div style="color: #ddd; font-size: 1.2em; line-height: 1.5;">
+                  <div style="margin-bottom: 10px;">• IMU (Inertia Measuring Unit)</div>
+                  <div style="margin-bottom: 10px;">• Microphone</div>
+                </div>
+                <div style="color: #ddd; font-size: 1.2em; line-height: 1.5;">
+                  <div style="margin-bottom: 10px;">• Magnetometers</div>
+                  <div style="margin-bottom: 10px;">• Barometric</div>
+                </div>
+                <div style="color: #ddd; font-size: 1.2em; line-height: 1.5;">
+                  <div style="margin-bottom: 10px;">• Pressure</div>
+                  <div style="margin-bottom: 10px; font-weight: bold; color: #FF1493;">• and many more</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div style="display: flex; gap: 30px; margin-top: 20px; justify-content: center;">
-          <div style="max-width: 250px; max-height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 20px;">
-            <p style="color: #ddd; text-align: center;">[Placeholder: Additional Sensor Image 3]</p>
-          </div>
-          <div style="max-width: 250px; max-height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 20px;">
-            <p style="color: #ddd; text-align: center;">[Placeholder: Additional Sensor Image 4]</p>
-          </div>
+        <div class="image-group-wrapper" style="display: flex; gap: 20px; margin-top: 30px; justify-content: center; align-items: flex-end;">
+          <img src="img/MEMS0.jpg" alt="MEMS0" style="height: 200px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/200x200/333/fff?text=MEMS0'">
+          <img src="img/MEMS1.webp" alt="MEMS1" style="height: 200px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/200x200/333/fff?text=MEMS1'">
+          <img src="img/MEMS2.jpg" alt="MEMS2" style="height: 200px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/200x200/333/fff?text=MEMS2'">
+          <img src="img/MEMS3.png" alt="MEMS3" style="height: 200px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/200x200/333/fff?text=MEMS3'">
         </div>
       </div>
     `;
@@ -854,7 +951,7 @@ function handleSensorSlideState(state) {
 
 function handleActuatorSlideState(state) {
   console.log(`Handling ACTUATOR slide state: ${state}`);
-  const actuatorSlide = slides[12]; // Slide 2.2 (Actuator)
+  const actuatorSlide = slides[11]; // Slide 2.1 (Actuator)
   const contentContainer = actuatorSlide.querySelector(".slide-content");
 
   if (!contentContainer) {
@@ -863,89 +960,103 @@ function handleActuatorSlideState(state) {
   }
 
   if (state === 0) {
-    // State 1: Electromagnetic Actuators
+    // State 0: Actuator Introduction
     contentContainer.innerHTML = `
-      <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
-        <div style="display: flex; gap: 30px; margin-bottom: 20px; justify-content: center;">
-          <div style="max-width: 250px; max-height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 20px;">
-            <p style="color: #ddd; text-align: center;">[Placeholder: Electromagnetic Actuator Image 1]</p>
-          </div>
-          <div style="max-width: 250px; max-height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 20px;">
-            <p style="color: #ddd; text-align: center;">[Placeholder: Electromagnetic Actuator Image 2]</p>
-          </div>
-        </div>
-        <div style="text-align: center; margin: 20px 0;">
-          <h2 style="color: #FF1493; margin-bottom: 10px;">Electromagnetic Actuators</h2>
-          <p style="color: #ddd; font-size: 1.2em;">move and actuate</p>
-          <div style="margin-top: 20px;">
-            <p>[Placeholder: State 1 items - organized text in middle]</p>
-          </div>
-        </div>
-        <div style="display: flex; gap: 30px; margin-top: 20px; justify-content: center;">
-          <div style="max-width: 250px; max-height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 20px;">
-            <p style="color: #ddd; text-align: center;">[Placeholder: Electromagnetic Actuator Image 3]</p>
-          </div>
-          <div style="max-width: 250px; max-height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 20px;">
-            <p style="color: #ddd; text-align: center;">[Placeholder: Electromagnetic Actuator Image 4]</p>
+      <div style="display: flex; flex-direction: column; align-items: center; margin-top: 40px;">
+        <div style="text-align: center; max-width: 1200px;">
+          <p style="color: #ddd; font-size: 1.6em; line-height: 1.5; margin-bottom: 40px;">
+            Output devices that convert electrical signals into physical actions
+          </p>
+          <div style="display: flex; justify-content: center; gap: 40px; margin-top: 15px;">
+            <div style="text-align: left;">
+              <div style="color: #FF1493; font-size: 1.2em; margin-bottom: 8px;">• Motors</div>
+              <div style="color: #FF1493; font-size: 1.2em; margin-bottom: 8px;">• Electromagnets</div>
+              <div style="color: #4CAF50; font-size: 1.2em; margin-bottom: 8px;">• Servo Motor</div>
+              <div style="color: #4CAF50; font-size: 1.2em; margin-bottom: 8px;">• Linear Motor</div>
+            </div>
+            <div style="text-align: left;">
+              <div style="color: #888; font-size: 1.1em; margin-bottom: 8px;">• Pneumatic actuators</div>
+              <div style="color: #888; font-size: 1.1em; margin-bottom: 8px;">• Hydraulic systems</div>
+              <div style="color: #888; font-size: 1.1em; margin-bottom: 8px;">• Thermal actuators</div>
+              <div style="color: #888; font-size: 1.1em; margin-bottom: 8px;">• Piezoelectric actuators</div>
+              <div style="color: #888; font-size: 1.1em; margin-bottom: 8px;">• Shape-changing material</div>
+            </div>
           </div>
         </div>
       </div>
     `;
   } else if (state === 1) {
-    // State 2: Photo Actuators
+    // State 1: Electromagnetic Actuators
     contentContainer.innerHTML = `
       <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
-        <div style="display: flex; gap: 30px; margin-bottom: 20px; justify-content: center;">
-          <div style="max-width: 250px; max-height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 20px;">
-            <p style="color: #ddd; text-align: center;">[Placeholder: Photo Actuator Image 1]</p>
-          </div>
-          <div style="max-width: 250px; max-height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 20px;">
-            <p style="color: #ddd; text-align: center;">[Placeholder: Photo Actuator Image 2]</p>
-          </div>
-        </div>
         <div style="text-align: center; margin: 20px 0;">
-          <h2 style="color: #FF1493; margin-bottom: 10px;">Photo Actuators</h2>
-          <p style="color: #ddd; font-size: 1.2em;">show and display</p>
-          <div style="margin-top: 20px;">
-            <p>[Placeholder: State 2 items - organized text in middle]</p>
+          <h2 style="color: #FF1493; margin-bottom: 10px;">Electromagnetic Actuators</h2>
+          <p style="color: #ddd; font-size: 1.2em;">move and actuate</p>
+          <div style="margin-top: 30px; max-width: 900px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 0.8fr; gap: 20px; text-align: left;">
+              <!-- Pink blocks (horizontal) -->
+              <div style="background: rgba(255, 20, 147, 0.1); border-left: 4px solid #FF1493; padding: 25px; border-radius: 10px;">
+                <h4 style="color: #FF1493; font-size: 1.4em; margin-bottom: 15px;">Motors</h4>
+                <div style="color: #ddd; font-size: 1.1em; line-height: 1.5;">
+                  <div style="margin-bottom: 8px;">• AC motors</div>
+                  <div style="margin-bottom: 8px;">• Brushed DC motors</div>
+                  <div style="margin-bottom: 8px;">• BLDC motors</div>
+                  <div style="margin-bottom: 8px;">• Linear motors</div>
+                </div>
+              </div>
+              <div style="background: rgba(255, 20, 147, 0.1); border-left: 4px solid #FF1493; padding: 25px; border-radius: 10px;">
+                <h4 style="color: #FF1493; font-size: 1.4em; margin-bottom: 15px;">Electromagnets</h4>
+                <div style="color: #ddd; font-size: 1.1em; line-height: 1.5;">
+                  <div style="margin-bottom: 8px;">• Push/Pull Solenoids</div>
+                  <div style="margin-bottom: 8px;">• Relay Coils</div>
+                  <div style="margin-bottom: 8px;">* PCB magnets</div>
+                </div>
+              </div>
+              <!-- Green block (single) -->
+              <div style="background: rgba(76, 175, 80, 0.1); border-left: 4px solid #4CAF50; padding: 12px 20px; border-radius: 10px;">
+                <h4 style="color: #4CAF50; font-size: 1.2em; margin-bottom: 8px;">Servo Motor</h4>
+                <div style="color: #ddd; font-size: 0.6em; line-height: 1.2;">
+                  <p style="margin: 0;">A servo motor is not just a motor, but a complete system that combines a motor with an encoder to provide feedback for precise position control.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div style="display: flex; gap: 30px; margin-top: 20px; justify-content: center;">
-          <div style="max-width: 250px; max-height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 20px;">
-            <p style="color: #ddd; text-align: center;">[Placeholder: Photo Actuator Image 3]</p>
-          </div>
-          <div style="max-width: 250px; max-height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 20px;">
-            <p style="color: #ddd; text-align: center;">[Placeholder: Photo Actuator Image 4]</p>
-          </div>
+        <div class="image-group-wrapper" style="display: flex; gap: 20px; margin-top: 30px; justify-content: center; align-items: flex-end;">
+          <img src="img/act1.jpg" alt="Act1" style="height: 280px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/280x280/333/fff?text=Act1'">
+          <img src="img/act2.gif" alt="Act2" style="height: 280px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/280x280/333/fff?text=Act2'">
+          <img src="img/act3.gif" alt="Act3" style="height: 280px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/280x280/333/fff?text=Act3'">
+          <img src="img/act4.webp" alt="Act4" style="height: 280px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/280x280/333/fff?text=Act4'">
         </div>
       </div>
     `;
   } else if (state === 2) {
-    // State 3: Additional actuator types
+    // State 2: Photo Actuators
     contentContainer.innerHTML = `
       <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
-        <div style="display: flex; gap: 30px; margin-bottom: 20px; justify-content: center;">
-          <div style="max-width: 250px; max-height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 20px;">
-            <p style="color: #ddd; text-align: center;">[Placeholder: Additional Actuator Image 1]</p>
-          </div>
-          <div style="max-width: 250px; max-height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 20px;">
-            <p style="color: #ddd; text-align: center;">[Placeholder: Additional Actuator Image 2]</p>
-          </div>
-        </div>
         <div style="text-align: center; margin: 20px 0;">
-          <h2 style="color: #FF1493; margin-bottom: 10px;">Additional Actuators</h2>
-          <p style="color: #ddd; font-size: 1.2em;">[Placeholder: subtitle]</p>
-          <div style="margin-top: 20px;">
-            <p>[Placeholder: State 3 items - organized text in middle]</p>
+          <h2 style="color: #FF1493; margin-bottom: 10px;">Photo-Actuators</h2>
+          <p style="color: #ddd; font-size: 1.2em;">show and display</p>
+          <div style="margin-top: 30px; max-width: 1200px;">
+            <div style="background: rgba(255, 20, 147, 0.1); border-left: 4px solid #FF1493; padding: 30px; border-radius: 10px; text-align: left;">
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                <div style="color: #ddd; font-size: 1.2em; line-height: 1.5;">
+                  <div style="margin-bottom: 10px;">• LED Arrays</div>
+                  <div style="margin-bottom: 10px;">• OLED Displays</div>
+                </div>
+                <div style="color: #ddd; font-size: 1.2em; line-height: 1.5;">
+                  <div style="margin-bottom: 10px;">• LCD Screens</div>
+                  <div style="margin-bottom: 10px;">• E-Paper Displays</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div style="display: flex; gap: 30px; margin-top: 20px; justify-content: center;">
-          <div style="max-width: 250px; max-height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 20px;">
-            <p style="color: #ddd; text-align: center;">[Placeholder: Additional Actuator Image 3]</p>
-          </div>
-          <div style="max-width: 250px; max-height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 20px;">
-            <p style="color: #ddd; text-align: center;">[Placeholder: Additional Actuator Image 4]</p>
-          </div>
+        <div class="image-group-wrapper" style="display: flex; gap: 20px; margin-top: 30px; justify-content: center; align-items: flex-end;">
+          <img src="img/Photo1.gif" alt="Photo1" style="height: 200px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/200x200/333/fff?text=Photo1'">
+          <img src="img/Photo2.gif" alt="Photo2" style="height: 200px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/200x200/333/fff?text=Photo2'">
+          <img src="img/Photo3.gif" alt="Photo3" style="height: 200px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/200x200/333/fff?text=Photo3'">
+          <img src="img/Photo4.jpg" alt="Photo4" style="height: 200px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/200x200/333/fff?text=Photo4'">
         </div>
       </div>
     `;
@@ -964,21 +1075,66 @@ function handleBiometricSlideState(state) {
 
   if (state === 0) {
     contentContainer.innerHTML = `
-      <img src="img/biometrics.png" alt="Biometric Sensors" class="centered-image" 
-           style="max-width: 70%; height: auto; margin: 40px auto 0 auto; display: block; border-radius: 10px; box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);" 
-           onerror="this.src='https://via.placeholder.com/800x600/333/fff?text=Biometric+Sensors'">
+      <div style="display: flex; gap: 30px; justify-content: center; align-items: center; margin-top: 40px;">
+        <img src="img/biometrics.png" alt="Biometric Sensors" 
+             style="max-width: 45%; height: auto; border-radius: 10px; box-shadow: none !important;" 
+             onerror="this.src='https://via.placeholder.com/600x400/333/fff?text=Biometric+Sensors'">
+        <img src="img/face.png" alt="Face Recognition" 
+             style="max-width: 45%; height: auto; border-radius: 10px; box-shadow: none !important;" 
+             onerror="this.src='https://via.placeholder.com/600x400/333/fff?text=Face+Recognition'">
+      </div>
     `;
   } else if (state === 1) {
     contentContainer.innerHTML = `
-      <div style="margin-top: 40px;">
-        <ul>
-          <li>👆 Fingerprint sensors: Capacitive, optical, ultrasonic</li>
-          <li>👁️ Iris/retina scanners: High security applications</li>
-          <li>📷 Facial recognition: Camera-based systems</li>
-          <li>❤️ Heart rate monitors: PPG, ECG sensors</li>
-          <li>🧬 DNA analysis: Lab-on-chip systems</li>
-          <li>🗣️ Voice recognition: MEMS microphones + AI</li>
-        </ul>
+      <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
+        <div style="text-align: center; margin: 20px 0;">
+          <h2 style="color: #FF1493; margin-bottom: 10px;">Biometric Sensors</h2>
+          <p style="color: #ddd; font-size: 1.2em;">identity verification and health monitoring</p>
+          <div style="margin-top: 30px; max-width: 1200px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; text-align: left;">
+              <div style="background: rgba(255, 20, 147, 0.1); border-left: 4px solid #FF1493; padding: 25px; border-radius: 10px;">
+                <h4 style="color: #FF1493; font-size: 1.4em; margin-bottom: 15px;">Identity & Access</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                  <div style="color: #ddd; font-size: 1.1em; line-height: 1.5;">
+                    <div style="margin-bottom: 8px;">👆 Fingerprint sensors</div>
+                    <div style="margin-bottom: 8px;">👁️ Iris/retina scanners</div>
+                  </div>
+                  <div style="color: #ddd; font-size: 1.1em; line-height: 1.5;">
+                    <div style="margin-bottom: 8px;">📷 Facial recognition</div>
+                    <div style="margin-bottom: 8px;">🗣️ Voice recognition</div>
+                  </div>
+                </div>
+              </div>
+              <div style="background: rgba(255, 20, 147, 0.1); border-left: 4px solid #FF1493; padding: 25px; border-radius: 10px;">
+                <h4 style="color: #FF1493; font-size: 1.4em; margin-bottom: 15px;">Health & Monitoring</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                  <div style="color: #ddd; font-size: 1.1em; line-height: 1.5;">
+                    <div style="margin-bottom: 8px;">❤️ Heart rate monitors</div>
+                    <div style="margin-bottom: 8px;">🧬 DNA analysis</div>
+                  </div>
+                  <div style="color: #ddd; font-size: 1.1em; line-height: 1.5;">
+                    <div style="margin-bottom: 8px;">🌡️ Body temperature</div>
+                    <div style="margin-bottom: 8px; font-style: italic; color: #FF1493;">• and more</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="image-group-wrapper" style="display: flex; gap: 20px; margin-top: 30px; justify-content: center; align-items: flex-end;">
+          <div style="height: 200px; width: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);">
+            <p style="color: #ddd; text-align: center; font-size: 0.9em;">[Fingerprint Scanner]</p>
+          </div>
+          <div style="height: 200px; width: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);">
+            <p style="color: #ddd; text-align: center; font-size: 0.9em;">[Facial Recognition]</p>
+          </div>
+          <div style="height: 200px; width: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);">
+            <p style="color: #ddd; text-align: center; font-size: 0.9em;">[Heart Rate Monitor]</p>
+          </div>
+          <div style="height: 200px; width: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);">
+            <p style="color: #ddd; text-align: center; font-size: 0.9em;">[DNA Analyzer]</p>
+          </div>
+        </div>
       </div>
     `;
   }
@@ -1009,7 +1165,82 @@ function handleKitSlideState(state) {
   }
 }
 
-// Lazy loading functions
+function handleWarmupSlideState(state) {
+  const warmupSlide = slides[16]; // Slide 3.2 (Warm-up)
+  const contentContainer = warmupSlide.querySelector(".slide-content");
+  if (!contentContainer) return;
+
+  if (state === 0) {
+    contentContainer.innerHTML = `
+      <p style="margin-top: 60px; font-size: 1.4em; color: #ddd;">
+        [Placeholder: Warm-up exercise image]<br>
+        Initial hardware exercise (15 minutes)
+      </p>
+    `;
+  } else if (state === 1) {
+    contentContainer.innerHTML = `
+      <div style="margin-top: 40px;">
+        <p style="font-size: 1.4em; color: #ddd;">
+          [Placeholder: Warm-up exercise form/details]<br>
+          Step-by-step instructions and requirements
+        </p>
+      </div>
+    `;
+  }
+}
+
+function handleHardModeSlideState(state) {
+  const hardModeSlide = slides[17]; // Slide 3.3 (Hard Mode)
+  const contentContainer = hardModeSlide.querySelector(".slide-content");
+  if (!contentContainer) return;
+
+  if (state === 0) {
+    contentContainer.innerHTML = `
+      <p style="margin-top: 60px; font-size: 1.4em; color: #ddd;">
+        [Placeholder: Hard Mode challenge image]<br>
+        Advanced challenge covering multiple topics (45 minutes)
+      </p>
+    `;
+  } else if (state === 1) {
+    contentContainer.innerHTML = `
+      <div style="margin-top: 40px;">
+        <p style="font-size: 1.4em; color: #ddd;">
+          [Placeholder: Hard Mode challenge form/details]<br>
+          Comprehensive project requirements and guidelines
+        </p>
+      </div>
+    `;
+  }
+}
+
+function handleSystemDiagramSlideState(state) {
+  const systemDiagramSlide = slides[18]; // Slide 3.4 (System Diagram)
+  const contentContainer = systemDiagramSlide.querySelector(".slide-content");
+  if (!contentContainer) return;
+
+  if (state === 0) {
+    contentContainer.innerHTML = `
+      <p style="margin-top: 60px; font-size: 1.4em; color: #ddd;">
+        [Placeholder: System diagram image]<br>
+        Hardware-web system and signal flow
+      </p>
+    `;
+  } else if (state === 1) {
+    contentContainer.innerHTML = `
+      <div style="margin-top: 40px;">
+        <p style="font-size: 1.4em; color: #ddd;">
+          [Placeholder: System diagram form/details]<br>
+          Technical specifications and implementation details
+        </p>
+      </div>
+    `;
+  }
+}
+
+// =============================================================================
+// IMAGE LOADING SYSTEM
+// =============================================================================
+
 function loadImagesForSlide(slideIndex) {
   const slide = slides[slideIndex];
   if (!slide) return;
@@ -1066,6 +1297,10 @@ function preloadAdjacentSlides(slideIndex) {
     loadImagesForSlide(nextIndex);
   }, 100);
 }
+
+// =============================================================================
+// SLIDE NAVIGATION
+// =============================================================================
 
 function changeSlide(direction) {
   slides[currentSlide].classList.remove("active");
@@ -1130,10 +1365,11 @@ function goToSlide(slideIndex) {
   }
 }
 
-document.addEventListener("keydown", function (event) {
-  // Show revolver on any keyboard action
-  showRevolver();
+// =============================================================================
+// KEYBOARD INPUT HANDLING
+// =============================================================================
 
+document.addEventListener("keydown", function (event) {
   if (event.key === "ArrowLeft") {
     event.preventDefault();
     handleArrowKeyPress(-1);
@@ -1203,8 +1439,8 @@ function handleArrowKeyPress(direction) {
       // Start fast continuous flipping
       keyRepeatInterval = setInterval(() => {
         changeSlide(direction);
-      }, fastFlipInterval);
-    }, keyHoldWaitTime);
+      }, CONFIG.FAST_FLIP_INTERVAL);
+    }, CONFIG.KEY_HOLD_WAIT_TIME);
   }
   // If key is already being processed, ignore repeated keydown events
 }
@@ -1225,7 +1461,9 @@ function handleArrowKeyRelease() {
   lastKeyPressed = null;
 }
 
-// This function is no longer needed as we use setInterval instead
+// =============================================================================
+// TOUCH INPUT HANDLING
+// =============================================================================
 
 let touchStartX = 0;
 let touchEndX = 0;
@@ -1248,8 +1486,9 @@ function handleSwipe() {
   }
 }
 
-let autoPlayInterval;
-let isAutoPlaying = false;
+// =============================================================================
+// AUTO-PLAY SYSTEM
+// =============================================================================
 
 function toggleAutoPlay() {
   if (isAutoPlaying) {
@@ -1282,9 +1521,10 @@ function preloadImages() {
   });
 }
 
-window.addEventListener("load", preloadImages);
+// =============================================================================
+// GAMEPAD SUPPORT
+// =============================================================================
 
-// Gamepad connection events
 window.addEventListener("gamepadconnected", function (event) {
   console.log("Gamepad connected:", event.gamepad.id);
   gamepadIndex = event.gamepad.index;
@@ -1380,10 +1620,11 @@ function startGamepadPolling() {
   }
 }
 
-document.addEventListener("click", function (event) {
-  // Show revolver on any click
-  showRevolver();
+// =============================================================================
+// MOUSE CLICK HANDLING
+// =============================================================================
 
+document.addEventListener("click", function (event) {
   // Only allow navigation clicks in very narrow edge zones
   if (
     !event.target.closest(".navigation") &&
@@ -1393,14 +1634,13 @@ document.addEventListener("click", function (event) {
   ) {
     const clickX = event.clientX;
     const windowWidth = window.innerWidth;
-    const edgeZoneWidth = 60; // Very narrow click zones (60px from each edge)
 
     // Left edge zone for previous slide
-    if (clickX < edgeZoneWidth) {
+    if (clickX < CONFIG.CLICK_ZONE_WIDTH) {
       changeSlide(-1);
     }
     // Right edge zone for next slide
-    else if (clickX > windowWidth - edgeZoneWidth) {
+    else if (clickX > windowWidth - CONFIG.CLICK_ZONE_WIDTH) {
       changeSlide(1);
     }
     // Middle area - only trigger SSM if clicking blank area
@@ -1433,16 +1673,22 @@ document.addEventListener("click", function (event) {
   }
 });
 
-console.log("Slideshow initialized. Controls:");
-console.log("- Arrow keys: Fast click = instant, hold 1sec = fast flip");
-console.log("- Gamepad: D-pad/stick for navigation, L/L2 buttons for SSM");
-console.log("- L key: Toggle Slide State (SSM)");
-console.log("- N key: Toggle Note visibility");
-console.log("- Space: Toggle Slide State (SSM)");
-console.log("- Enter: Next slide");
-console.log("- Number keys: Jump to slide");
-console.log("- P: Toggle auto-play");
-console.log("- Escape: Return to first slide");
-console.log("- R key: Reset presentation state and reload");
-console.log("- Click/Tap: Edge zones (navigation) or blank areas (SSM)");
-console.log("- Swipe: Navigate on mobile");
+// =============================================================================
+// INITIALIZATION COMPLETE
+// =============================================================================
+
+console.log("HTPAAC Slideshow initialized. Available controls:");
+console.log("- Arrow keys: Instant navigation, hold 1sec for fast flip");
+console.log(
+  "- Gamepad: D-pad/analog stick navigation, L/L2 for state switching"
+);
+console.log(
+  "- Keyboard: L/Space (SSM), Enter (next), Numbers (jump), P (auto-play), R (reset)"
+);
+console.log(
+  "- Mouse: Edge zones (navigation), center area (SSM), hover for UI"
+);
+console.log("- Touch: Swipe gestures for navigation");
+
+// Initialize image preloading
+window.addEventListener("load", preloadImages);
