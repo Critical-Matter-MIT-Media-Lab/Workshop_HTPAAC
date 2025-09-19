@@ -270,6 +270,63 @@ body {
   transition: opacity 0.3s ease-in-out;
 }
 
+/* Note component */
+.slide-note {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 220px;
+  max-height: 300px;
+  background: rgba(255, 20, 147, 0.1);
+  border: 1px solid rgba(255, 20, 147, 0.3);
+  border-bottom: none;
+  border-right: none;
+  border-top-left-radius: 15px;
+  padding: 20px 15px;
+  backdrop-filter: blur(10px);
+  z-index: 100;
+  opacity: 0;
+  transform: translateY(100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.slide-note.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide-note h4 {
+  color: #ff1493;
+  font-size: 1.1em;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.slide-note p {
+  color: #ddd;
+  font-size: 1em;
+  line-height: 1.5;
+  margin: 0;
+  margin-bottom: 8px;
+}
+
+.slide-note a {
+  color: #ff1493;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.slide-note a:hover {
+  color: #ff69b4;
+  text-decoration: underline;
+}
+
+.slide-note .note-content {
+  max-height: 240px;
+  overflow-y: auto;
+}
+
 .slide ul {
   list-style: none;
   font-size: 1.5em;

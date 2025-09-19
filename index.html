@@ -67,55 +67,64 @@
 
         <div id="slide-1.3" class="slide">
             <h1>Laws</h1>
-            <div style="margin-top: 40px; position: relative; max-width: 600px; margin-left: auto; margin-right: auto;">
-                <!-- Water line -->
-                <div style="position: absolute; top: 180px; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent, #4FC3F7, #4FC3F7, transparent); z-index: 10;"></div>
-                <div style="position: absolute; top: 175px; right: 20px; color: #4FC3F7; font-size: 0.9em; z-index: 11;">~ water line ~</div>
-                
-                <!-- Above water (visible) -->
-                <div style="background: linear-gradient(180deg, #FF1493 0%, #E91E63 50%, #C2185B 100%); 
-                           width: 200px; height: 180px; margin: 0 auto; 
-                           clip-path: polygon(40% 0%, 60% 0%, 100% 100%, 0% 100%);
-                           display: flex; align-items: center; justify-content: center; position: relative;">
-                    <div style="color: white; text-align: center; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">
-                        <div style="font-size: 1.1em;">V = I × R</div>
-                        <div style="font-size: 0.9em; margin-top: 5px;">Ohm's Law</div>
+            <div style="margin-top: 60px; max-width: 800px; margin-left: auto; margin-right: auto;">
+                <!-- Two-column layout: What we care about vs What we won't touch -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start;">
+                    
+                    <!-- Left side: What we care about -->
+                    <div style="text-align: center;">
+                        <h2 style="color: #FF1493; font-size: 1.8em; margin-bottom: 30px;">✅ What We Care About</h2>
+                        <div style="background: rgba(255, 20, 147, 0.1); border: 2px solid #FF1493; border-radius: 15px; padding: 30px;">
+                            <div style="margin-bottom: 25px;">
+                                <div style="font-size: 1.3em; color: #FF1493; font-weight: bold;">V = I × R</div>
+                                <div style="font-size: 1em; color: #ddd; margin-top: 5px;">Ohm's Law</div>
+                            </div>
+                            <div style="margin-bottom: 25px;">
+                                <div style="font-size: 1.2em; color: #FF1493; font-weight: bold;">P = V × I</div>
+                                <div style="font-size: 1em; color: #ddd; margin-top: 5px;">Power Law</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 1.1em; color: #FF1493; font-weight: bold;">KVL & KCL</div>
+                                <div style="font-size: 1em; color: #ddd; margin-top: 5px;">Kirchhoff's Laws</div>
+                            </div>
+                        </div>
+                        <p style="color: #4CAF50; margin-top: 15px; font-size: 1.1em;">Simple & Practical</p>
                     </div>
+                    
+                    <!-- Right side: What we won't touch -->
+                    <div style="text-align: center;">
+                        <h2 style="color: #888; font-size: 1.8em; margin-bottom: 30px;">❌ What We Won't Touch</h2>
+                        <div style="background: rgba(136, 136, 136, 0.1); border: 2px solid #666; border-radius: 15px; padding: 30px; opacity: 0.7;">
+                            <div style="margin-bottom: 20px;">
+                                <div style="font-size: 1em; color: #888;">Maxwell's Equations</div>
+                                <div style="font-size: 0.8em; color: #666; margin-top: 3px;">Electromagnetic Theory</div>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <div style="font-size: 0.9em; color: #888;">Quantum Mechanics</div>
+                                <div style="font-size: 0.8em; color: #666; margin-top: 3px;">Fundamental Physics</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.8em; color: #888;">Solid State Physics</div>
+                                <div style="font-size: 0.7em; color: #666; margin-top: 3px;">Semiconductor Theory</div>
+                            </div>
+                        </div>
+                        <p style="color: #888; margin-top: 15px; font-size: 1.1em;">Complex & Theoretical</p>
+                    </div>
+                    
                 </div>
                 
-                <!-- Below water (hidden) -->
-                <div style="background: linear-gradient(180deg, #C2185B 0%, #880E4F 50%, #4A148C 100%); 
-                           width: 400px; height: 300px; margin: -20px auto 0; 
-                           clip-path: polygon(25% 0%, 75% 0%, 90% 100%, 10% 100%);
-                           display: flex; flex-direction: column; align-items: center; justify-content: space-around; position: relative;">
-                    <div style="color: white; text-align: center; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin-top: 30px;">
-                        <div style="font-size: 1em;">KVL & KCL</div>
-                        <div style="font-size: 0.8em;">Kirchhoff's Laws</div>
-                    </div>
-                    <div style="color: white; text-align: center; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">
-                        <div style="font-size: 0.9em;">P = V × I</div>
-                        <div style="font-size: 0.7em;">Power Law</div>
-                    </div>
-                    <div style="color: white; text-align: center; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">
-                        <div style="font-size: 0.8em;">Maxwell's Equations</div>
-                        <div style="font-size: 0.6em;">Electromagnetic Theory</div>
-                    </div>
-                    <div style="color: white; text-align: center; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin-bottom: 20px;">
-                        <div style="font-size: 0.7em;">Quantum Mechanics</div>
-                        <div style="font-size: 0.5em;">Fundamental Physics</div>
-                    </div>
-                </div>
-                
-                <!-- Legend -->
-                <div style="margin-top: 30px; text-align: center;">
-                    <p style="color: #ddd; font-size: 1.1em;">What we see vs. what underlies electronics</p>
+                <!-- Bottom message -->
+                <div style="margin-top: 50px; text-align: center;">
+                    <p style="color: #ddd; font-size: 1.3em; font-style: italic;">
+                        Focus on what matters for prototyping
+                    </p>
                 </div>
             </div>
         </div>
 
         <div id="slide-1.4" class="slide">
-            <h1>MCU</h1>
             <div class="slide-content">
+                <h1>MCU</h1>
                 <p style="margin-top: 60px; font-size: 1.4em; color: #ddd;">
                     [Placeholder: Microcontroller image collage]<br>
                     State 1: Image collage of various MCUs<br>
@@ -125,52 +134,161 @@
         </div>
 
         <div id="slide-1.5" class="slide">
-            <h1>Prototyping</h1>
-            <div style="margin-top: 40px;">
-                <p style="font-size: 1.4em; color: #ddd;">
-                    [Placeholder: List with images on left and text on right]<br>
-                    Prototyping methods and tools
-                </p>
+            <div class="slide-content">
             </div>
         </div>
 
         <div id="slide-1.6" class="slide">
-            <h1>Production</h1>
-            <div style="margin-top: 40px;">
-                <p style="font-size: 1.4em; color: #ddd;">
-                    [Placeholder: List with images on left and text on right]<br>
-                    Methods to design production-ready and robust circuits
-                </p>
+            <h1>Software</h1>
+            <div style="margin-top: 40px; position: relative; max-width: 1000px; margin-left: auto; margin-right: auto;">
+                
+                <!-- Software tools list with external images -->
+                <div style="display: flex; flex-direction: column; gap: 25px;">
+                    
+                    <!-- Arduino IDE -->
+                    <div style="display: flex; align-items: stretch; gap: 30px;">
+                        <div style="flex: 1; background: rgba(76, 175, 80, 0.1); border-left: 4px solid #4CAF50; padding: 20px; border-radius: 8px;">
+                            <h3 style="color: #4CAF50; font-size: 1.4em; margin-bottom: 10px; text-align: left;">Arduino IDE</h3>
+                            <p style="color: #ddd; font-size: 1.1em; line-height: 1.5; text-align: left;">
+                                Beginner-friendly IDE with built-in libraries and examples. 
+                                Perfect for learning and quick prototyping with Arduino boards.
+                            </p>
+                        </div>
+                        <div style="width: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <p style="color: #ddd; text-align: center; font-size: 1em;">[Arduino IDE Image]</p>
+                        </div>
+                    </div>
+                    
+                    <!-- PlatformIO -->
+                    <div style="display: flex; align-items: stretch; gap: 30px;">
+                        <div style="flex: 1; background: rgba(33, 150, 243, 0.1); border-left: 4px solid #2196F3; padding: 20px; border-radius: 8px;">
+                            <h3 style="color: #2196F3; font-size: 1.4em; margin-bottom: 10px; text-align: left;">PlatformIO</h3>
+                            <p style="color: #ddd; font-size: 1.1em; line-height: 1.5; text-align: left;">
+                                Professional multi-platform IDE with VS Code integration. 
+                                Supports hundreds of boards and advanced debugging features.
+                            </p>
+                        </div>
+                        <div style="width: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <p style="color: #ddd; text-align: center; font-size: 1em;">[PlatformIO Image]</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Keil -->
+                    <div style="display: flex; align-items: stretch; gap: 30px;">
+                        <div style="flex: 1; background: rgba(33, 150, 243, 0.1); border-left: 4px solid #2196F3; padding: 20px; border-radius: 8px;">
+                            <h3 style="color: #2196F3; font-size: 1.4em; margin-bottom: 10px; text-align: left;">Keil</h3>
+                            <p style="color: #ddd; font-size: 1.1em; line-height: 1.5; text-align: left;">
+                                Industry-standard ARM development environment. 
+                                Professional debugging tools and code optimization features.
+                            </p>
+                        </div>
+                        <div style="width: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <p style="color: #ddd; text-align: center; font-size: 1em;">[Keil Image]</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Bottom row: Chip-Specific and High-Level Languages side by side -->
+                    <div style="display: flex; gap: 30px;">
+                        <!-- Left half: Chip-Specific -->
+                        <div style="flex: 1;">
+                            <div style="background: rgba(255, 152, 0, 0.1); border-left: 4px solid #FF9800; padding: 20px; border-radius: 8px; height: 100%;">
+                                <h3 style="color: #FF9800; font-size: 1.4em; margin-bottom: 10px; text-align: left;">Chip-Specific</h3>
+                                <p style="color: #ddd; font-size: 1.1em; line-height: 1.5; text-align: left;">
+                                    <strong>STM32CubeIDE</strong> - Official STM32 development<br>
+                                    <strong>ESP-IDF</strong> - ESP32 native framework
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Right half: High-Level Languages -->
+                        <div style="flex: 1;">
+                            <div style="background: rgba(156, 39, 176, 0.1); border-left: 4px solid #9C27B0; padding: 20px; border-radius: 8px; height: 100%;">
+                                <h3 style="color: #9C27B0; font-size: 1.4em; margin-bottom: 10px; text-align: left;">MicroPython / CircuitPython</h3>
+                                <p style="color: #ddd; font-size: 1.1em; line-height: 1.5; text-align: left;">
+                                    Python for microcontrollers with interactive REPL. 
+                                    Great for rapid prototyping and education.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
             </div>
         </div>
 
         <div id="slide-1.7" class="slide">
-            <h1>Software</h1>
+            <h1>Protocol</h1>
             <div style="margin-top: 40px;">
-                <p style="font-size: 1.4em; color: #ddd;">
-                    [Placeholder: List with images on left and text on right]<br>
-                    Programming environments and tools for hardware
-                </p>
+                <div class="features">
+                    <div class="feature-box">
+                        <h3>🔄 Serial Protocols</h3>
+                        <ul style="font-size: 0.9em; text-align: left;">
+                            <li>UART/USART - Simple point-to-point</li>
+                            <li>SPI - High-speed synchronous</li>
+                            <li>I2C - Multi-device bus</li>
+                            <li>1-Wire - Single wire communication</li>
+                        </ul>
+                    </div>
+                    <div class="feature-box">
+                        <h3>⚡ High-Speed Protocols</h3>
+                        <ul style="font-size: 0.9em; text-align: left;">
+                            <li>USB - Universal connectivity</li>
+                            <li>Ethernet - Wired networking</li>
+                            <li>PCIe - High bandwidth</li>
+                            <li>SATA - Storage interface</li>
+                        </ul>
+                    </div>
+                </div>
+                <div style="margin-top: 30px;">
+                    <ul>
+                        <li>🎯 Choose based on: Distance, speed, power, complexity</li>
+                        <li>🔧 Consider: Voltage levels, timing requirements, error handling</li>
+                        <li>📊 Debug tools: Logic analyzers, protocol decoders, oscilloscopes</li>
+                    </ul>
+                </div>
             </div>
         </div>
 
         <div id="slide-1.8" class="slide">
-            <h1>Protocol</h1>
-            <div style="margin-top: 40px;">
-                <p style="font-size: 1.4em; color: #ddd;">
-                    [Placeholder: List with images on left and text on right]<br>
-                    Signal/communication protocols and methods
-                </p>
-            </div>
-        </div>
-
-        <div id="slide-1.9" class="slide">
             <h1>Networking</h1>
             <div style="margin-top: 40px;">
-                <p style="font-size: 1.4em; color: #ddd;">
-                    [Placeholder: List with images on left and text on right]<br>
-                    Methods to (wirelessly) interconnect hardware
-                </p>
+                <div class="features">
+                    <div class="feature-box">
+                        <h3>🌐 Local Networks</h3>
+                        <ul style="font-size: 0.9em; text-align: left;">
+                            <li>Wi-Fi Direct - Device-to-device</li>
+                            <li>Bluetooth Mesh - Self-healing mesh</li>
+                            <li>Zigbee - Low power mesh</li>
+                            <li>Thread - IPv6 mesh for IoT</li>
+                        </ul>
+                    </div>
+                    <div class="feature-box">
+                        <h3>🌍 Wide Area Networks</h3>
+                        <ul style="font-size: 0.9em; text-align: left;">
+                            <li>LoRaWAN - Long range, low power</li>
+                            <li>Cellular (LTE-M, NB-IoT) - Global coverage</li>
+                            <li>Satellite - Remote locations</li>
+                            <li>Sigfox - Ultra-low power WAN</li>
+                        </ul>
+                    </div>
+                    <div class="feature-box">
+                        <h3>🔗 Network Topologies</h3>
+                        <ul style="font-size: 0.9em; text-align: left;">
+                            <li>Star - Central hub model</li>
+                            <li>Mesh - Self-organizing network</li>
+                            <li>Tree - Hierarchical structure</li>
+                            <li>Ring - Redundant connections</li>
+                        </ul>
+                    </div>
+                </div>
+                <div style="margin-top: 30px;">
+                    <ul>
+                        <li>📶 Range considerations: Indoor vs outdoor, obstacles, interference</li>
+                        <li>🔋 Power trade-offs: Transmission power vs battery life</li>
+                        <li>💰 Cost factors: Infrastructure, licensing, module prices</li>
+                        <li>🛡️ Security: Encryption, authentication, network isolation</li>
+                    </ul>
+                </div>
             </div>
         </div>
 
@@ -264,6 +382,12 @@
             </div>
         </div>
 
+    </div>
+
+    <!-- Note component -->
+    <div class="slide-note" id="slide-note">
+        <div class="note-content">
+        </div>
     </div>
 
     <script src="script.js"></script>

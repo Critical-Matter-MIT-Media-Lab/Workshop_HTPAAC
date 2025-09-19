@@ -169,87 +169,104 @@ HTPAAC/
 
 
 
-
-
 ## Presentation
 
 0 **Intro** - Title slide
+
 - Structure: Three lines of text
 - Title: "HOW TO PROTOTYPE (ALMOST) ANY CIRCUIT"
 - Subtitle: "from the perspective of designer and maker"
 - Author: “by Yuxiang Cheng"
-Notes: I’ll be talking about how we should be unapologetically unprofessional in dealing with electronics.
+  <!-- I’ll be talking about how we should be unapologetically unprofessional in dealing with electronics.-->
 
   1.0 **Part 1** - Part 1 Cover
+
 - Structure: cover page plus a quote at the bottom
 - Title:”Part 1: EE Speedrun"
 - Quote:”All computing is physical. —— Tom Igoe"
 
   1.1 **Arduino** - drawing on past experiences
+
 - Structure: a heading and a big image
 - Heading: We have all played with this
 - Image: https://www.makerspaces.com/wp-content/uploads/2017/05/2-Blink-an-LED_LARGE.jpg
 
   1.2 **Parts** - quick intro of electric and electronic parts
+
 - Structure: title and big image(state 1), title 2x2 named matrix of two-image units(state 2)
 - State 1 image: https://www.ultralibrarian.com/wp-content/uploads/2022/06/shutterstock_7865275181.jpg
-- State 2: Use title “and Modules”. The four units(wraps) in the matrix are: Eval.jpg and Eval.gif with name “Evaluation Board";  with name “Connector"
+- State 1 Notes: title “Vendors”, Item: Digikey, Mouser
+- State 2: Use title “and Modules”. The four units(wraps) in the matrix are: Eval.jpg and Eval.gif with name “Evaluation Board"; with name “Connector"
+- State 2 Notes: title “Vendors”, Item: Adafruit, Sparkfun, Seeed Studio
 
   1.3 **Laws** - quick intro of related physics
+
 - Structure: Iceberg Chart
 
   1.4 **MCU** - quick intro of microcontrollers
-- Structure: image collage (state 1) and description (state 2)
+
+- Structure: image collage with text on top(state 1) and selection (state 2)
+- State 1: image at /img/MCU.jpg, text: ”Arduino” or “microcontroller” = MCU Chip + Development Board + Peripherals
+- State 2: cut in half with top half for MCU and bottom half for Dev boards.
+- MCU: four horizontal grids,
+- DevBoard: one top grid two bottom grid
+  Top grid divide in left text and right images: Seeed Stuio Xiao, Points: - Xiǎo 小, small; - Researcher’s favorite. Image with citation annotation (1x3): Retnanto et al., 2024; Brooks et al., 2024; Kong et al., 2024;
+- State 2 Notes: no title, Item: Seeed Studio Xiao https://www.seeedstudio.com/xiao-series-page, Adafruit QT Py https://www.adafruit.com/product/4600, Teensy https://www.pjrc.com/teensy/
 
   1.5 **Prototyping** - prototyping methods and tools
-- Structure: list with images on the left and text on the right 
 
-  1.6 **Production** - methods to design production-ready and robust circuits
-- Structure: list with images on the left and text on the right 
+- Structure: list with images on the left and text on the right
 
-  1.7 **Software** - programming environments and tools for hardware
-- Structure: list with images on the left and text on the right 
+  1.6 **Software** - programming environments and tools for hardware
 
-  1.8 **Protocol** - signal/communication protocols and method
-- Structure: list with images on the left and text on the right 
+- Structure: list with images on the left and text on the right
 
-  1.9 **Networking** - methods to (wirelessly) interconnect hardware
-- Structure: list with images on the left and text on the right 
+  1.7 **Protocol** - signal/communication protocols and method
 
+- Structure: list with images on the left and text on the right
+
+  1.8 **Networking** - methods to (wirelessly) interconnect hardware
+
+- Structure: list with images on the left and text on the right
 
   2.0 **Part 2** - Part 2 Cover
+
 - Structure: cover page
 - Title: “Part 2: Meet the Sensors and Actuators"
 - Subtitle: “and the cybernetic systems we rely on"
 
   2.1 **Sensor** - intro to sensors
+
 - Structure: organized text of items (in the middle) and images (top and bottom) with title (state 1, 2, 3)
 - State 1 is titled “Analog Sensors”, subtitled “basically family of weird resistors"
   State 1 items:
   Thin-Film: FSR(Force), Strain Gauge, Soft Potentiometer, Soft Piezo, and more.
-  Actual 
-  
+  Actual
 - State 2 is titled “MEMS Sensors”, subtitled (Micro-Electro-Mechanical Systems), put MEMS0 and MEMS1 at the bottom, put MEMS3 and MEMS 4 on the top.
   State 2 items:
 
   2.2 **Actuator** - intro to actuators
+
 - Structure: organized text of items (in the middle) and images (top and bottom) with title (state 1, 2, 3)
 - State 1 is titled “Electromagnetic Actuators”, subtitled “move and actuate"
-  State 1 items: 
+  State 1 items:
 - State 2 is titled “Photo Actuators”, subtitled "show and display"
   State 2 items:
 
   2.3 **Biometric** - highlighting the biometric sensors
+
 - Structure: image (state 1) and list of sensors (state 2)
 - Image: /img/biometrics.png
 
-
   3.0 **Part 3** - Part 3 Cover
+
 - Structure: cover page
 - Title: “Part 3: Get ready for the Workshop"
 
   3.1 **Kit** - introducing the kit
+
 - Structure: image (state 1) and form (state 2)
 
   3.3 **System Diagram** - Hardware-web system and signal flow
+
 - Structure: image (state 1) and form (state 2)

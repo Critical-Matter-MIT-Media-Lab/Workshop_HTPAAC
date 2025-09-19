@@ -7,7 +7,9 @@ const revolverWheel = document.querySelector(".revolver-wheel");
 const progressContainer = document.querySelector(".progress-container");
 const slideTitleElement = document.getElementById("slide-title");
 const slideNumberDisplay = document.getElementById("slide-number-display");
+const slideNote = document.getElementById("slide-note");
 let hideProgressTimeout;
+let hideNoteTimeout;
 
 // Lazy loading management
 const loadedImages = new Set();
@@ -16,8 +18,8 @@ const loadingImages = new Set();
 // Slide State Management (SSM) - handles internal slide interactions
 let slideStates =
   JSON.parse(localStorage.getItem("htpaac-slide-states")) ||
-  new Array(17).fill(0); // Track state for each slide (17 slides total)
-let maxSlideStates = new Array(17).fill(1); // Max states per slide (default 1)
+  new Array(16).fill(0); // Track state for each slide (16 slides total)
+let maxSlideStates = new Array(16).fill(1); // Max states per slide (default 1)
 
 // Gamepad support
 let gamepadIndex = -1;
@@ -40,11 +42,10 @@ const slideTitles = [
   "Parts", // 1.2
   "Laws", // 1.3
   "MCU", // 1.4
-  "Prototyping", // 1.5
-  "Production", // 1.6
-  "Software", // 1.7
-  "Protocol", // 1.8
-  "Networking", // 1.9
+  "Fabrication", // 1.5
+  "Software", // 1.6
+  "Protocol", // 1.7
+  "Networking", // 1.8
   "Part 2", // 2.0
   "Sensor", // 2.1
   "Actuator", // 2.2
@@ -61,11 +62,10 @@ const slideNumbers = [
   "1.2", // Parts
   "1.3", // Laws
   "1.4", // MCU
-  "1.5", // Prototyping
-  "1.6", // Production
-  "1.7", // Software
-  "1.8", // Protocol
-  "1.9", // Networking
+  "1.5", // Fabrication
+  "1.6", // Software
+  "1.7", // Protocol
+  "1.8", // Networking
   "2.0", // Part 2
   "2.1", // Sensor
   "2.2", // Actuator
@@ -116,8 +116,7 @@ document.addEventListener("mousemove", function (event) {
     }
   }
 
-  // Show revolver on any mouse movement
-  showRevolver();
+  // Don't show revolver on mouse movement anymore
 });
 
 navButtons.forEach((btn) => {
@@ -157,6 +156,9 @@ function updateProgressBar() {
   // Save current slide position
   localStorage.setItem("htpaac-current-slide", currentSlide.toString());
 
+  // Update slide note
+  updateSlideNote(currentSlide, slideStates[currentSlide] || 0);
+
   // Show progress
   showRevolver();
 }
@@ -165,12 +167,67 @@ function showRevolver() {
   progressContainer.classList.add("visible");
   progressContainer.classList.remove("hidden");
 
-  // Hide after 1 second
+  // Hide after 0.5 seconds
   clearTimeout(hideProgressTimeout);
   hideProgressTimeout = setTimeout(() => {
     progressContainer.classList.add("hidden");
     progressContainer.classList.remove("visible");
-  }, 1000);
+  }, 500);
+}
+
+// Note management functions
+function showNote(content) {
+  if (slideNote) {
+    slideNote.querySelector(".note-content").innerHTML = content;
+    slideNote.classList.add("visible");
+
+    // Auto-hide after 3 seconds
+    clearTimeout(hideNoteTimeout);
+    hideNoteTimeout = setTimeout(() => {
+      hideNote();
+    }, 3000);
+  }
+}
+
+function hideNote() {
+  if (slideNote) {
+    slideNote.classList.remove("visible");
+  }
+}
+
+function updateSlideNote(slideIndex, state = 0) {
+  // Show notes for specific slides
+  if (slideIndex === 3) {
+    // Slide 1.2 (Parts)
+    if (state === 0) {
+      showNote(`
+        <h4>Vendors</h4>
+        <p>• <a href="https://www.digikey.com" target="_blank">Digikey</a></p>
+        <p>• <a href="https://www.mouser.com" target="_blank">Mouser</a></p>
+      `);
+    } else if (state === 1) {
+      showNote(`
+        <h4>Vendors</h4>
+        <p>• <a href="https://www.adafruit.com" target="_blank">Adafruit</a></p>
+        <p>• <a href="https://www.sparkfun.com" target="_blank">Sparkfun</a></p>
+        <p>• <a href="https://www.seeedstudio.com" target="_blank">Seeed Studio</a></p>
+      `);
+    }
+  } else if (slideIndex === 5) {
+    // Slide 1.4 (MCU)
+    if (state === 1) {
+      showNote(`
+        <p>• <a href="https://www.seeedstudio.com/xiao-series-page" target="_blank">Seeed Studio Xiao</a></p>
+        <p>• <a href="https://www.adafruit.com/product/4600" target="_blank">Adafruit QT Py</a></p>
+        <p>• <a href="https://www.pjrc.com/teensy/" target="_blank">Teensy</a></p>
+      `);
+    } else {
+      hideNote();
+    }
+  } else {
+    // Hide note for slides without references
+    hideNote();
+  }
 }
 
 // Initialize progress bar on DOM ready
@@ -185,9 +242,10 @@ document.addEventListener("DOMContentLoaded", function () {
   // Configure slide states
   setSlideMaxStates(3, 2); // Slide 1.2 (Parts) has 2 states: image view and text view
   setSlideMaxStates(5, 2); // Slide 1.4 (MCU) has 2 states: image collage and description
-  setSlideMaxStates(12, 3); // Slide 2.1 (Sensor) has 3 states: analog, MEMS1, MEMS2
-  setSlideMaxStates(13, 3); // Slide 2.2 (Actuator) has 3 states: electromagnetic, photo, etc
-  setSlideMaxStates(14, 2); // Slide 2.3 (Biometric) has 2 states: image and list
+  setSlideMaxStates(6, 2); // Slide 1.5 (Fabrication) has 2 states: fabrication methods and manufacturing
+  setSlideMaxStates(11, 3); // Slide 2.1 (Sensor) has 3 states: analog, MEMS1, MEMS2
+  setSlideMaxStates(12, 3); // Slide 2.2 (Actuator) has 3 states: electromagnetic, photo, etc
+  setSlideMaxStates(13, 2); // Slide 2.3 (Biometric) has 2 states: image and list
   setSlideMaxStates(15, 2); // Slide 3.1 (Kit) has 2 states: image and form
 
   // Restore saved slide position
@@ -273,6 +331,10 @@ function toggleSlideState() {
   localStorage.setItem("htpaac-slide-states", JSON.stringify(slideStates));
 
   triggerSlideStateChange(currentSlide, slideStates[currentSlide]);
+
+  // Update note for new state
+  updateSlideNote(currentSlide, slideStates[currentSlide]);
+
   return true;
 }
 
@@ -289,16 +351,21 @@ function resetSlideState(slideIndex) {
   if (slideIndex === 3) {
     // Slide 1.2 (Parts)
     handlePartsSlideState(0);
+    updateSlideNote(slideIndex, 0);
   } else if (slideIndex === 5) {
     // Slide 1.4 (MCU)
     handleMCUSlideState(0);
-  } else if (slideIndex === 12) {
+    updateSlideNote(slideIndex, 0);
+  } else if (slideIndex === 6) {
+    // Slide 1.5 (Fabrication)
+    handleFabricationSlideState(0);
+  } else if (slideIndex === 11) {
     // Slide 2.1 (Sensor)
     handleSensorSlideState(0);
-  } else if (slideIndex === 13) {
+  } else if (slideIndex === 12) {
     // Slide 2.2 (Actuator)
     handleActuatorSlideState(0);
-  } else if (slideIndex === 14) {
+  } else if (slideIndex === 13) {
     // Slide 2.3 (Biometric)
     handleBiometricSlideState(0);
   } else if (slideIndex === 15) {
@@ -326,13 +393,16 @@ function triggerSlideStateChange(slideIndex, newState) {
   } else if (slideIndex === 5) {
     // Slide 1.4 (MCU)
     handleMCUSlideState(newState);
-  } else if (slideIndex === 12) {
+  } else if (slideIndex === 6) {
+    // Slide 1.5 (Fabrication)
+    handleFabricationSlideState(newState);
+  } else if (slideIndex === 11) {
     // Slide 2.1 (Sensor)
     handleSensorSlideState(newState);
-  } else if (slideIndex === 13) {
+  } else if (slideIndex === 12) {
     // Slide 2.2 (Actuator)
     handleActuatorSlideState(newState);
-  } else if (slideIndex === 14) {
+  } else if (slideIndex === 13) {
     // Slide 2.3 (Biometric)
     handleBiometricSlideState(newState);
   } else if (slideIndex === 15) {
@@ -354,8 +424,9 @@ function handlePartsSlideState(state) {
   if (!contentContainer) return;
 
   if (state === 0) {
-    // State 0: Show image
+    // State 1: Show "Parts" title and big image
     contentContainer.innerHTML = `
+      <h1>Parts</h1>
       <img src="https://www.ultralibrarian.com/wp-content/uploads/2022/06/shutterstock_7865275181.jpg" 
            alt="Electronic Components" 
            class="centered-image" 
@@ -363,29 +434,50 @@ function handlePartsSlideState(state) {
            onerror="this.src='https://via.placeholder.com/800x600/333/fff?text=Electronic+Components'">
     `;
   } else if (state === 1) {
-    // State 1: Show text content
+    // State 2: Show 2x2 named matrix of two-image units
     contentContainer.innerHTML = `
-      <div class="features" style="margin-top: 40px;">
-        <div class="feature-box">
-          <h3>🔌 Passive Components</h3>
-          <p>Resistors, capacitors, inductors - control current, voltage, and frequency</p>
+      <h1>and Modules</h1>
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 60px; margin-top: 40px; max-width: 1000px; margin-left: auto; margin-right: auto;">
+        <div style="text-align: center;">
+          <h3 style="color: #FF1493; margin-bottom: 20px; font-size: 1.4em;">Evaluation Board</h3>
+          <div style="display: flex; gap: 25px; justify-content: center;">
+            <img src="img/Eval.jpg" alt="Evaluation Board" style="height: 200px; width: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 5px 20px rgba(255, 255, 255, 0.15);" onerror="this.src='https://via.placeholder.com/250x200/333/fff?text=Eval+Board'">
+            <img src="img/Eval.gif" alt="Evaluation Board Demo" style="height: 200px; width: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 5px 20px rgba(255, 255, 255, 0.15);" onerror="this.src='https://via.placeholder.com/250x200/333/fff?text=Eval+Demo'">
+          </div>
         </div>
-        <div class="feature-box">
-          <h3>🧠 Active Components</h3>
-          <p>Transistors, diodes, ICs - amplify, switch, and process signals</p>
+        <div style="text-align: center;">
+          <h3 style="color: #FF1493; margin-bottom: 20px; font-size: 1.4em;">Connector</h3>
+          <div style="display: flex; gap: 25px; justify-content: center;">
+            <div style="height: 200px; width: 220px; background: rgba(255, 255, 255, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 20px rgba(255, 255, 255, 0.15);">
+              <p style="color: #ddd; text-align: center; font-size: 1.1em;">[Connector Image 1]</p>
+            </div>
+            <div style="height: 200px; width: 220px; background: rgba(255, 255, 255, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 20px rgba(255, 255, 255, 0.15);">
+              <p style="color: #ddd; text-align: center; font-size: 1.1em;">[Connector Image 2]</p>
+            </div>
+          </div>
         </div>
-        <div class="feature-box">
-          <h3>🔗 Connectors</h3>
-          <p>Headers, sockets, terminals - connect and interface components</p>
+        <div style="text-align: center;">
+          <h3 style="color: #FF1493; margin-bottom: 20px; font-size: 1.4em;">[Module Type 3]</h3>
+          <div style="display: flex; gap: 25px; justify-content: center;">
+            <div style="height: 200px; width: 220px; background: rgba(255, 255, 255, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 20px rgba(255, 255, 255, 0.15);">
+              <p style="color: #ddd; text-align: center; font-size: 1.1em;">[Module 3 Image 1]</p>
+            </div>
+            <div style="height: 200px; width: 220px; background: rgba(255, 255, 255, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 20px rgba(255, 255, 255, 0.15);">
+              <p style="color: #ddd; text-align: center; font-size: 1.1em;">[Module 3 Image 2]</p>
+            </div>
+          </div>
         </div>
-      </div>
-      <div style="margin-top: 30px;">
-        <ul>
-          <li>⚡ Power Management: Regulators, converters, protection circuits</li>
-          <li>📡 Communication: Transceivers, antennas, crystals</li>
-          <li>🔧 Mechanical: Switches, potentiometers, displays</li>
-          <li>🛡️ Protection: Fuses, TVS diodes, ferrite beads</li>
-        </ul>
+        <div style="text-align: center;">
+          <h3 style="color: #FF1493; margin-bottom: 20px; font-size: 1.4em;">[Module Type 4]</h3>
+          <div style="display: flex; gap: 25px; justify-content: center;">
+            <div style="height: 200px; width: 220px; background: rgba(255, 255, 255, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 20px rgba(255, 255, 255, 0.15);">
+              <p style="color: #ddd; text-align: center; font-size: 1.1em;">[Module 4 Image 1]</p>
+            </div>
+            <div style="height: 200px; width: 220px; background: rgba(255, 255, 255, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 20px rgba(255, 255, 255, 0.15);">
+              <p style="color: #ddd; text-align: center; font-size: 1.1em;">[Module 4 Image 2]</p>
+            </div>
+          </div>
+        </div>
       </div>
     `;
   }
@@ -401,20 +493,149 @@ function initializeSlideStates() {
   // Initialize MCU slide (index 5)
   handleMCUSlideState(slideStates[5] || 0);
 
-  // Initialize Sensor slide (index 12)
-  handleSensorSlideState(slideStates[12] || 0);
+  // Initialize Sensor slide (index 11)
+  handleSensorSlideState(slideStates[11] || 0);
 
-  // Initialize Actuator slide (index 13)
-  handleActuatorSlideState(slideStates[13] || 0);
+  // Initialize Actuator slide (index 12)
+  handleActuatorSlideState(slideStates[12] || 0);
 
-  // Initialize Biometric slide (index 14)
-  handleBiometricSlideState(slideStates[14] || 0);
+  // Initialize Biometric slide (index 13)
+  handleBiometricSlideState(slideStates[13] || 0);
+
+  // Initialize Fabrication slide (index 6)
+  handleFabricationSlideState(slideStates[6] || 0);
 
   // Initialize Kit slide (index 15)
   handleKitSlideState(slideStates[15] || 0);
 }
 
 // Additional slide state handlers
+function handleFabricationSlideState(state) {
+  const fabricationSlide = slides[6]; // Slide 1.5 (Fabrication)
+  const contentContainer = fabricationSlide.querySelector(".slide-content");
+
+  if (!contentContainer) return;
+
+  if (state === 0) {
+    // State 1: Show fabrication methods
+    contentContainer.innerHTML = `
+      <h1>Fabrication</h1>
+      <div style="margin-top: 40px; position: relative; max-width: 1000px; margin-left: auto; margin-right: auto;">
+        <!-- Difficulty arrow indicator -->
+        <div style="position: absolute; left: -80px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center;">
+          <div style="color: #4CAF50; font-size: 1.1em; font-weight: bold; margin-bottom: 20px;">Easy</div>
+          <!-- Arrow shaft spanning full list height -->
+          <div style="position: relative; width: 4px; height: 320px; background: linear-gradient(180deg, #4CAF50 0%, #8BC34A 25%, #FF9800 50%, #f44336 75%, #D32F2F 100%); border-radius: 2px;">
+            <!-- Arrow head -->
+            <div style="position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 20px solid #f44336;"></div>
+          </div>
+          <div style="color: #f44336; font-size: 1.1em; font-weight: bold; margin-top: 20px;">Hard</div>
+        </div>
+        
+        <!-- Prototyping methods list with external images -->
+        <div style="display: flex; flex-direction: column; gap: 25px;">
+          <!-- 1. Connectors -->
+          <div style="display: flex; align-items: stretch; gap: 30px;">
+            <div style="flex: 1; background: rgba(76, 175, 80, 0.1); border-left: 4px solid #4CAF50; padding: 20px; border-radius: 8px;">
+              <h3 style="color: #4CAF50; font-size: 1.4em; margin-bottom: 10px; text-align: left;">1. Connectors</h3>
+              <p style="color: #ddd; font-size: 1.1em; line-height: 1.5; text-align: left;">
+                Plug-and-play modules with standard connectors. No soldering required.
+                Perfect for quick concept validation and system testing.
+              </p>
+            </div>
+            <div style="width: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <p style="color: #ddd; text-align: center; font-size: 1em;">[Connector Image]</p>
+            </div>
+          </div>
+          <!-- 2. Breadboards -->
+          <div style="display: flex; align-items: stretch; gap: 30px;">
+            <div style="flex: 1; background: rgba(76, 175, 80, 0.08); border-left: 4px solid #8BC34A; padding: 20px; border-radius: 8px;">
+              <h3 style="color: #8BC34A; font-size: 1.4em; margin-bottom: 10px; text-align: left;">2. Breadboards</h3>
+              <p style="color: #ddd; font-size: 1.1em; line-height: 1.5; text-align: left;">
+                Solderless prototyping with jumper wires. Rapid iteration and circuit testing.
+                Great for learning and experimenting with different configurations.
+              </p>
+            </div>
+            <div style="width: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <p style="color: #ddd; text-align: center; font-size: 1em;">[Breadboard Image]</p>
+            </div>
+          </div>
+          <!-- 3. Proto & Perf Boards -->
+          <div style="display: flex; align-items: stretch; gap: 30px;">
+            <div style="flex: 1; background: rgba(255, 152, 0, 0.1); border-left: 4px solid #FF9800; padding: 20px; border-radius: 8px;">
+              <h3 style="color: #FF9800; font-size: 1.4em; margin-bottom: 10px; text-align: left;">3. Proto & Perf Boards</h3>
+              <p style="color: #ddd; font-size: 1.1em; line-height: 1.5; text-align: left;">
+                Perforated boards for permanent prototypes. Proto boards have some traces, 
+                perf boards are blank. Both require soldering skills and careful planning.
+              </p>
+            </div>
+            <div style="width: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <p style="color: #ddd; text-align: center; font-size: 1em;">[Proto Board Image]</p>
+            </div>
+          </div>
+          <!-- 4. ????? (Mystery/Fun) -->
+          <div style="display: flex; align-items: stretch; gap: 30px;">
+            <div style="flex: 1; background: rgba(244, 67, 54, 0.15); border-left: 4px solid #f44336; padding: 20px; border-radius: 8px; box-shadow: 0 0 15px rgba(244, 67, 54, 0.3);">
+              <h3 style="color: #f44336; font-size: 1.4em; margin-bottom: 10px; text-align: left;">4. ?????</h3>
+              <p style="color: #ddd; font-size: 1.1em; line-height: 1.5; text-align: left;">
+                Something cool and mysterious... 🔥
+              </p>
+            </div>
+            <div style="display: flex; gap: 15px;">
+              <div style="width: 150px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 15px rgba(244, 67, 54, 0.5);">
+                <p style="color: #ddd; text-align: center; font-size: 0.9em;">[Mystery Image 1]</p>
+              </div>
+              <div style="width: 150px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 15px rgba(244, 67, 54, 0.5);">
+                <p style="color: #ddd; text-align: center; font-size: 0.9em;">[Mystery Image 2]</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  } else if (state === 1) {
+    // State 2: Show manufacturing/PCB design knowledge
+    contentContainer.innerHTML = `
+      <h1>Manufacturing</h1>
+      <div style="margin-top: 60px; max-width: 900px; margin-left: auto; margin-right: auto;">
+        <div class="features">
+          <div class="feature-box">
+            <h3>📐 PCB Design Fundamentals</h3>
+            <ul style="font-size: 0.9em; text-align: left;">
+              <li>Layer stackup planning</li>
+              <li>Trace width calculations</li>
+              <li>Via placement strategies</li>
+              <li>Component placement rules</li>
+            </ul>
+          </div>
+          <div class="feature-box">
+            <h3>⚡ Signal Integrity</h3>
+            <ul style="font-size: 0.9em; text-align: left;">
+              <li>Impedance control</li>
+              <li>Crosstalk minimization</li>
+              <li>Ground plane design</li>
+              <li>High-speed routing</li>
+            </ul>
+          </div>
+          <div class="feature-box">
+            <h3>🏭 Manufacturing Considerations</h3>
+            <ul style="font-size: 0.9em; text-align: left;">
+              <li>DFM (Design for Manufacturing)</li>
+              <li>Assembly constraints</li>
+              <li>Testing strategies</li>
+              <li>Cost optimization</li>
+            </ul>
+          </div>
+        </div>
+        <div style="margin-top: 40px; text-align: center;">
+          <p style="color: #FF1493; font-size: 1.3em; font-weight: bold;">
+            From prototype to production-ready PCB
+          </p>
+        </div>
+      </div>
+    `;
+  }
+}
 function handleMCUSlideState(state) {
   const mcuSlide = slides[5]; // Slide 1.4 (MCU)
   const contentContainer = mcuSlide.querySelector(".slide-content");
@@ -422,21 +643,118 @@ function handleMCUSlideState(state) {
   if (!contentContainer) return;
 
   if (state === 0) {
+    // State 1: image collage with text on top
     contentContainer.innerHTML = `
-      <p style="margin-top: 60px; font-size: 1.4em; color: #ddd;">
-        [Placeholder: MCU image collage]<br>
-        Various microcontrollers and development boards
-      </p>
+      <h1>MCU</h1>
+      <div style="position: relative; margin-top: 30px;">
+        <div style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10; text-align: center;">
+          <h2 style="color: #FF1493; font-size: 1.8em; margin-bottom: 10px;">Arduino</h2>
+          <p style="color: #ddd; font-size: 1.2em; background: rgba(0,0,0,0.7); padding: 10px 20px; border-radius: 8px;">
+            "microcontroller" = MCU Chip + Development Board + Peripherals
+          </p>
+        </div>
+        <img src="img/MCU.jpg" alt="MCU Collage" class="centered-image" 
+             style="max-width: 80%; height: auto; margin: 0 auto; display: block; border-radius: 10px; box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);" 
+             onerror="this.src='https://via.placeholder.com/800x500/333/fff?text=MCU+Collage'">
+      </div>
     `;
   } else if (state === 1) {
+    // State 2: selection - cut in half with MCUs top and Dev boards bottom
     contentContainer.innerHTML = `
-      <div style="margin-top: 40px;">
-        <ul>
-          <li>🧠 ARM Cortex-M series: STM32, NXP, Atmel</li>
-          <li>🔧 Arduino ecosystem: Uno, Nano, ESP32</li>
-          <li>🚀 High performance: Raspberry Pi, BeagleBone</li>
-          <li>⚡ Low power: MSP430, Nordic nRF</li>
-        </ul>
+      <div style="display: flex; flex-direction: column; gap: 40px; margin-top: 50px;">
+        <!-- Top half: MCUs -->
+        <div style="text-align: center;">
+          <div style="background: rgba(255, 20, 147, 0.1); border-radius: 10px; padding: 20px;">
+            <h3 style="color: #FF1493; margin-bottom: 20px; font-size: 1.6em; text-align: left;">MCU Chips</h3>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; text-align: left;">
+              <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 12px;">
+                <h4 style="color: #FF1493; font-size: 1.1em; margin-bottom: 8px;">ARM Cortex-M</h4>
+                <p style="color: #4CAF50; font-size: 0.8em; margin-bottom: 6px;">✓ Industry standard</p>
+                <p style="color: #4CAF50; font-size: 0.8em; margin-bottom: 6px;">✓ Excellent tools</p>
+                <p style="color: #4CAF50; font-size: 0.8em; margin-bottom: 8px;">✓ Wide ecosystem</p>
+                <p style="color: #f44336; font-size: 0.8em; margin-bottom: 4px;">✗ Complex setup</p>
+                <p style="color: #f44336; font-size: 0.8em;">✗ Higher cost</p>
+              </div>
+              <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 12px;">
+                <h4 style="color: #FF1493; font-size: 1.1em; margin-bottom: 8px;">ESP32/ESP8266</h4>
+                <p style="color: #4CAF50; font-size: 0.8em; margin-bottom: 6px;">✓ Built-in Wi-Fi/BT</p>
+                <p style="color: #4CAF50; font-size: 0.8em; margin-bottom: 6px;">✓ Low cost</p>
+                <p style="color: #4CAF50; font-size: 0.8em; margin-bottom: 8px;">✓ Easy to use</p>
+                <p style="color: #f44336; font-size: 0.8em; margin-bottom: 4px;">✗ Power hungry</p>
+                <p style="color: #f44336; font-size: 0.8em;">✗ Limited I/O</p>
+              </div>
+              <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 12px;">
+                <h4 style="color: #FF1493; font-size: 1.1em; margin-bottom: 8px;">RISC-V</h4>
+                <p style="color: #4CAF50; font-size: 0.8em; margin-bottom: 6px;">✓ Open source</p>
+                <p style="color: #4CAF50; font-size: 0.8em; margin-bottom: 6px;">✓ Future-proof</p>
+                <p style="color: #4CAF50; font-size: 0.8em; margin-bottom: 8px;">✓ Customizable</p>
+                <p style="color: #f44336; font-size: 0.8em; margin-bottom: 4px;">✗ Limited tools</p>
+                <p style="color: #f44336; font-size: 0.8em;">✗ Smaller ecosystem</p>
+              </div>
+              <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 12px;">
+                <h4 style="color: #FF1493; font-size: 1.1em; margin-bottom: 8px;">AVR</h4>
+                <p style="color: #4CAF50; font-size: 0.8em; margin-bottom: 6px;">✓ Simple & reliable</p>
+                <p style="color: #4CAF50; font-size: 0.8em; margin-bottom: 6px;">✓ Arduino compatible</p>
+                <p style="color: #4CAF50; font-size: 0.8em; margin-bottom: 8px;">✓ Low power</p>
+                <p style="color: #f44336; font-size: 0.8em; margin-bottom: 4px;">✗ Limited performance</p>
+                <p style="color: #f44336; font-size: 0.8em;">✗ 8-bit architecture</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Bottom half: Dev Boards -->
+        <div style="text-align: center;">
+          <div style="background: rgba(255, 20, 147, 0.1); border-radius: 10px; padding: 20px;">
+            <h3 style="color: #FF1493; margin-bottom: 20px; font-size: 1.6em; text-align: left;">Development Boards</h3>
+            <div style="display: grid; grid-template-columns: 1fr; grid-template-rows: auto auto; gap: 15px; text-align: left;">
+              <!-- Top row: Seeed Studio Xiao with left text and right images -->
+              <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 15px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center;">
+                  <!-- Left: Text -->
+                  <div style="background: rgba(255, 255, 255, 0.05); border-radius: 6px; padding: 12px;">
+                    <h4 style="color: #FF1493; font-size: 1.4em; margin-bottom: 10px;">Seeed Studio Xiao</h4>
+                    <p style="color: #ddd; font-size: 1.1em; line-height: 1.4; margin-bottom: 8px;">
+                      • Xiǎo 小, small!
+                    </p>
+                    <p style="color: #ddd; font-size: 1.1em; line-height: 1.4;">
+                      • Researcher's favorite
+                    </p>
+                  </div>
+                  <!-- Right: Images with overlaid citations -->
+                  <div style="display: flex; justify-content: center; align-items: center;">
+                    <div style="position: relative; margin-right: 5px; display: inline-block;">
+                      <img src="img/Retnanto et al., 2024.jpg" alt="Retnanto et al., 2024" style="max-width: 250px; max-height: 160px; object-fit: contain; border-radius: 8px; display: block;" onerror="this.src='https://via.placeholder.com/250x160/333/fff?text=Retnanto+2024'">
+                      <div style="position: absolute; bottom: 8px; left: 8px; right: 8px; background: linear-gradient(45deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7)); color: #fff; font-size: 0.6em; padding: 6px 10px; border-radius: 4px; margin: 0; text-align: center;">Retnanto et al., 2024</div>
+                    </div>
+                    <div style="position: relative; margin: 0 5px; display: inline-block;">
+                      <img src="img/Brooks et al., 2024.png" alt="Brooks et al., 2024" style="max-width: 250px; max-height: 160px; object-fit: contain; border-radius: 8px; display: block;" onerror="this.src='https://via.placeholder.com/250x160/333/fff?text=Brooks+2024'">
+                      <div style="position: absolute; bottom: 8px; left: 8px; right: 8px; background: linear-gradient(45deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7)); color: #fff; font-size: 0.6em; padding: 6px 10px; border-radius: 4px; margin: 0; text-align: center;">Brooks et al., 2024</div>
+                    </div>
+                    <div style="position: relative; margin-left: 5px; display: inline-block;">
+                      <img src="img/Kong et al., 2024.png" alt="Kong et al., 2024" style="max-width: 250px; max-height: 160px; object-fit: contain; border-radius: 8px; display: block;" onerror="this.src='https://via.placeholder.com/250x160/333/fff?text=Kong+2024'">
+                      <div style="position: absolute; bottom: 8px; left: 8px; right: 8px; background: linear-gradient(45deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7)); color: #fff; font-size: 0.6em; padding: 6px 10px; border-radius: 4px; margin: 0; text-align: center;">Kong et al., 2024</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Bottom row: two items -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 12px;">
+                  <p style="color: #ddd; font-size: 1.2em; line-height: 1.4;">
+                    ESP32 DevKits<br>
+                    <span style="font-size: 1.1em; color: #bbb;">(various vendors)</span>
+                  </p>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 12px;">
+                  <p style="color: #ddd; font-size: 1.2em; line-height: 1.4;">
+                    STM32 Nucleo/Discovery<br>
+                    <span style="font-size: 1.1em; color: #bbb;">(STMicroelectronics)</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     `;
   }
@@ -444,7 +762,7 @@ function handleMCUSlideState(state) {
 
 function handleSensorSlideState(state) {
   console.log(`Handling SENSOR slide state: ${state}`);
-  const sensorSlide = slides[12]; // Slide 2.1 (Sensor)
+  const sensorSlide = slides[11]; // Slide 2.1 (Sensor)
   const contentContainer = sensorSlide.querySelector(".slide-content");
 
   if (!contentContainer) {
@@ -536,7 +854,7 @@ function handleSensorSlideState(state) {
 
 function handleActuatorSlideState(state) {
   console.log(`Handling ACTUATOR slide state: ${state}`);
-  const actuatorSlide = slides[13]; // Slide 2.2 (Actuator)
+  const actuatorSlide = slides[12]; // Slide 2.2 (Actuator)
   const contentContainer = actuatorSlide.querySelector(".slide-content");
 
   if (!contentContainer) {
@@ -636,7 +954,7 @@ function handleActuatorSlideState(state) {
 
 function handleBiometricSlideState(state) {
   console.log(`Handling BIOMETRIC slide state: ${state}`);
-  const biometricSlide = slides[14]; // Slide 2.3 (Biometric)
+  const biometricSlide = slides[13]; // Slide 2.3 (Biometric)
   const contentContainer = biometricSlide.querySelector(".slide-content");
 
   if (!contentContainer) {
@@ -822,7 +1140,10 @@ document.addEventListener("keydown", function (event) {
   } else if (event.key === "ArrowRight") {
     event.preventDefault();
     handleArrowKeyPress(1);
-  } else if (event.key === " " || event.key === "Enter") {
+  } else if (event.key === " ") {
+    event.preventDefault();
+    toggleSlideState();
+  } else if (event.key === "Enter") {
     event.preventDefault();
     changeSlide(1);
   } else if (event.key === "Escape") {
@@ -834,6 +1155,13 @@ document.addEventListener("keydown", function (event) {
     location.reload();
   } else if (event.key === "l" || event.key === "L") {
     toggleSlideState();
+  } else if (event.key === "n" || event.key === "N") {
+    // Toggle note visibility manually
+    if (slideNote.classList.contains("visible")) {
+      hideNote();
+    } else {
+      updateSlideNote(currentSlide, slideStates[currentSlide] || 0);
+    }
   } else if (event.key >= "1" && event.key <= "9") {
     const slideNumber = parseInt(event.key) - 1;
     if (slideNumber < slides.length) {
@@ -1060,7 +1388,8 @@ document.addEventListener("click", function (event) {
   if (
     !event.target.closest(".navigation") &&
     !event.target.closest(".slide-indicators") &&
-    !event.target.closest(".revolver-progress")
+    !event.target.closest(".revolver-progress") &&
+    !event.target.closest(".slide-note")
   ) {
     const clickX = event.clientX;
     const windowWidth = window.innerWidth;
@@ -1074,9 +1403,32 @@ document.addEventListener("click", function (event) {
     else if (clickX > windowWidth - edgeZoneWidth) {
       changeSlide(1);
     }
-    // Middle area - trigger slide state management (SSM)
+    // Middle area - only trigger SSM if clicking blank area
     else {
-      toggleSlideState();
+      // Check if clicked on content elements or blank areas
+      const clickedElement = event.target;
+      const isBlankArea =
+        clickedElement.classList.contains("slide") ||
+        clickedElement.classList.contains("slideshow-container") ||
+        clickedElement.classList.contains("slide-content") ||
+        (clickedElement.tagName === "DIV" &&
+          !clickedElement.querySelector(
+            "img, h1, h2, h3, p, ul, li, a, code, pre"
+          )) ||
+        // Include elements that are primarily spacing/layout containers
+        (clickedElement.tagName === "DIV" &&
+          (clickedElement.style.margin ||
+            clickedElement.style.padding ||
+            clickedElement.style.marginTop ||
+            clickedElement.style.marginBottom ||
+            clickedElement.style.paddingTop ||
+            clickedElement.style.paddingBottom) &&
+          !clickedElement.querySelector("img, a, button, input"));
+
+      if (isBlankArea) {
+        toggleSlideState();
+      }
+      // If clicked on content (images, text, etc.), do nothing
     }
   }
 });
@@ -1085,10 +1437,12 @@ console.log("Slideshow initialized. Controls:");
 console.log("- Arrow keys: Fast click = instant, hold 1sec = fast flip");
 console.log("- Gamepad: D-pad/stick for navigation, L/L2 buttons for SSM");
 console.log("- L key: Toggle Slide State (SSM)");
-console.log("- Space/Enter: Next slide");
+console.log("- N key: Toggle Note visibility");
+console.log("- Space: Toggle Slide State (SSM)");
+console.log("- Enter: Next slide");
 console.log("- Number keys: Jump to slide");
 console.log("- P: Toggle auto-play");
 console.log("- Escape: Return to first slide");
 console.log("- R key: Reset presentation state and reload");
-console.log("- Click/Tap: Edge zones (navigation) or center (SSM)");
+console.log("- Click/Tap: Edge zones (navigation) or blank areas (SSM)");
 console.log("- Swipe: Navigate on mobile");
