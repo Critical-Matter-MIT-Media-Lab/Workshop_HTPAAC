@@ -34,7 +34,7 @@
         <div class="loading-spinner"></div>
     </div>
     <div class="slideshow-container">
-        <div id="slide-1.1" class="slide active">
+        <div id="slide-0" class="slide active">
             <h1>HOW TO PROTOTYPE (ALMOST) ANY CIRCUIT</h1>
             <p>from the perspective of designer and maker</p>
             <div style="margin-top: 60px;">
@@ -54,199 +54,180 @@
         </div>
 
         <div id="slide-1.1" class="slide">
-            <h1>We have all played with this, right?</h1>
-            <img data-src="https://www.makerspaces.com/wp-content/uploads/2017/05/2-Blink-an-LED_LARGE.jpg" alt="Arduino Breadboard Projects" class="lazy-image centered-image" style="max-width: 80%; height: auto; margin: 40px auto 0 auto; display: block; border-radius: 10px; box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/800x600/333/fff?text=Arduino+Breadboard+Projects'">
+            <h1>We have all played with this</h1>
+            <img data-src="https://www.makerspaces.com/wp-content/uploads/2017/05/2-Blink-an-LED_LARGE.jpg" alt="Arduino Breadboard Projects" class="lazy-image centered-image" style="max-width: 60%; height: auto; margin: 40px auto 0 auto; display: block; border-radius: 10px; box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/800x600/333/fff?text=Arduino+Breadboard+Projects'">
         </div>
 
         <div id="slide-1.2" class="slide">
-            <h1>Parts</h1>
-            <img data-src="https://www.ultralibrarian.com/wp-content/uploads/2022/06/shutterstock_7865275181.jpg" alt="Electronic Components" class="lazy-image centered-image" style="max-width: 80%; height: auto; margin: 40px auto 0 auto; display: block; border-radius: 10px; box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/800x600/333/fff?text=Electronic+Components'">
+            <div class="slide-content">
+                <h1>Parts</h1>
+                <img data-src="https://www.ultralibrarian.com/wp-content/uploads/2022/06/shutterstock_7865275181.jpg" alt="Electronic Components" class="lazy-image centered-image" style="max-width: 80%; height: auto; margin: 40px auto 0 auto; display: block; border-radius: 10px; box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/800x600/333/fff?text=Electronic+Components'">
+            </div>
+        </div>
+
+        <div id="slide-1.3" class="slide">
+            <h1>Laws</h1>
+            <div style="margin-top: 40px; position: relative; max-width: 600px; margin-left: auto; margin-right: auto;">
+                <!-- Water line -->
+                <div style="position: absolute; top: 180px; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent, #4FC3F7, #4FC3F7, transparent); z-index: 10;"></div>
+                <div style="position: absolute; top: 175px; right: 20px; color: #4FC3F7; font-size: 0.9em; z-index: 11;">~ water line ~</div>
+                
+                <!-- Above water (visible) -->
+                <div style="background: linear-gradient(180deg, #FF1493 0%, #E91E63 50%, #C2185B 100%); 
+                           width: 200px; height: 180px; margin: 0 auto; 
+                           clip-path: polygon(40% 0%, 60% 0%, 100% 100%, 0% 100%);
+                           display: flex; align-items: center; justify-content: center; position: relative;">
+                    <div style="color: white; text-align: center; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">
+                        <div style="font-size: 1.1em;">V = I × R</div>
+                        <div style="font-size: 0.9em; margin-top: 5px;">Ohm's Law</div>
+                    </div>
+                </div>
+                
+                <!-- Below water (hidden) -->
+                <div style="background: linear-gradient(180deg, #C2185B 0%, #880E4F 50%, #4A148C 100%); 
+                           width: 400px; height: 300px; margin: -20px auto 0; 
+                           clip-path: polygon(25% 0%, 75% 0%, 90% 100%, 10% 100%);
+                           display: flex; flex-direction: column; align-items: center; justify-content: space-around; position: relative;">
+                    <div style="color: white; text-align: center; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin-top: 30px;">
+                        <div style="font-size: 1em;">KVL & KCL</div>
+                        <div style="font-size: 0.8em;">Kirchhoff's Laws</div>
+                    </div>
+                    <div style="color: white; text-align: center; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">
+                        <div style="font-size: 0.9em;">P = V × I</div>
+                        <div style="font-size: 0.7em;">Power Law</div>
+                    </div>
+                    <div style="color: white; text-align: center; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">
+                        <div style="font-size: 0.8em;">Maxwell's Equations</div>
+                        <div style="font-size: 0.6em;">Electromagnetic Theory</div>
+                    </div>
+                    <div style="color: white; text-align: center; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin-bottom: 20px;">
+                        <div style="font-size: 0.7em;">Quantum Mechanics</div>
+                        <div style="font-size: 0.5em;">Fundamental Physics</div>
+                    </div>
+                </div>
+                
+                <!-- Legend -->
+                <div style="margin-top: 30px; text-align: center;">
+                    <p style="color: #ddd; font-size: 1.1em;">What we see vs. what underlies electronics</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-1.4" class="slide">
+            <h1>MCU</h1>
+            <div class="slide-content">
+                <p style="margin-top: 60px; font-size: 1.4em; color: #ddd;">
+                    [Placeholder: Microcontroller image collage]<br>
+                    State 1: Image collage of various MCUs<br>
+                    State 2: Detailed descriptions and specifications
+                </p>
+            </div>
+        </div>
+
+        <div id="slide-1.5" class="slide">
+            <h1>Prototyping</h1>
+            <div style="margin-top: 40px;">
+                <p style="font-size: 1.4em; color: #ddd;">
+                    [Placeholder: List with images on left and text on right]<br>
+                    Prototyping methods and tools
+                </p>
+            </div>
+        </div>
+
+        <div id="slide-1.6" class="slide">
+            <h1>Production</h1>
+            <div style="margin-top: 40px;">
+                <p style="font-size: 1.4em; color: #ddd;">
+                    [Placeholder: List with images on left and text on right]<br>
+                    Methods to design production-ready and robust circuits
+                </p>
+            </div>
+        </div>
+
+        <div id="slide-1.7" class="slide">
+            <h1>Software</h1>
+            <div style="margin-top: 40px;">
+                <p style="font-size: 1.4em; color: #ddd;">
+                    [Placeholder: List with images on left and text on right]<br>
+                    Programming environments and tools for hardware
+                </p>
+            </div>
+        </div>
+
+        <div id="slide-1.8" class="slide">
+            <h1>Protocol</h1>
+            <div style="margin-top: 40px;">
+                <p style="font-size: 1.4em; color: #ddd;">
+                    [Placeholder: List with images on left and text on right]<br>
+                    Signal/communication protocols and methods
+                </p>
+            </div>
+        </div>
+
+        <div id="slide-1.9" class="slide">
+            <h1>Networking</h1>
+            <div style="margin-top: 40px;">
+                <p style="font-size: 1.4em; color: #ddd;">
+                    [Placeholder: List with images on left and text on right]<br>
+                    Methods to (wirelessly) interconnect hardware
+                </p>
+            </div>
+        </div>
+
+        <div id="slide-2.0" class="slide">
+            <h1>Part 2</h1>
+            <h2 style="margin-top: 40px; font-size: 2em; color: #FF1493;">Meet the Sensors and Actuators</h2>
+            <div style="margin-top: 60px;">
+                <p style="font-size: 1.3em; color: #ddd; line-height: 1.4;">
+                    and the cybernetic systems we rely on
+                </p>
+            </div>
+        </div>
+
+        <div id="slide-2.1" class="slide">
+            <h1>Sensor</h1>
+            <div class="slide-content">
+                <p style="margin-top: 60px; font-size: 1.4em; color: #ddd;">
+                    [Placeholder: Multi-state sensor content]<br>
+                    State 1: Analog Sensors - "basically family of weird resistors"<br>
+                    State 2: MEMS Sensors - "Micro-Electro-Mechanical Systems"<br>
+                    State 3: Additional sensor types
+                </p>
+            </div>
         </div>
 
         <div id="slide-2.2" class="slide">
-            <h1>Breadboarding Basics</h1>
-            <h2>Best Practices</h2>
-            <ul>
-                <li>🔌 Keep power rails organized</li>
-                <li>🌈 Use color-coded wires</li>
-                <li>📎 Keep connections short and neat</li>
-                <li>🔍 Test power distribution first</li>
-                <li>📝 Document your connections</li>
-            </ul>
+            <h1>Actuator</h1>
+            <div class="slide-content">
+                <p style="margin-top: 60px; font-size: 1.4em; color: #ddd;">
+                    [Placeholder: Multi-state actuator content]<br>
+                    State 1: Electromagnetic Actuators - "move and actuate"<br>
+                    State 2: Photo Actuators - "show and display"<br>
+                    State 3: Additional actuator types
+                </p>
+            </div>
         </div>
 
         <div id="slide-2.3" class="slide">
-            <h1>PCB Design Fundamentals</h1>
-            <div class="features">
-                <div class="feature-box">
-                    <h3>🗺️ Layer Stack</h3>
-                    <p>2-layer for simple, 4+ for complex</p>
-                </div>
-                <div class="feature-box">
-                    <h3>🔌 Trace Width</h3>
-                    <p>Consider current capacity</p>
-                </div>
-                <div class="feature-box">
-                    <h3>🎯 Via Placement</h3>
-                    <p>Minimize layer transitions</p>
-                </div>
+            <h1>Biometric</h1>
+            <div class="slide-content">
+                <img src="img/biometrics.png" alt="Biometric Sensors" class="centered-image" style="max-width: 70%; height: auto; margin: 40px auto 0 auto; display: block; border-radius: 10px; box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/800x600/333/fff?text=Biometric+Sensors'">
             </div>
+        </div>
+
+        <div id="slide-3.0" class="slide">
+            <h1>Part 3</h1>
+            <h2 style="margin-top: 40px; font-size: 2em; color: #FF1493;">Get ready for the Workshop</h2>
         </div>
 
         <div id="slide-3.1" class="slide">
-            <h1>Schematic Design</h1>
-            <pre><code>Key Principles:
-
-• Left to right signal flow
-• Top to bottom power flow  
-• Group related components
-• Clear net labels
-• Consistent symbol usage</code></pre>
-            <p>Clean, readable schematics save debugging time</p>
-        </div>
-
-        <div id="slide-3.2" class="slide">
-            <h1>Layout Design Tips</h1>
-            <h2>Critical Considerations</h2>
-            <ul>
-                <li>⚡ Keep high-speed signals short</li>
-                <li>🌊 Avoid 90° angles on traces</li>
-                <li>🔌 Separate analog and digital grounds</li>
-                <li>🎯 Place decoupling caps close to ICs</li>
-                <li>🔥 Consider thermal management</li>
-            </ul>
-        </div>
-
-        <div id="slide-4.1" class="slide">
-            <h1>Component Selection</h1>
-            <ul>
-                <li>📊 Check electrical specifications</li>
-                <li>💰 Consider cost vs. performance</li>
-                <li>🚚 Verify availability and lead times</li>
-                <li>📎 Package size and footprint</li>
-                <li>🌡️ Temperature and environmental ratings</li>
-            </ul>
-        </div>
-
-        <div id="slide-4.2" class="slide">
-            <h1>Testing & Debugging</h1>
-            <div class="features">
-                <div class="feature-box">
-                    <h3>🔍 Visual Inspection</h3>
-                    <p>Check for shorts, opens</p>
-                </div>
-                <div class="feature-box">
-                    <h3>⚡ Power Testing</h3>
-                    <p>Verify voltage levels</p>
-                </div>
-                <div class="feature-box">
-                    <h3>📊 Signal Analysis</h3>
-                    <p>Use oscilloscope, logic analyzer</p>
-                </div>
-            </div>
-        </div>
-
-        <div id="slide-4.3" class="slide">
-            <h1>Power Supply Design</h1>
-            <ul>
-                <li>⚡ Calculate total current requirements</li>
-                <li>🔋 Choose appropriate voltage regulators</li>
-                <li>🔌 Add filtering and decoupling</li>
-                <li>📈 Consider power sequencing</li>
-                <li>🔥 Plan for thermal dissipation</li>
-            </ul>
-        </div>
-
-        <div id="slide-5.1" class="slide">
-            <h1>Signal Integrity</h1>
-            <pre><code>High-Speed Design Rules:
-
-• Match trace lengths for differential pairs
-• Control impedance (50Ω, 100Ω diff)
-• Minimize via count on critical signals
-• Guard traces for sensitive signals
-• Consider crosstalk between traces</code></pre>
-            <p>Critical for high-frequency and digital circuits</p>
-        </div>
-
-        <div id="slide-5.2" class="slide">
-            <h1>Manufacturing Considerations</h1>
-            <div class="features">
-                <div class="feature-box">
-                    <h3>🏭 DFM Rules</h3>
-                    <p>Design for Manufacturing</p>
-                </div>
-                <div class="feature-box">
-                    <h3>🔧 Assembly</h3>
-                    <p>Component placement, soldering</p>
-                </div>
-                <div class="feature-box">
-                    <h3>📊 Testing</h3>
-                    <p>In-circuit test, functional test</p>
-                </div>
-            </div>
-        </div>
-
-        <div id="slide-5.3" class="slide">
-            <h1>Iteration & Improvement</h1>
-            <ul>
-                <li>🔄 Build, test, learn, repeat</li>
-                <li>📝 Document lessons learned</li>
-                <li>🔍 Identify failure modes</li>
-                <li>🎯 Focus on critical improvements</li>
-                <li>🚀 Plan for next revision</li>
-            </ul>
-        </div>
-
-        <div id="slide-6.1" class="slide">
-            <h1>Case Study Examples</h1>
-            <div class="features">
-                <div class="feature-box">
-                    <h3>🤖 IoT Sensor</h3>
-                    <p>Low power, wireless connectivity</p>
-                </div>
-                <div class="feature-box">
-                    <h3>🎵 Audio Amplifier</h3>
-                    <p>Analog design, thermal management</p>
-                </div>
-                <div class="feature-box">
-                    <h3>📊 Motor Controller</h3>
-                    <p>High current, switching circuits</p>
-                </div>
-            </div>
-        </div>
-
-        <div id="slide-6.2" class="slide">
-            <h1>Useful Resources</h1>
-            <div class="features">
-                <div class="feature-box">
-                    <h3>📚 Learning</h3>
-                    <p>YouTube channels, online courses, books</p>
-                </div>
-                <div class="feature-box">
-                    <h3>🛍️ Suppliers</h3>
-                    <p>Digi-Key, Mouser, LCSC, JLCPCB</p>
-                </div>
-                <div class="feature-box">
-                    <h3>💻 Tools</h3>
-                    <p>KiCad, Fusion 360, LTSpice, Falstad</p>
-                </div>
-            </div>
-        </div>
-
-        <div id="slide-6.3" class="slide">
-            <h1>Questions & Discussion</h1>
-            <p>🔧 Ready to prototype your next circuit?</p>
-            <p>💡 Let's discuss your projects and challenges!</p>
-            <div class="features">
-                <div class="feature-box">
-                    <h3>📧 Contact</h3>
-                    <p>Reach out for collaboration</p>
-                </div>
-                <div class="feature-box">
-                    <h3>🔗 Connect</h3>
-                    <p>Follow for more tips & tricks</p>
-                </div>
+            <h1>Kit</h1>
+            <div class="slide-content">
+                <p style="margin-top: 60px; font-size: 1.4em; color: #ddd;">
+                    [Placeholder: Kit introduction]<br>
+                    State 1: Kit image<br>
+                    State 2: Kit form/details
+                </p>
             </div>
         </div>
 
