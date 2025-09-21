@@ -59,72 +59,81 @@
         </div>
 
         <div id="slide-1.2" class="slide">
-            <div class="slide-content">
-                <h1>Parts</h1>
-                <img data-src="https://www.ultralibrarian.com/wp-content/uploads/2022/06/shutterstock_7865275181.jpg" alt="Electronic Components" class="lazy-image centered-image" style="max-width: 80%; height: auto; margin: 40px auto 0 auto; display: block; border-radius: 10px; box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/800x600/333/fff?text=Electronic+Components'">
+            <h1>Laws</h1>
+            <div style="margin-top: 30px; max-width: 1100px; margin-left: auto; margin-right: auto;">
+                
+                <!-- Three main law cards -->
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 35px;">
+                    
+                    <!-- Ohm's Law Card -->
+                    <div style="background: linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(76, 175, 80, 0.05) 100%); border: 2px solid rgba(76, 175, 80, 0.3); border-radius: 12px; padding: 20px; text-align: center; position: relative;">
+                        <div style="font-size: 2.5em; margin-bottom: 8px;">🔋</div>
+                        <h3 style="color: #4CAF50; font-size: 1.3em; margin-bottom: 10px;">Choose Power Supply</h3>
+                        <div style="background: rgba(76, 175, 80, 0.2); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                            <div style="font-size: 1.4em; color: #4CAF50; font-weight: bold; font-family: monospace;">V = I × R</div>
+                            <div style="font-size: 0.9em; color: #81C784; margin-top: 4px;">Ohm's Law</div>
+                        </div>
+                        <p style="color: #ddd; font-size: 0.95em; line-height: 1.4;">
+                            Calculate voltage drop across resistors.<br>
+                            <strong style="color: #4CAF50;">Example:</strong> LED + 330Ω resistor
+                        </p>
+                    </div>
+
+                    <!-- Power Law Card -->
+                    <div style="background: linear-gradient(135deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 152, 0, 0.05) 100%); border: 2px solid rgba(255, 152, 0, 0.3); border-radius: 12px; padding: 20px; text-align: center; position: relative;">
+                        <div style="font-size: 2.5em; margin-bottom: 8px;">⚡</div>
+                        <h3 style="color: #FF9800; font-size: 1.3em; margin-bottom: 10px;">Avoid Burning Parts</h3>
+                        <div style="background: rgba(255, 152, 0, 0.2); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                            <div style="font-size: 1.4em; color: #FF9800; font-weight: bold; font-family: monospace;">P = V × I</div>
+                            <div style="font-size: 0.9em; color: #FFB74D; margin-top: 4px;">Power Law</div>
+                        </div>
+                        <p style="color: #ddd; font-size: 0.95em; line-height: 1.4;">
+                            Check if components can handle the power.<br>
+                            <strong style="color: #FF9800;">Example:</strong> Resistor wattage rating
+                        </p>
+                    </div>
+
+                    <!-- Kirchhoff's Laws Card -->
+                    <div style="background: linear-gradient(135deg, rgba(33, 150, 243, 0.1) 0%, rgba(33, 150, 243, 0.05) 100%); border: 2px solid rgba(33, 150, 243, 0.3); border-radius: 12px; padding: 20px; text-align: center; position: relative;">
+                        <div style="font-size: 2.5em; margin-bottom: 8px;">🔍</div>
+                        <h3 style="color: #2196F3; font-size: 1.3em; margin-bottom: 10px;">Debug Circuits</h3>
+                        <div style="background: rgba(33, 150, 243, 0.2); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                            <div style="font-size: 1.4em; color: #2196F3; font-weight: bold; font-family: monospace;">KVL & KCL</div>
+                            <div style="font-size: 0.9em; color: #64B5F6; margin-top: 4px;">Kirchhoff's Laws</div>
+                        </div>
+                        <p style="color: #ddd; font-size: 0.95em; line-height: 1.4;">
+                            Analyze voltage/current in complex circuits.<br>
+                            <strong style="color: #2196F3;">Example:</strong> Multi-branch circuits
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Bottom section: Theory we skip -->
+                <div style="background: rgba(136, 136, 136, 0.05); border: 1px solid rgba(136, 136, 136, 0.2); border-radius: 10px; padding: 20px; text-align: center;">
+                    <h4 style="color: #888; font-size: 1.1em; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        📚 Advanced EE Theory
+                    </h4>
+                    <div style="display: flex; justify-content: center; gap: 25px; flex-wrap: wrap;">
+                        <span style="color: #666; font-size: 0.9em;">Maxwell's Equations</span>
+                        <span style="color: #666; font-size: 0.9em;">Transmission Line Theory</span>
+                        <span style="color: #666; font-size: 0.9em;">RF Circuit Analysis</span>
+                        <span style="color: #666; font-size: 0.9em;">Signal Integrity</span>
+                        <span style="color: #666; font-size: 0.9em;">EMI/EMC Analysis</span>
+                        <span style="color: #666; font-size: 0.9em;">Non-Linear Circuit Theory</span>
+                    </div>
+                </div>
+
             </div>
         </div>
 
         <div id="slide-1.3" class="slide">
-            <h1>Laws</h1>
-            <div style="margin-top: 60px; max-width: 800px; margin-left: auto; margin-right: auto;">
-                <!-- Two-column layout: What we care about vs What we won't touch -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start;">
-                    
-                    <!-- Left side: What we care about -->
-                    <div style="text-align: center;">
-                        <h2 style="color: #FF1493; font-size: 1.8em; margin-bottom: 30px;">✅ What We Care About</h2>
-                        <div style="background: rgba(255, 20, 147, 0.1); border: 2px solid #FF1493; border-radius: 15px; padding: 30px;">
-                            <div style="margin-bottom: 25px;">
-                                <div style="font-size: 1.3em; color: #FF1493; font-weight: bold;">V = I × R</div>
-                                <div style="font-size: 1em; color: #ddd; margin-top: 5px;">Ohm's Law</div>
-                            </div>
-                            <div style="margin-bottom: 25px;">
-                                <div style="font-size: 1.2em; color: #FF1493; font-weight: bold;">P = V × I</div>
-                                <div style="font-size: 1em; color: #ddd; margin-top: 5px;">Power Law</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 1.1em; color: #FF1493; font-weight: bold;">KVL & KCL</div>
-                                <div style="font-size: 1em; color: #ddd; margin-top: 5px;">Kirchhoff's Laws</div>
-                            </div>
-                        </div>
-                        <p style="color: #4CAF50; margin-top: 15px; font-size: 1.1em;">Simple & Practical</p>
-                    </div>
-                    
-                    <!-- Right side: What we won't touch -->
-                    <div style="text-align: center;">
-                        <h2 style="color: #888; font-size: 1.8em; margin-bottom: 30px;">❌ What We Won't Touch</h2>
-                        <div style="background: rgba(136, 136, 136, 0.1); border: 2px solid #666; border-radius: 15px; padding: 30px; opacity: 0.7;">
-                            <div style="margin-bottom: 20px;">
-                                <div style="font-size: 1em; color: #888;">Maxwell's Equations</div>
-                                <div style="font-size: 0.8em; color: #666; margin-top: 3px;">Electromagnetic Theory</div>
-                            </div>
-                            <div style="margin-bottom: 20px;">
-                                <div style="font-size: 0.9em; color: #888;">Quantum Mechanics</div>
-                                <div style="font-size: 0.8em; color: #666; margin-top: 3px;">Fundamental Physics</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 0.8em; color: #888;">Solid State Physics</div>
-                                <div style="font-size: 0.7em; color: #666; margin-top: 3px;">Semiconductor Theory</div>
-                            </div>
-                        </div>
-                        <p style="color: #888; margin-top: 15px; font-size: 1.1em;">Complex & Theoretical</p>
-                    </div>
-                    
-                </div>
-                
-                <!-- Bottom message -->
-                <div style="margin-top: 50px; text-align: center;">
-                    <p style="color: #ddd; font-size: 1.3em; font-style: italic;">
-                        Focus on what matters for prototyping
-                    </p>
-                </div>
+            <div class="slide-content">
+                <img data-src="https://www.ultralibrarian.com/wp-content/uploads/2022/06/shutterstock_7865275181.jpg" alt="Electronic Components" class="lazy-image centered-image" style="max-width: 80%; height: auto; margin: 40px auto 0 auto; display: block; border-radius: 10px; box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/800x600/333/fff?text=Electronic+Components'">
             </div>
         </div>
 
         <div id="slide-1.4" class="slide">
             <div class="slide-content">
-                <h1>MCU</h1>
                 <p style="margin-top: 60px; font-size: 1.4em; color: #ddd;">
                     [Placeholder: Microcontroller image collage]<br>
                     State 1: Image collage of various MCUs<br>
@@ -140,154 +149,188 @@
 
         <div id="slide-1.6" class="slide">
             <h1>Software</h1>
-            <div style="margin-top: 40px; position: relative; max-width: 1000px; margin-left: auto; margin-right: auto;">
+            <div style="margin-top: 30px; max-width: 1200px; margin-left: auto; margin-right: auto;">
                 
-                <!-- Software tools list with external images -->
-                <div style="display: flex; flex-direction: column; gap: 25px;">
+                <!-- Main IDEs Section -->
+                <div style="margin-bottom: 25px;">
+                    <h2 style="color: #4CAF50; font-size: 1.4em; margin-bottom: 15px; text-align: left; border-bottom: 2px solid #4CAF50; padding-bottom: 5px;">🛠️ Primary IDEs</h2>
                     
-                    <!-- Arduino IDE -->
-                    <div style="display: flex; align-items: stretch; gap: 30px;">
-                        <div style="flex: 1; background: rgba(76, 175, 80, 0.1); border-left: 4px solid #4CAF50; padding: 20px; border-radius: 8px;">
-                            <h3 style="color: #4CAF50; font-size: 1.4em; margin-bottom: 10px; text-align: left;">Arduino IDE</h3>
-                            <p style="color: #ddd; font-size: 1.1em; line-height: 1.5; text-align: left;">
-                                Beginner-friendly IDE with built-in libraries and examples. 
-                                Perfect for learning and quick prototyping with Arduino boards.
-                            </p>
-                        </div>
-                        <div style="width: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                            <p style="color: #ddd; text-align: center; font-size: 1em;">[Arduino IDE Image]</p>
-                        </div>
-                    </div>
-                    
-                    <!-- PlatformIO -->
-                    <div style="display: flex; align-items: stretch; gap: 30px;">
-                        <div style="flex: 1; background: rgba(33, 150, 243, 0.1); border-left: 4px solid #2196F3; padding: 20px; border-radius: 8px;">
-                            <h3 style="color: #2196F3; font-size: 1.4em; margin-bottom: 10px; text-align: left;">PlatformIO</h3>
-                            <p style="color: #ddd; font-size: 1.1em; line-height: 1.5; text-align: left;">
-                                Professional multi-platform IDE with VS Code integration. 
-                                Supports hundreds of boards and advanced debugging features.
-                            </p>
-                        </div>
-                        <div style="width: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                            <p style="color: #ddd; text-align: center; font-size: 1em;">[PlatformIO Image]</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Keil -->
-                    <div style="display: flex; align-items: stretch; gap: 30px;">
-                        <div style="flex: 1; background: rgba(33, 150, 243, 0.1); border-left: 4px solid #2196F3; padding: 20px; border-radius: 8px;">
-                            <h3 style="color: #2196F3; font-size: 1.4em; margin-bottom: 10px; text-align: left;">Keil</h3>
-                            <p style="color: #ddd; font-size: 1.1em; line-height: 1.5; text-align: left;">
-                                Industry-standard ARM development environment. 
-                                Professional debugging tools and code optimization features.
-                            </p>
-                        </div>
-                        <div style="width: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                            <p style="color: #ddd; text-align: center; font-size: 1em;">[Keil Image]</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Bottom row: Chip-Specific and High-Level Languages side by side -->
-                    <div style="display: flex; gap: 30px;">
-                        <!-- Left half: Chip-Specific -->
-                        <div style="flex: 1;">
-                            <div style="background: rgba(255, 152, 0, 0.1); border-left: 4px solid #FF9800; padding: 20px; border-radius: 8px; height: 100%;">
-                                <h3 style="color: #FF9800; font-size: 1.4em; margin-bottom: 10px; text-align: left;">Chip-Specific</h3>
-                                <p style="color: #ddd; font-size: 1.1em; line-height: 1.5; text-align: left;">
-                                    <strong>STM32CubeIDE</strong> - Official STM32 development<br>
-                                    <strong>ESP-IDF</strong> - ESP32 native framework
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
+                        <!-- Arduino IDE -->
+                        <div style="display: flex; align-items: center; background: rgba(0, 188, 212, 0.08); border: 1px solid rgba(0, 188, 212, 0.2); border-radius: 8px; padding: 15px; position: relative; cursor: pointer;" onclick="window.open('https://www.arduino.cc/en/software/', '_blank')">
+                            <img src="img/Arduino.svg" alt="Arduino IDE" style="width: 70px; height: 70px; object-fit: contain; flex-shrink: 0; box-shadow: none !important;" onerror="this.src='https://via.placeholder.com/70x70/00BCD4/fff?text=A'">
+                            <div style="flex: 1; text-align: center; margin-right: 90px;">
+                                <h3 style="color: #00BCD4; font-size: 1.2em; margin-bottom: 4px;">Arduino IDE</h3>
+                                <p style="color: #ddd; font-size: 1em; line-height: 1.3; margin: 0;">
+                                    Beginner-friendly IDE with built-in libraries and examples. Perfect for learning and quick prototyping.
                                 </p>
+                            </div>
+                        </div>
+
+                        <!-- PlatformIO -->
+                        <div style="display: flex; align-items: center; background: rgba(255, 152, 0, 0.08); border: 1px solid rgba(255, 152, 0, 0.2); border-radius: 8px; padding: 15px; position: relative; cursor: pointer;" onclick="window.open('https://platformio.org/', '_blank')">
+                            <img src="img/platformio.png" alt="PlatformIO" style="width: 70px; height: 70px; object-fit: contain; flex-shrink: 0; box-shadow: none !important;" onerror="this.src='https://via.placeholder.com/70x70/FF9800/fff?text=P'">
+                            <div style="flex: 1; text-align: center; margin-right: 90px;">
+                                <h3 style="color: #FF9800; font-size: 1.2em; margin-bottom: 4px;">PlatformIO</h3>
+                                <p style="color: #ddd; font-size: 1em; line-height: 1.3; margin: 0;">
+                                    Professional multi-platform IDE with VS Code integration. Advanced project management and debugging.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Keil -->
+                        <div style="display: flex; align-items: center; background: rgba(33, 150, 243, 0.08); border: 1px solid rgba(33, 150, 243, 0.2); border-radius: 8px; padding: 10px 15px; position: relative; cursor: pointer;" onclick="window.open('https://www.keil.com/', '_blank')">
+                            <img src="img/Keil_logo.svg.png" alt="Keil" style="width: 80px; height: 80px; object-fit: contain; flex-shrink: 0; box-shadow: none !important;" onerror="this.src='https://via.placeholder.com/80x80/2196F3/fff?text=K'">
+                            <div style="flex: 1; text-align: center; margin-right: 100px;">
+                                <h3 style="color: #2196F3; font-size: 1.2em; margin-bottom: 4px;">Keil µVision</h3>
+                                <p style="color: #ddd; font-size: 1em; line-height: 1.3; margin: 0;">
+                                    Industry-standard ARM development environment. Professional debugging and optimization tools.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Specialized Tools Section -->
+                <div>
+                    <h2 style="color: #FF1493; font-size: 1.4em; margin-bottom: 15px; text-align: left; border-bottom: 2px solid #FF1493; padding-bottom: 5px;">⚡ Specialized & Alternative Options</h2>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <!-- Chip-Specific -->
+                        <div style="background: rgba(255, 152, 0, 0.08); border: 1px solid rgba(255, 152, 0, 0.2); border-radius: 8px; padding: 15px;">
+                            <h3 style="color: #FF9800; font-size: 1.1em; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                                🔧 Chip-Specific IDEs
+                            </h3>
+                            <div style="color: #ddd; font-size: 1em; line-height: 1.4;">
+                                <div style="margin-bottom: 8px; cursor: pointer;" onclick="window.open('https://www.st.com/en/development-tools/stm32cubeide.html', '_blank')">
+                                    <strong style="color: #FFB74D;">STM32CubeIDE</strong><br>
+                                    <span style="font-size: 0.9em; opacity: 0.9;">Official STM32 development suite</span>
+                                </div>
+                                <div style="cursor: pointer;" onclick="window.open('https://idf.espressif.com/', '_blank')">
+                                    <strong style="color: #FFB74D;">ESP-IDF</strong><br>
+                                    <span style="font-size: 0.9em; opacity: 0.9;">ESP32 native framework & toolchain</span>
+                                </div>
                             </div>
                         </div>
                         
-                        <!-- Right half: High-Level Languages -->
-                        <div style="flex: 1;">
-                            <div style="background: rgba(156, 39, 176, 0.1); border-left: 4px solid #9C27B0; padding: 20px; border-radius: 8px; height: 100%;">
-                                <h3 style="color: #9C27B0; font-size: 1.4em; margin-bottom: 10px; text-align: left;">MicroPython / CircuitPython</h3>
-                                <p style="color: #ddd; font-size: 1.1em; line-height: 1.5; text-align: left;">
-                                    Python for microcontrollers with interactive REPL. 
-                                    Great for rapid prototyping and education.
-                                </p>
+                        <!-- High-Level Languages -->
+                        <div style="background: rgba(156, 39, 176, 0.08); border: 1px solid rgba(156, 39, 176, 0.2); border-radius: 8px; padding: 15px;">
+                            <h3 style="color: #9C27B0; font-size: 1.1em; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                                🐍 High-Level Languages
+                            </h3>
+                            <div style="color: #ddd; font-size: 1em; line-height: 1.4;">
+                                <div style="margin-bottom: 8px; cursor: pointer;" onclick="window.open('https://micropython.org/', '_blank')">
+                                    <strong style="color: #CE93D8;">MicroPython</strong><br>
+                                    <span style="font-size: 0.9em; opacity: 0.9;">Python for microcontrollers</span>
+                                </div>
+                                <div style="cursor: pointer;" onclick="window.open('https://circuitpython.org/', '_blank')">
+                                    <strong style="color: #CE93D8;">CircuitPython</strong><br>
+                                    <span style="font-size: 0.9em; opacity: 0.9;">Adafruit's beginner-friendly Python</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
                 </div>
+                
             </div>
         </div>
 
         <div id="slide-1.7" class="slide">
             <h1>Protocol</h1>
+            <p style="font-size: 1.3em; color: #FF1493; font-weight: 500; margin-top: 20px; margin-bottom: 30px;">Wired communication between parts and the architectures.</p>
             <div style="margin-top: 40px;">
                 <div class="features">
                     <div class="feature-box">
                         <h3>🔄 Serial Protocols</h3>
                         <ul style="font-size: 0.9em; text-align: left;">
-                            <li>UART/USART - Simple point-to-point</li>
-                            <li>SPI - High-speed synchronous</li>
-                            <li>I2C - Multi-device bus</li>
-                            <li>1-Wire - Single wire communication</li>
+                            <li><a href="https://en.wikipedia.org/wiki/Universal_asynchronous_receiver-transmitter" target="_blank" style="color: #4caf50; text-decoration: none;">UART/USART - Simple point-to-point</a></li>
+                            <li><a href="https://en.wikipedia.org/wiki/Serial_Peripheral_Interface" target="_blank" style="color: #4caf50; text-decoration: none;">SPI - High-speed synchronous</a></li>
+                            <li><a href="https://en.wikipedia.org/wiki/1-Wire" target="_blank" style="color: #4caf50; text-decoration: none;">1-Wire - Single wire communication</a></li>
+                            <li><a href="https://www.seeedstudio.com/blog/2021/03/18/how-rs485-works-and-how-to-implement-rs485-into-industrial-control-systems/" target="_blank" style="color: #4caf50; text-decoration: none;">RS-485 - Multi-drop serial</a></li>
                         </ul>
                     </div>
                     <div class="feature-box">
-                        <h3>⚡ High-Speed Protocols</h3>
+                        <h3>🚌 BUS Protocols</h3>
                         <ul style="font-size: 0.9em; text-align: left;">
-                            <li>USB - Universal connectivity</li>
-                            <li>Ethernet - Wired networking</li>
-                            <li>PCIe - High bandwidth</li>
-                            <li>SATA - Storage interface</li>
+                            <li><a href="https://learn.sparkfun.com/tutorials/i2c/all" target="_blank" style="color: #4caf50; text-decoration: none;">I2C Bus - Multi-master, multi-slave</a></li>
+                            <li><a href="https://en.wikipedia.org/wiki/CAN_bus" target="_blank" style="color: #ddd; text-decoration: none;">CAN Bus - Automotive standard</a></li>
+                            <li><a href="https://en.wikipedia.org/wiki/USB" target="_blank" style="color: #4caf50; text-decoration: none;">USB - Universal connectivity</a></li>
+                            <li><a href="https://en.wikipedia.org/wiki/Ethernet" target="_blank" style="color: #ddd; text-decoration: none;">Ethernet - Network communication</a></li>
                         </ul>
                     </div>
+                    <img src="img/protocol.png" alt="Protocol Diagram" 
+                         style="width: 380px; height: auto; object-fit: contain; box-shadow: none !important; border: none; margin: 0; padding: 0;" 
+                         onerror="this.src='https://via.placeholder.com/380x200/333/fff?text=Protocol+Diagram'">
                 </div>
-                <div style="margin-top: 30px;">
-                    <ul>
-                        <li>🎯 Choose based on: Distance, speed, power, complexity</li>
-                        <li>🔧 Consider: Voltage levels, timing requirements, error handling</li>
-                        <li>📊 Debug tools: Logic analyzers, protocol decoders, oscilloscopes</li>
-                    </ul>
+                <div style="margin-top: 30px; text-align: center;">
+                    <h3 style="color: #FF1493; font-size: 1.4em; margin-bottom: 20px;">Real-World Examples</h3>
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; max-width: 1000px; margin: 0 auto;">
+                        <div style="background: rgba(0, 188, 212, 0.1); border-left: 4px solid #00BCD4; padding: 12px; border-radius: 6px; text-align: left;">
+                            <h4 style="color: #00BCD4; font-size: 1em; margin-bottom: 6px;">Arduino ↔ Sensors</h4>
+                            <p style="color: #ddd; font-size: 0.85em; line-height: 1.3;">I2C to daisy chain sensors, SPI for high bandwidth displays</p>
+                        </div>
+                        <div style="background: rgba(255, 152, 0, 0.1); border-left: 4px solid #FF9800; padding: 12px; border-radius: 6px; text-align: left;">
+                            <h4 style="color: #FF9800; font-size: 1em; margin-bottom: 6px;">Wearable Devices</h4>
+                            <p style="color: #ddd; font-size: 0.85em; line-height: 1.3;">I2C for IMU, SPI for memory, UART for debug</p>
+                        </div>
+                        <div style="background: rgba(76, 175, 80, 0.1); border-left: 4px solid #4CAF50; padding: 12px; border-radius: 6px; text-align: left;">
+                            <h4 style="color: #4CAF50; font-size: 1em; margin-bottom: 6px;">LED Strip Control</h4>
+                            <p style="color: #ddd; font-size: 0.85em; line-height: 1.3;">1-Wire for addressable LEDs, UART for simple RGB strips</p>
+                        </div>
+                        <div style="background: rgba(156, 39, 176, 0.1); border-left: 4px solid #9C27B0; padding: 12px; border-radius: 6px; text-align: left;">
+                            <h4 style="color: #9C27B0; font-size: 1em; margin-bottom: 6px;">Robot Motors</h4>
+                            <p style="color: #ddd; font-size: 0.85em; line-height: 1.3;">PWM for servo control, CAN bus for industrial robots</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div id="slide-1.8" class="slide">
             <h1>Networking</h1>
+            <p style="font-size: 1.3em; color: #FF1493; font-weight: 500; margin-top: 20px; margin-bottom: 30px;">Wireless communication between nodes and localities.</p>
             <div style="margin-top: 40px;">
                 <div class="features">
                     <div class="feature-box">
                         <h3>🌐 Local Networks</h3>
                         <ul style="font-size: 0.9em; text-align: left;">
-                            <li>Wi-Fi Direct - Device-to-device</li>
-                            <li>Bluetooth Mesh - Self-healing mesh</li>
-                            <li>Zigbee - Low power mesh</li>
-                            <li>Thread - IPv6 mesh for IoT</li>
+                            <li><a href="https://docs.arduino.cc/libraries/wifi/" target="_blank" style="color: #fff; text-decoration: none;">Wi-Fi - Device-to-device</a></li>
+                            <li><a href="https://en.wikipedia.org/wiki/Bluetooth_mesh_networking" target="_blank" style="color: #fff; text-decoration: none;">Bluetooth - Self-healing mesh</a></li>
+                            <li><a href="https://www.espressif.com/en/solutions/low-power-solutions/esp-now" target="_blank" style="color: #fff; text-decoration: none;">ESP-NOW - Direct ESP communication</a></li>
                         </ul>
                     </div>
                     <div class="feature-box">
                         <h3>🌍 Wide Area Networks</h3>
                         <ul style="font-size: 0.9em; text-align: left;">
-                            <li>LoRaWAN - Long range, low power</li>
-                            <li>Cellular (LTE-M, NB-IoT) - Global coverage</li>
-                            <li>Satellite - Remote locations</li>
-                            <li>Sigfox - Ultra-low power WAN</li>
+                            <li><a href="https://en.wikipedia.org/wiki/LoRa" target="_blank" style="color: #fff; text-decoration: none;">LoRaWAN - Long range, low power</a></li>
+                            <li><a href="https://en.wikipedia.org/wiki/Cellular_network" target="_blank" style="color: #fff; text-decoration: none;">Cellular (LTE-M, NB-IoT) - Global coverage</a></li>
+                            <li><a href="https://en.wikipedia.org/wiki/Satellite_navigation" target="_blank" style="color: #fff; text-decoration: none;">Satellite - Remote locations</a></li>
                         </ul>
                     </div>
-                    <div class="feature-box">
-                        <h3>🔗 Network Topologies</h3>
-                        <ul style="font-size: 0.9em; text-align: left;">
-                            <li>Star - Central hub model</li>
-                            <li>Mesh - Self-organizing network</li>
-                            <li>Tree - Hierarchical structure</li>
-                            <li>Ring - Redundant connections</li>
-                        </ul>
-                    </div>
+                    <img src="img/lorawan.webp" alt="LoRaWAN Diagram" 
+                         style="width: 380px; height: auto; max-height: 300px; object-fit: contain; box-shadow: none !important; border: none; margin: 0; padding: 0;" 
+                         onerror="this.src='https://via.placeholder.com/380x300/333/fff?text=LoRaWAN+Diagram'">
                 </div>
-                <div style="margin-top: 30px;">
-                    <ul>
-                        <li>📶 Range considerations: Indoor vs outdoor, obstacles, interference</li>
-                        <li>🔋 Power trade-offs: Transmission power vs battery life</li>
-                        <li>💰 Cost factors: Infrastructure, licensing, module prices</li>
-                        <li>🛡️ Security: Encryption, authentication, network isolation</li>
-                    </ul>
+                <div style="margin-top: 30px; text-align: center;">
+                    <h3 style="color: #FF1493; font-size: 1.4em; margin-bottom: 20px;">Real-World Examples</h3>
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; max-width: 1000px; margin: 0 auto;">
+                        <div style="background: rgba(156, 39, 176, 0.1); border-left: 4px solid #9C27B0; padding: 12px; border-radius: 6px; text-align: left;">
+                            <h4 style="color: #9C27B0; font-size: 1em; margin-bottom: 6px;">Health Monitoring</h4>
+                            <p style="color: #ddd; font-size: 0.85em; line-height: 1.3;">BLE heart rate sensors, Wi-Fi medical alerts</p>
+                        </div>
+                        <div style="background: rgba(33, 150, 243, 0.1); border-left: 4px solid #2196F3; padding: 12px; border-radius: 6px; text-align: left;">
+                            <h4 style="color: #2196F3; font-size: 1em; margin-bottom: 6px;">IoT for Nature</h4>
+                            <p style="color: #ddd; font-size: 0.85em; line-height: 1.3;">LoRaWAN soil sensors, satellite GPS tracking</p>
+                        </div>
+                        <div style="background: rgba(76, 175, 80, 0.1); border-left: 4px solid #4CAF50; padding: 12px; border-radius: 6px; text-align: left;">
+                            <h4 style="color: #4CAF50; font-size: 1em; margin-bottom: 6px;">Smart Clothing</h4>
+                            <p style="color: #ddd; font-size: 0.85em; line-height: 1.3;">Bluetooth fabric sensors, NFC for payments</p>
+                        </div>
+                        <div style="background: rgba(255, 152, 0, 0.1); border-left: 4px solid #FF9800; padding: 12px; border-radius: 6px; text-align: left;">
+                            <h4 style="color: #FF9800; font-size: 1em; margin-bottom: 6px;">Prosthetics</h4>
+                            <p style="color: #ddd; font-size: 0.85em; line-height: 1.3;">Wi-Fi for neural control, Bluetooth for feedback</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -303,7 +346,6 @@
         </div>
 
         <div id="slide-2.1" class="slide">
-            <h1>Actuator</h1>
             <div class="slide-content">
                 <p style="margin-top: 60px; font-size: 1.4em; color: #ddd;">
                     [Placeholder: Multi-state actuator content]<br>
@@ -314,7 +356,6 @@
         </div>
 
         <div id="slide-2.2" class="slide">
-            <h1>Sensor</h1>
             <div class="slide-content">
                 <p style="margin-top: 60px; font-size: 1.4em; color: #ddd;">
                     [Placeholder: Multi-state sensor content]<br>
@@ -325,7 +366,6 @@
         </div>
 
         <div id="slide-2.3" class="slide">
-            <h1>Biometric</h1>
             <div class="slide-content">
                 <div style="display: flex; gap: 30px; justify-content: center; align-items: center; margin-top: 40px;">
                     <img src="img/biometrics.png" alt="Biometric Sensors" 

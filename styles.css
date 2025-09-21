@@ -162,8 +162,8 @@ body {
 
 .slide {
   position: absolute;
-  width: 90%;
-  max-width: 1200px;
+  width: 95%;
+  max-width: 1800px;
   text-align: center;
   opacity: 0;
   transform: translateX(100%);
@@ -347,9 +347,9 @@ body {
 
 .features {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 25px;
   margin-top: 30px;
 }
 
@@ -357,8 +357,8 @@ body {
   background: rgba(255, 255, 255, 0.1);
   padding: 30px;
   border-radius: 10px;
-  flex: 1;
-  min-width: 200px;
+  flex: 0 0 380px;
+  width: 380px;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -615,7 +615,7 @@ code {
 /* Large screens optimization */
 @media (min-width: 1921px) {
   .slide {
-    max-width: 1600px;
+    max-width: 2200px;
   }
 
   .slide img {

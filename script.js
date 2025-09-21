@@ -61,8 +61,8 @@ const slideTitles = [
   "Intro", // 0
   "Part 1", // 1.0
   "Arduino", // 1.1
-  "Parts", // 1.2
-  "Laws", // 1.3
+  "Laws", // 1.2
+  "Parts", // 1.3
   "MCU", // 1.4
   "Fabrication", // 1.5
   "Software", // 1.6
@@ -84,8 +84,8 @@ const slideNumbers = [
   "0", // Intro
   "1.0", // Part 1
   "1.1", // Arduino
-  "1.2", // Parts
-  "1.3", // Laws
+  "1.2", // Laws
+  "1.3", // Parts
   "1.4", // MCU
   "1.5", // Fabrication
   "1.6", // Software
@@ -212,6 +212,42 @@ function showRevolver() {
 }
 
 // =============================================================================
+// STATE INDICATORS SYSTEM
+// =============================================================================
+function generateStateIndicators(currentState, totalStates) {
+  if (totalStates <= 1) return "";
+
+  let indicators =
+    '<div class="state-indicators" style="display: flex; gap: 8px;">';
+
+  for (let i = 0; i < totalStates; i++) {
+    const isActive = i === currentState;
+    const dotStyle = isActive
+      ? "width: 10px; height: 10px; border-radius: 50%; background-color: #FF1493; box-shadow: 0 0 10px rgba(255, 20, 147, 0.6);"
+      : "width: 10px; height: 10px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.3);";
+
+    indicators += `<div class="state-dot${
+      isActive ? " active" : ""
+    }" style="${dotStyle}"></div>`;
+  }
+
+  indicators += "</div>";
+  return indicators;
+}
+
+function wrapTitleWithStateIndicators(title, currentState, totalStates) {
+  const stateIndicators = generateStateIndicators(currentState, totalStates);
+  if (!stateIndicators) return `<h1>${title}</h1>`;
+
+  return `
+    <div style="display: flex; align-items: center; justify-content: center; gap: 1vw; margin-bottom: 30px;">
+      <h1 style="margin: 0; text-align: center;">${title}</h1>
+      ${stateIndicators}
+    </div>
+  `;
+}
+
+// =============================================================================
 // NOTES SYSTEM
 // =============================================================================
 function showNote(content) {
@@ -219,11 +255,8 @@ function showNote(content) {
     slideNote.querySelector(".note-content").innerHTML = content;
     slideNote.classList.add("visible");
 
-    // Auto-hide after configured delay
+    // Clear any existing timeout but don't set a new one
     clearTimeout(hideNoteTimeout);
-    hideNoteTimeout = setTimeout(() => {
-      hideNote();
-    }, CONFIG.NOTE_HIDE_DELAY);
   }
 }
 
@@ -235,8 +268,8 @@ function hideNote() {
 
 function updateSlideNote(slideIndex, state = 0) {
   // Show notes for specific slides
-  if (slideIndex === 3) {
-    // Slide 1.2 (Parts)
+  if (slideIndex === 4) {
+    // Slide 1.3 (Parts)
     if (state === 0) {
       showNote(`
         <h4>Vendors</h4>
@@ -262,6 +295,23 @@ function updateSlideNote(slideIndex, state = 0) {
     } else {
       hideNote();
     }
+  } else if (slideIndex === 6) {
+    // Slide 1.5 (Fabrication)
+    if (state === 0) {
+      showNote(`
+        <p>• <a href="https://fritzing.org/" target="_blank">Fritzing</a></p>
+        <p>• <a href="https://learn.adafruit.com/introducing-adafruit-stemma-qt/technical-specs?gad_campaignid=21079267614&gbraid=0AAAAADx9JvRYeeNItDfT3zTLKzO7O0Wyd" target="_blank">Adafruit STEMMA QT</a></p>
+        <p>• <a href="https://www.makerspaces.com/how-to-solder/" target="_blank">Soldering Basics</a></p>
+      `);
+    } else if (state === 1) {
+      showNote(`
+        <p>• <a href="https://jlcpcb.com/" target="_blank">JLCPCB</a></p>
+        <p>• <a href="https://www.pcbway.com/" target="_blank">PCBWay</a></p>
+        <p>• <a href="https://www.pcbway.com/blog/Engineering_Technical/Printed_Circuit_Board_Art.html" target="_blank">PCB Art</a></p>
+      `);
+    } else {
+      hideNote();
+    }
   } else {
     // Hide note for slides without references
     hideNote();
@@ -281,9 +331,9 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Configure slide states
-  setSlideMaxStates(3, 2); // Slide 1.2 (Parts) has 2 states: image view and text view
+  setSlideMaxStates(4, 2); // Slide 1.3 (Parts) has 2 states: image view and text view
   setSlideMaxStates(5, 2); // Slide 1.4 (MCU) has 2 states: image collage and description
-  setSlideMaxStates(6, 2); // Slide 1.5 (Fabrication) has 2 states: fabrication methods and manufacturing
+  setSlideMaxStates(6, 2); // Slide 1.5 (Fabrication) has 2 states: fabrication methods and production
   setSlideMaxStates(11, 3); // Slide 2.1 (Actuator) has 3 states: intro, electromagnetic, photo
   setSlideMaxStates(12, 3); // Slide 2.2 (Sensor) has 3 states: intro, analog, MEMS
   setSlideMaxStates(13, 2); // Slide 2.3 (Biometric) has 2 states: image and list
@@ -395,8 +445,8 @@ function resetSlideState(slideIndex) {
   console.log(`SSM: Reset slide ${slideIndex} to state 0`);
 
   // Reset slide content to initial state
-  if (slideIndex === 3) {
-    // Slide 1.2 (Parts)
+  if (slideIndex === 4) {
+    // Slide 1.3 (Parts)
     handlePartsSlideState(0);
     updateSlideNote(slideIndex, 0);
   } else if (slideIndex === 5) {
@@ -443,8 +493,8 @@ function triggerSlideStateChange(slideIndex, newState) {
   );
 
   // Handle specific slide state changes
-  if (slideIndex === 3) {
-    // Slide 1.2 (Parts)
+  if (slideIndex === 4) {
+    // Slide 1.3 (Parts)
     handlePartsSlideState(newState);
   } else if (slideIndex === 5) {
     // Slide 1.4 (MCU)
@@ -483,7 +533,7 @@ function triggerSlideStateChange(slideIndex, newState) {
 }
 
 function handlePartsSlideState(state) {
-  const partsSlide = slides[3]; // Slide 1.2 (Parts)
+  const partsSlide = slides[4]; // Slide 1.3 (Parts)
   const contentContainer = partsSlide.querySelector(".slide-content");
 
   if (!contentContainer) return;
@@ -491,7 +541,7 @@ function handlePartsSlideState(state) {
   if (state === 0) {
     // State 1: Show "Parts" title and big image
     contentContainer.innerHTML = `
-      <h1>Parts</h1>
+      ${wrapTitleWithStateIndicators("Parts", 0, 2)}
       <img src="https://www.ultralibrarian.com/wp-content/uploads/2022/06/shutterstock_7865275181.jpg" 
            alt="Electronic Components" 
            class="centered-image" 
@@ -501,34 +551,34 @@ function handlePartsSlideState(state) {
   } else if (state === 1) {
     // State 2: Show 2x2 named matrix of two-image units
     contentContainer.innerHTML = `
-      <h1>and Modules</h1>
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 20px 80px; margin-top: 50px; max-width: 1600px; margin-left: auto; margin-right: auto;">
+      ${wrapTitleWithStateIndicators("and Modules", 1, 2)}
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 15px 10px; margin-top: 30px; max-width: 1200px; margin-left: auto; margin-right: auto;">
         <div style="text-align: center;">
-          <h3 style="color: #FF1493; margin-bottom: 25px; font-size: 1.8em;">Evaluation Board</h3>
-          <div style="display: flex; gap: 5px; justify-content: center;">
-            <img src="img/Eval.jpg" alt="Evaluation Board" style="height: 220px; width: auto; object-fit: contain; border-radius: 15px; box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/280x220/333/fff?text=Eval+Board'">
-            <img src="img/Eval.gif" alt="Evaluation Board Demo" style="height: 220px; width: auto; object-fit: contain; border-radius: 15px; box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/280x220/333/fff?text=Eval+Demo'">
+          <h3 style="color: #FF1493; margin-bottom: 12px; font-size: 1.6em;">Evaluation Board</h3>
+          <div style="display: flex; gap: 3px; justify-content: center;">
+            <img src="img/Eval.jpg" alt="Evaluation Board" style="height: 200px; width: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/260x200/333/fff?text=Eval+Board'">
+            <img src="img/Eval.gif" alt="Evaluation Board Demo" style="height: 200px; width: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/260x200/333/fff?text=Eval+Demo'">
           </div>
         </div>
         <div style="text-align: center;">
-          <h3 style="color: #FF1493; margin-bottom: 25px; font-size: 1.8em;">Connector</h3>
-          <div style="display: flex; gap: 5px; justify-content: center;">
-            <img src="img/connector.jpg" alt="Connector" style="height: 220px; width: auto; object-fit: contain; border-radius: 15px; box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/280x220/333/fff?text=Connector'">
-            <img src="img/otherConn.jpg" alt="Other Connector" style="height: 220px; width: auto; object-fit: contain; border-radius: 15px; box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/280x220/333/fff?text=Other+Connector'">
+          <h3 style="color: #FF1493; margin-bottom: 12px; font-size: 1.6em;">Connector</h3>
+          <div style="display: flex; gap: 3px; justify-content: center;">
+            <img src="img/connector.jpg" alt="Connector" style="height: 200px; width: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/260x200/333/fff?text=Connector'">
+            <img src="img/otherConn.jpg" alt="Other Connector" style="height: 200px; width: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/260x200/333/fff?text=Other+Connector'">
           </div>
         </div>
         <div style="text-align: center;">
-          <h3 style="color: #FF1493; margin-bottom: 25px; font-size: 1.8em;">Power</h3>
-          <div style="display: flex; gap: 5px; justify-content: center;">
-            <img src="img/pwr1.jpg" alt="Power Module 1" style="height: 220px; width: auto; object-fit: contain; border-radius: 15px; box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/280x220/333/fff?text=Pwr1'">
-            <img src="img/pwr2.webp" alt="Power Module 2" style="height: 220px; width: auto; object-fit: contain; border-radius: 15px; box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/280x220/333/fff?text=Pwr2'">
+          <h3 style="color: #FF1493; margin-bottom: 12px; font-size: 1.6em;">Power</h3>
+          <div style="display: flex; gap: 3px; justify-content: center;">
+            <img src="img/pwr1.jpg" alt="Power Module 1" style="height: 200px; width: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/260x200/333/fff?text=Pwr1'">
+            <img src="img/pwr2.webp" alt="Power Module 2" style="height: 200px; width: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/260x200/333/fff?text=Pwr2'">
           </div>
         </div>
         <div style="text-align: center;">
-          <h3 style="color: #FF1493; margin-bottom: 25px; font-size: 1.8em;">Actuator</h3>
-          <div style="display: flex; gap: 5px; justify-content: center;">
-            <img src="img/act1.jpg" alt="Actuator 1" style="height: 220px; width: auto; object-fit: contain; border-radius: 15px; box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/280x220/333/fff?text=Act1'">
-            <img src="img/act4.webp" alt="Actuator 4" style="height: 220px; width: auto; object-fit: contain; border-radius: 15px; box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/280x220/333/fff?text=Act4'">
+          <h3 style="color: #FF1493; margin-bottom: 12px; font-size: 1.6em;">Actuator</h3>
+          <div style="display: flex; gap: 3px; justify-content: center;">
+            <img src="img/act1.jpg" alt="Actuator 1" style="height: 200px; width: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/260x200/333/fff?text=Act1'">
+            <img src="img/act4.webp" alt="Actuator 4" style="height: 200px; width: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/260x200/333/fff?text=Act4'">
           </div>
         </div>
       </div>
@@ -577,7 +627,7 @@ function handleFabricationSlideState(state) {
   if (state === 0) {
     // State 1: Show fabrication methods
     contentContainer.innerHTML = `
-      <h1>Fabrication</h1>
+      ${wrapTitleWithStateIndicators("Fabrication", 0, 2)}
       <div style="margin-top: 40px; position: relative; max-width: 1000px; margin-left: auto; margin-right: auto;">
         <!-- Difficulty arrow indicator -->
         <div style="position: absolute; left: -80px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center;">
@@ -635,44 +685,68 @@ function handleFabricationSlideState(state) {
       </div>
     `;
   } else if (state === 1) {
-    // State 2: Show manufacturing/PCB design knowledge
+    // State 2: Show production/PCB design knowledge
     contentContainer.innerHTML = `
-      <h1>Manufacturing</h1>
-      <div style="margin-top: 60px; max-width: 900px; margin-left: auto; margin-right: auto;">
-        <div class="features">
-          <div class="feature-box">
-            <h3>📐 PCB Design Fundamentals</h3>
-            <ul style="font-size: 0.9em; text-align: left;">
-              <li>Layer stackup planning</li>
-              <li>Trace width calculations</li>
-              <li>Via placement strategies</li>
-              <li>Component placement rules</li>
-            </ul>
+      ${wrapTitleWithStateIndicators("Production", 1, 2)}
+      <div style="margin-top: 30px; max-width: 1200px; margin-left: auto; margin-right: auto;">
+        
+        <!-- 2x2 Matrix Layout -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; gap: 20px;">
+          
+          <!-- Top Left: EDA Tools Image -->
+          <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; display: flex; align-items: center; justify-content: center; min-height: 290px;">
+            <img src="img/EDAhard.png" alt="EDA Tools" 
+                 style="width: 90%; height: auto; max-height: 250px; border-radius: 12px; box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1); cursor: pointer;" 
+                 onclick="this.src = this.src.includes('EDAhard.png') ? 'img/EDAeasy.jpg' : 'img/EDAhard.png'"
+                 onerror="this.src='https://via.placeholder.com/400x250/333/fff?text=EDA+Tools'">
           </div>
-          <div class="feature-box">
-            <h3>⚡ Signal Integrity</h3>
-            <ul style="font-size: 0.9em; text-align: left;">
-              <li>Impedance control</li>
-              <li>Crosstalk minimization</li>
-              <li>Ground plane design</li>
-              <li>High-speed routing</li>
-            </ul>
+          
+          <!-- Top Right: EDA Tool Cards -->
+          <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px 20px 0 20px; display: flex; flex-direction: column; justify-content: center; min-height: 290px;">
+            <!-- Three EDA tool cards -->
+            <div style="display: flex; flex-direction: column; gap: 0;">
+              <div style="background: rgba(255, 193, 7, 0.1); border-left: 4px solid #FFC107; padding: 12px; border-radius: 8px; text-align: left; display: flex; align-items: center; gap: 15px;">
+                <div style="flex: 1;">
+                  <h3 style="color: #FFC107; font-size: 1.2em; margin-bottom: 6px;">Eagle</h3>
+                  <p style="color: #ddd; font-size: 1em; line-height: 1.3;">Included in Fusion 360. Great 3D/CAD compatibility. Easy to use interface.</p>
+                </div>
+                <img src="img/eagle.jpeg" alt="Eagle" style="width: 80px; height: 60px; object-fit: contain; border-radius: 4px; flex-shrink: 0; box-shadow: none !important;" onerror="this.src='https://via.placeholder.com/80x60/FFC107/fff?text=Eagle'">
+              </div>
+              <div style="background: rgba(255, 152, 0, 0.1); border-left: 4px solid #FF9800; padding: 12px; border-radius: 8px; text-align: left; display: flex; align-items: center; gap: 15px;">
+                <div style="flex: 1;">
+                  <h3 style="color: #FF9800; font-size: 1.2em; margin-bottom: 6px;">EasyEDA</h3>
+                  <p style="color: #ddd; font-size: 1em; line-height: 1.3;">Developed by JLCPCB. Convenient library access and direct Gerber file submission to JLC for fabrication.</p>
+                </div>
+                <img src="img/EasyEDA.jpg" alt="EasyEDA" style="width: 80px; height: 60px; object-fit: contain; border-radius: 4px; flex-shrink: 0; box-shadow: none !important;" onerror="this.src='https://via.placeholder.com/80x60/FF9800/fff?text=EasyEDA'">
+              </div>
+              <div style="background: rgba(76, 175, 80, 0.1); border-left: 4px solid #4CAF50; padding: 12px; border-radius: 8px; text-align: left; display: flex; align-items: center; gap: 15px;">
+                <div style="flex: 1;">
+                  <h3 style="color: #4CAF50; font-size: 1.2em; margin-bottom: 6px;">Altium Designer</h3>
+                  <p style="color: #ddd; font-size: 1em; line-height: 1.3;">Very advanced professional tool. Used to design very complicated circuits and systems.</p>
+                </div>
+                <img src="img/altium.jpg" alt="Altium" style="width: 80px; height: 60px; object-fit: contain; border-radius: 4px; flex-shrink: 0; box-shadow: none !important;" onerror="this.src='https://via.placeholder.com/80x60/4CAF50/fff?text=Altium'">
+              </div>
+            </div>
           </div>
-          <div class="feature-box">
-            <h3>🏭 Manufacturing Considerations</h3>
-            <ul style="font-size: 0.9em; text-align: left;">
-              <li>DFM (Design for Manufacturing)</li>
-              <li>Assembly constraints</li>
-              <li>Testing strategies</li>
-              <li>Cost optimization</li>
-            </ul>
+
+          <!-- Bottom Left: Production Video -->
+          <div style="background: rgba(0, 0, 0, 0.3); border-radius: 12px; padding: 15px; min-height: 180px;">
+            <iframe src="https://www.youtube.com/embed/ljOoGyCso8s" 
+                    style="width: 100%; height: 100%; border: none; border-radius: 8px;" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+            </iframe>
+          </div>
+          
+          <!-- Bottom Right: PCB Image -->
+          <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 290px;">
+            <img src="img/pcb.png" alt="PCB Production" 
+                 style="width: 90%; height: auto; max-height: 250px; object-fit: contain; border-radius: 10px; box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);" 
+                 onerror="this.src='https://via.placeholder.com/300x250/333/fff?text=PCB+Production'">
           </div>
         </div>
-        <div style="margin-top: 40px; text-align: center;">
-          <p style="color: #FF1493; font-size: 1.3em; font-weight: bold;">
-            From prototype to production-ready PCB
-          </p>
-        </div>
+
       </div>
     `;
   }
@@ -687,8 +761,11 @@ function handleMCUSlideState(state) {
     // State 1: image collage with text on top
     contentContainer.innerHTML = `
       <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
-        <h1 style="margin-bottom: 30px;">MCU</h1>
-        <div style="text-align: center; margin-bottom: 30px; width: 90%;">
+        ${wrapTitleWithStateIndicators("MCU", 0, 2)}
+        <div style="text-align: center; margin-bottom: 20px; width: 90%;">
+          <p style="color: #ddd; font-size: 1.2em; margin-bottom: 15px; font-style: italic;">
+            Integrated circuit with CPU, memory, and I/O peripherals on a single chip
+          </p>
           <p style="color: #fff; font-size: 1.4em; background: rgba(255, 20, 147, 0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 20, 147, 0.7); padding: 15px 30px; border-radius: 12px; margin: 0; box-shadow: 0 8px 32px rgba(255, 20, 147, 0.4);">
             "Arduino" or "microcontroller" = MCU Chip + Development Board + Peripherals
           </p>
@@ -701,98 +778,113 @@ function handleMCUSlideState(state) {
   } else if (state === 1) {
     // State 2: selection - cut in half with MCUs top and Dev boards bottom
     contentContainer.innerHTML = `
-      <div style="display: flex; flex-direction: column; align-items: center; margin-top: 50px;">
-        <div style="max-width: 1000px; width: 100%;">
-        <!-- Top half: MCUs -->
-          <div style="text-align: center; margin-bottom: 40px;">
-          <div style="background: rgba(255, 20, 147, 0.1); border-radius: 10px; padding: 20px;">
-            <h3 style="color: #FF1493; margin-bottom: 20px; font-size: 1.6em; text-align: left;">MCU Chips</h3>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; text-align: left;">
-              <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 12px;">
-                <h4 style="color: #FF1493; font-size: 1.3em; margin-bottom: 10px;">ARM Cortex-M</h4>
-                <p style="color: #4CAF50; font-size: 1em; margin-bottom: 8px;">✓ Industry standard</p>
-                <p style="color: #4CAF50; font-size: 1em; margin-bottom: 8px;">✓ Excellent tools</p>
-                <p style="color: #4CAF50; font-size: 1em; margin-bottom: 10px;">✓ Wide ecosystem</p>
-                <p style="color: #f44336; font-size: 1em; margin-bottom: 6px;">✗ Complex setup</p>
-                <p style="color: #f44336; font-size: 1em;">✗ Higher cost</p>
-              </div>
-              <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 12px;">
-                <h4 style="color: #FF1493; font-size: 1.3em; margin-bottom: 10px;">ESP32/ESP8266</h4>
-                <p style="color: #4CAF50; font-size: 1em; margin-bottom: 8px;">✓ Built-in Wi-Fi/BT</p>
-                <p style="color: #4CAF50; font-size: 1em; margin-bottom: 8px;">✓ Low cost</p>
-                <p style="color: #4CAF50; font-size: 1em; margin-bottom: 10px;">✓ Easy to use</p>
-                <p style="color: #f44336; font-size: 1em; margin-bottom: 6px;">✗ Power hungry</p>
-                <p style="color: #f44336; font-size: 1em;">✗ Limited I/O</p>
-              </div>
-              <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 12px;">
-                <h4 style="color: #FF1493; font-size: 1.3em; margin-bottom: 10px;">RISC-V</h4>
-                <p style="color: #4CAF50; font-size: 1em; margin-bottom: 8px;">✓ Open source</p>
-                <p style="color: #4CAF50; font-size: 1em; margin-bottom: 8px;">✓ Future-proof</p>
-                <p style="color: #4CAF50; font-size: 1em; margin-bottom: 10px;">✓ Customizable</p>
-                <p style="color: #f44336; font-size: 1em; margin-bottom: 6px;">✗ Limited tools</p>
-                <p style="color: #f44336; font-size: 1em;">✗ Smaller ecosystem</p>
-              </div>
-              <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 12px;">
-                <h4 style="color: #FF1493; font-size: 1.3em; margin-bottom: 10px;">AVR</h4>
-                <p style="color: #4CAF50; font-size: 1em; margin-bottom: 8px;">✓ Simple & reliable</p>
-                <p style="color: #4CAF50; font-size: 1em; margin-bottom: 8px;">✓ Arduino compatible</p>
-                <p style="color: #4CAF50; font-size: 1em; margin-bottom: 10px;">✓ Low power</p>
-                <p style="color: #f44336; font-size: 1em; margin-bottom: 6px;">✗ Limited performance</p>
-                <p style="color: #f44336; font-size: 1em;">✗ 8-bit architecture</p>
-              </div>
+      <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
+        ${wrapTitleWithStateIndicators("MCU", 1, 2)}
+        <div style="max-width: 100vw; width: 100%; padding: 0 5vw;">
+          <!-- Container without background -->
+          <div style="display: flex; gap: 20px;">
+            <!-- Left side: MCU Chips -->
+            <div style="flex: 0.7; text-align: left; background: rgba(255, 20, 147, 0.1); border-radius: 10px; padding: 20px;">
+              <h3 style="color: #FF1493; margin-bottom: 20px; font-size: 1.5em;">MCU Chips</h3>
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 10px;">
+                  <h4 style="color: #FF1493; font-size: 1.2em; margin-bottom: 8px;">ARM Cortex-M</h4>
+                  <p style="color: #4CAF50; font-size: 0.9em; margin-bottom: 5px;">✓ Industry standard</p>
+                  <p style="color: #4CAF50; font-size: 0.9em; margin-bottom: 5px;">✓ Excellent tools</p>
+                  <p style="color: #4CAF50; font-size: 0.9em; margin-bottom: 8px;">✓ Wide ecosystem</p>
+                  <p style="color: #f44336; font-size: 0.9em; margin-bottom: 4px;">✗ Complex setup</p>
+                  <p style="color: #f44336; font-size: 0.9em;">✗ Higher cost</p>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 10px;">
+                  <h4 style="color: #FF1493; font-size: 1.2em; margin-bottom: 8px;">ESP32/ESP8266</h4>
+                  <p style="color: #4CAF50; font-size: 0.9em; margin-bottom: 5px;">✓ Built-in Wi-Fi/BT</p>
+                  <p style="color: #4CAF50; font-size: 0.9em; margin-bottom: 5px;">✓ Low cost</p>
+                  <p style="color: #4CAF50; font-size: 0.9em; margin-bottom: 8px;">✓ Easy to use</p>
+                  <p style="color: #f44336; font-size: 0.9em; margin-bottom: 4px;">✗ Power hungry</p>
+                  <p style="color: #f44336; font-size: 0.9em;">✗ Limited I/O</p>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 10px;">
+                  <h4 style="color: #FF1493; font-size: 1.2em; margin-bottom: 8px;">RISC-V</h4>
+                  <p style="color: #4CAF50; font-size: 0.9em; margin-bottom: 5px;">✓ Open source</p>
+                  <p style="color: #4CAF50; font-size: 0.9em; margin-bottom: 5px;">✓ Future-proof</p>
+                  <p style="color: #4CAF50; font-size: 0.9em; margin-bottom: 8px;">✓ Customizable</p>
+                  <p style="color: #f44336; font-size: 0.9em; margin-bottom: 4px;">✗ Limited tools</p>
+                  <p style="color: #f44336; font-size: 0.9em;">✗ Smaller ecosystem</p>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 10px;">
+                  <h4 style="color: #FF1493; font-size: 1.2em; margin-bottom: 8px;">AVR</h4>
+                  <p style="color: #4CAF50; font-size: 0.9em; margin-bottom: 5px;">✓ Simple & reliable</p>
+                  <p style="color: #4CAF50; font-size: 0.9em; margin-bottom: 5px;">✓ Arduino compatible</p>
+                  <p style="color: #4CAF50; font-size: 0.9em; margin-bottom: 8px;">✓ Low power</p>
+                  <p style="color: #f44336; font-size: 0.9em; margin-bottom: 4px;">✗ Limited performance</p>
+                  <p style="color: #f44336; font-size: 0.9em;">✗ 8-bit architecture</p>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-        <!-- Bottom half: Dev Boards -->
-        <div style="text-align: center;">
-          <div style="background: rgba(255, 20, 147, 0.1); border-radius: 10px; padding: 20px;">
-            <h3 style="color: #FF1493; margin-bottom: 20px; font-size: 1.6em; text-align: left;">Development Boards</h3>
-            <div style="display: grid; grid-template-columns: 1fr; grid-template-rows: auto auto; gap: 15px; text-align: left;">
-              <!-- Top row: Seeed Studio Xiao with left text and right images -->
-              <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 15px;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center;">
-                  <!-- Left: Text -->
-                  <div style="background: rgba(255, 255, 255, 0.05); border-radius: 6px; padding: 12px;">
-                    <h4 style="color: #FF1493; font-size: 1.4em; margin-bottom: 10px;">Seeed Studio Xiao</h4>
-                    <p style="color: #ddd; font-size: 1.1em; line-height: 1.4; margin-bottom: 8px;">
-                      • Xiǎo 小, small!
-                    </p>
-                    <p style="color: #ddd; font-size: 1.1em; line-height: 1.4;">
-                      • Researcher's favorite
-                    </p>
+            
+            <!-- Right side: Development Boards -->
+            <div style="flex: 2; text-align: left; display: flex; align-items: center;">
+              <div style="width: 100%; margin: auto; border: 1px solid rgba(255, 20, 147, 0.3); border-radius: 8px; padding: 15px;">
+                <h3 style="color: #FF1493; margin-bottom: 20px; font-size: 1.5em;">Development Boards</h3>
+                <div style="display: grid; grid-template-columns: 1fr; grid-template-rows: auto auto; gap: 15px;">
+                  <!-- Top row: Seeed Studio Xiao with left text and right images -->
+                  <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 15px; min-height: 280px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center; height: 100%;">
+                      <!-- Left: Text -->
+                      <div style="padding: 12px;">
+                        <h4 style="color: #FF1493; font-size: 1.4em; margin-bottom: 10px;">Seeed Studio Xiao</h4>
+                        <p style="color: #ddd; font-size: 1.1em; line-height: 1.4; margin-bottom: 8px;">
+                          • Xiǎo 小, small!
+                        </p>
+                       <p style="color: #ddd; font-size: 1.1em; line-height: 1.4; margin-bottom: 8px;">
+                          • Various MCU choices
+                        </p>
+                        <p style="color: #ddd; font-size: 1.1em; line-height: 1.4;">
+                          • Researcher's favorite
+                        </p>
+                      </div>
+                      <!-- Right: Images with overlaid citations -->
+                      <div style="display: flex; justify-content: center; align-items: stretch; height: 250px; margin: 0; padding: 0; border: none;">
+                        <div style="position: relative; margin-right: 2px; width: 180px; height: 100%; border: none; padding: 0;">
+                          <img src="img/Retnanto et al., 2024.jpg" alt="Retnanto et al., 2024" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px; display: block; margin: 0; padding: 0; border: none;" onerror="this.src='https://via.placeholder.com/180x250/333/fff?text=Retnanto+2024'">
+                          <div style="position: absolute; bottom: 8px; left: 8px; right: 8px; background: linear-gradient(45deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7)); color: #fff; font-size: 0.6em; padding: 6px 10px; border-radius: 4px; margin: 0; text-align: center;">Retnanto et al., 2024</div>
+                        </div>
+                        <div style="position: relative; margin: 0 2px; width: 180px; height: 100%; border: none; padding: 0;">
+                          <img src="img/Brooks et al., 2024.png" alt="Brooks et al., 2024" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px; display: block; margin: 0; padding: 0; border: none;" onerror="this.src='https://via.placeholder.com/180x250/333/fff?text=Brooks+2024'">
+                          <div style="position: absolute; bottom: 8px; left: 8px; right: 8px; background: linear-gradient(45deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7)); color: #fff; font-size: 0.6em; padding: 6px 10px; border-radius: 4px; margin: 0; text-align: center;">Brooks et al., 2024</div>
+                        </div>
+                        <div style="position: relative; margin-left: 2px; width: 180px; height: 100%; border: none; padding: 0;">
+                          <img src="img/Kong et al., 2024.png" alt="Kong et al., 2024" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px; display: block; margin: 0; padding: 0; border: none;" onerror="this.src='https://via.placeholder.com/180x250/333/fff?text=Kong+2024'">
+                          <div style="position: absolute; bottom: 8px; left: 8px; right: 8px; background: linear-gradient(45deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7)); color: #fff; font-size: 0.6em; padding: 6px 10px; border-radius: 4px; margin: 0; text-align: center;">Kong et al., 2024</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <!-- Right: Images with overlaid citations -->
-                  <div style="display: flex; justify-content: center; align-items: center;">
-                    <div style="position: relative; margin-right: 5px; display: inline-block;">
-                      <img src="img/Retnanto et al., 2024.jpg" alt="Retnanto et al., 2024" style="max-width: 250px; max-height: 160px; object-fit: contain; border-radius: 8px; display: block;" onerror="this.src='https://via.placeholder.com/250x160/333/fff?text=Retnanto+2024'">
-                      <div style="position: absolute; bottom: 8px; left: 8px; right: 8px; background: linear-gradient(45deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7)); color: #fff; font-size: 0.6em; padding: 6px 10px; border-radius: 4px; margin: 0; text-align: center;">Retnanto et al., 2024</div>
+                  <!-- Bottom row: two items -->
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 12px;">
+                      <!-- Thin line of text on top, left-aligned -->
+                      <h4 style="color: #FF1493; font-size: 1.4em; font-weight: bold; line-height: 1; margin: 0 0 8px 0; padding: 0; text-align: left;">
+                        Teensy & High Performance
+                      </h4>
+                      <!-- Image left-aligned and properly wrapped -->
+                      <div style="position: relative; display: inline-block; margin: 0; padding: 0;">
+                        <img src="img/DeVrio & Harrison., 2025.jpg" alt="Teensy" style="max-width: 100%; height: auto; object-fit: contain; border-radius: 8px; display: block; margin: 0; padding: 0;" onerror="this.src='https://via.placeholder.com/250x160/333/fff?text=Teensy'">
+                        <div style="position: absolute; bottom: 8px; left: 8px; right: 8px; background: linear-gradient(45deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7)); color: #fff; font-size: 0.6em; padding: 6px 10px; border-radius: 4px; margin: 0; text-align: center;">DeVrio & Harrison., 2025</div>
+                      </div>
                     </div>
-                    <div style="position: relative; margin: 0 5px; display: inline-block;">
-                      <img src="img/Brooks et al., 2024.png" alt="Brooks et al., 2024" style="max-width: 250px; max-height: 160px; object-fit: contain; border-radius: 8px; display: block;" onerror="this.src='https://via.placeholder.com/250x160/333/fff?text=Brooks+2024'">
-                      <div style="position: absolute; bottom: 8px; left: 8px; right: 8px; background: linear-gradient(45deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7)); color: #fff; font-size: 0.6em; padding: 6px 10px; border-radius: 4px; margin: 0; text-align: center;">Brooks et al., 2024</div>
-                    </div>
-                    <div style="position: relative; margin-left: 5px; display: inline-block;">
-                      <img src="img/Kong et al., 2024.png" alt="Kong et al., 2024" style="max-width: 250px; max-height: 160px; object-fit: contain; border-radius: 8px; display: block;" onerror="this.src='https://via.placeholder.com/250x160/333/fff?text=Kong+2024'">
-                      <div style="position: absolute; bottom: 8px; left: 8px; right: 8px; background: linear-gradient(45deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7)); color: #fff; font-size: 0.6em; padding: 6px 10px; border-radius: 4px; margin: 0; text-align: center;">Kong et al., 2024</div>
+                    <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 12px;">
+                      <!-- Thin line of text on top, left-aligned -->
+                      <h4 style="color: #FF1493; font-size: 1.4em; font-weight: bold; line-height: 1; margin: 0 0 8px 0; padding: 0; text-align: left;">
+                        Specialty Boards
+                      </h4>
+                      <!-- Image left-aligned and properly wrapped -->
+                      <div style="position: relative; display: inline-block; margin: 0; padding: 0;">
+                        <img src="img/lilypad.png" alt="Lilypad" style="max-width: 100%; height: auto; object-fit: contain; border-radius: 8px; display: block; margin: 0; padding: 0;" onerror="this.src='https://via.placeholder.com/250x160/333/fff?text=Lilypad'">
+                        <div style="position: absolute; bottom: 8px; left: 8px; right: 8px; background: linear-gradient(45deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7)); color: #fff; font-size: 0.6em; padding: 6px 10px; border-radius: 4px; margin: 0; text-align: center;">Lilypad Arduino</div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-              <!-- Bottom row: two items -->
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 12px;">
-                  <p style="color: #ddd; font-size: 1.2em; line-height: 1.4;">
-                    ESP32 DevKits<br>
-                    <span style="font-size: 1.1em; color: #bbb;">(various vendors)</span>
-                  </p>
-                </div>
-                <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 12px;">
-                  <p style="color: #ddd; font-size: 1.2em; line-height: 1.4;">
-                    STM32 Nucleo/Discovery<br>
-                    <span style="font-size: 1.1em; color: #bbb;">(STMicroelectronics)</span>
-                  </p>
-                </div>
                 </div>
               </div>
             </div>
@@ -816,7 +908,8 @@ function handleSensorSlideState(state) {
   if (state === 0) {
     // State 0: Sensor Introduction
     contentContainer.innerHTML = `
-      <div style="display: flex; flex-direction: column; align-items: center; margin-top: 40px;">
+      <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
+        ${wrapTitleWithStateIndicators("Sensor", 0, 3)}
         <div style="text-align: center; max-width: 1200px;">
           <p style="color: #ddd; font-size: 1.6em; line-height: 1.5; margin-bottom: 40px;">
             Input devices that convert physical phenomena into electrical signals
@@ -842,8 +935,8 @@ function handleSensorSlideState(state) {
     // State 1: Analog Sensors
     contentContainer.innerHTML = `
       <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
+        ${wrapTitleWithStateIndicators("Analog Sensors", 1, 3)}
         <div style="text-align: center; margin: 20px 0;">
-          <h2 style="color: #FF1493; margin-bottom: 10px;">Analog Sensors</h2>
           <p style="color: #ddd; font-size: 1.2em;">basically family of weird resistors</p>
           <div style="margin-top: 30px; max-width: 1200px;">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; text-align: left;">
@@ -889,8 +982,8 @@ function handleSensorSlideState(state) {
     // State 2: MEMS Sensors
     contentContainer.innerHTML = `
       <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
+        ${wrapTitleWithStateIndicators("MEMS Sensors", 2, 3)}
         <div style="text-align: center; margin: 20px 0;">
-          <h2 style="color: #FF1493; margin-bottom: 10px;">MEMS Sensors</h2>
           <p style="color: #ddd; font-size: 1.2em;">Micro-Electro-Mechanical Systems</p>
           <div style="margin-top: 30px; max-width: 1200px;">
             <div style="background: rgba(255, 20, 147, 0.1); border-left: 4px solid #FF1493; padding: 30px; border-radius: 10px; text-align: left;">
@@ -935,7 +1028,8 @@ function handleActuatorSlideState(state) {
   if (state === 0) {
     // State 0: Actuator Introduction
     contentContainer.innerHTML = `
-      <div style="display: flex; flex-direction: column; align-items: center; margin-top: 40px;">
+      <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
+        ${wrapTitleWithStateIndicators("Actuator", 0, 3)}
         <div style="text-align: center; max-width: 1200px;">
           <p style="color: #ddd; font-size: 1.6em; line-height: 1.5; margin-bottom: 40px;">
             Output devices that convert electrical signals into physical actions
@@ -962,8 +1056,8 @@ function handleActuatorSlideState(state) {
     // State 1: Electromagnetic Actuators
     contentContainer.innerHTML = `
       <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
+        ${wrapTitleWithStateIndicators("Electromagnetic Actuators", 1, 3)}
         <div style="text-align: center; margin: 20px 0;">
-          <h2 style="color: #FF1493; margin-bottom: 10px;">Electromagnetic Actuators</h2>
           <p style="color: #ddd; font-size: 1.2em;">move and actuate</p>
           <div style="margin-top: 30px; max-width: 900px;">
             <div style="display: grid; grid-template-columns: 1fr 1fr 0.8fr; gap: 20px; text-align: left;">
@@ -1007,8 +1101,8 @@ function handleActuatorSlideState(state) {
     // State 2: Photo Actuators
     contentContainer.innerHTML = `
       <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
+        ${wrapTitleWithStateIndicators("Photo-Actuators", 2, 3)}
         <div style="text-align: center; margin: 20px 0;">
-          <h2 style="color: #FF1493; margin-bottom: 10px;">Photo-Actuators</h2>
           <p style="color: #ddd; font-size: 1.2em;">show and display</p>
           <div style="margin-top: 30px; max-width: 1200px;">
             <div style="background: rgba(255, 20, 147, 0.1); border-left: 4px solid #FF1493; padding: 30px; border-radius: 10px; text-align: left;">
@@ -1048,6 +1142,7 @@ function handleBiometricSlideState(state) {
 
   if (state === 0) {
     contentContainer.innerHTML = `
+      ${wrapTitleWithStateIndicators("Biometric", 0, 2)}
       <div style="display: flex; gap: 30px; justify-content: center; align-items: center; margin-top: 40px;">
         <img src="img/biometrics.png" alt="Biometric Sensors" 
              style="max-width: 45%; height: auto; border-radius: 10px; box-shadow: none !important;" 
@@ -1060,8 +1155,8 @@ function handleBiometricSlideState(state) {
   } else if (state === 1) {
     contentContainer.innerHTML = `
       <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
+        ${wrapTitleWithStateIndicators("Biometric Sensors", 1, 2)}
         <div style="text-align: center; margin: 20px 0;">
-          <h2 style="color: #FF1493; margin-bottom: 10px;">Biometric Sensors</h2>
           <p style="color: #ddd; font-size: 1.2em;">identity verification and health monitoring</p>
           <div style="margin-top: 30px; max-width: 1200px;">
             <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; text-align: left;">
@@ -1286,10 +1381,10 @@ function changeSlide(direction) {
     }, 50);
   }
 
-  updateProgressBar();
-
   // Reset the new slide's state when navigating to it
   resetSlideState(currentSlide);
+
+  updateProgressBar();
 
   // Load images for current slide and preload adjacent slides
   loadImagesForSlide(currentSlide);
@@ -1314,10 +1409,10 @@ function goToSlide(slideIndex) {
       }, 50);
     }
 
-    updateProgressBar();
-
     // Reset the new slide's state when navigating to it
     resetSlideState(currentSlide);
+
+    updateProgressBar();
 
     // Load images for current slide and preload adjacent slides
     loadImagesForSlide(currentSlide);

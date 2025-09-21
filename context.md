@@ -139,7 +139,7 @@ HTPAAC/
 
 #### Completed Multi-State Slides (SSM-enabled)
 
-- **1.2 Parts**: 2 states (image ↔ component categories)
+- **1.3 Parts**: 2 states (image ↔ component categories)
 - **1.4 MCU**: 2 states (image collage ↔ technical descriptions)
 - **2.1 Actuator**: 3 states (Introduction → Electromagnetic → Photo-Actuators)
 - **2.2 Sensor**: 3 states (Introduction → Analog → MEMS sensors with real images)
@@ -152,7 +152,7 @@ HTPAAC/
 - **Aspect Ratio Preservation**: object-fit: contain prevents distortion
 - **Consistent Spacing**: 20px gaps between images for optimal visual balance
 - **Sequential Ordering**: Analog sensors (R1, R2, Film1, Film2), MEMS sensors (0, 1, 2, 3)
-- **Responsive Design**: 1200px max-width containers with proper centering
+- **Responsive Design**: Slide max-width increased to 1800px (2200px on large screens), feature-box width fixed at 380px with center alignment
 
 #### Interactive Features
 
@@ -160,6 +160,10 @@ HTPAAC/
 - **Precise Click Zones**: 60px edge zones for navigation, center area for SSM
 - **Gamepad Integration**: Full D-pad, analog stick, and L/L2 button support
 - **State Persistence**: Complete session memory with localStorage
+- **State Indicators**: Visual dots next to slide titles showing current state
+  - White dots for inactive states, deep pink (#FF1493) with glow for active state
+  - Only displayed for multi-state slides (skipped for single-state slides)
+  - Positioned 1vw to the right of centered slide titles
 
 #### Visual Enhancements
 
@@ -198,33 +202,39 @@ HTPAAC/
 - Heading: We have all played with this
 - Image: https://www.makerspaces.com/wp-content/uploads/2017/05/2-Blink-an-LED_LARGE.jpg
 
-  1.2 **Parts** - quick intro of electric and electronic parts
+  1.2 **Laws** - quick intro of related physics
+
+- Structure: Scene-driven card layout with practical applications
+- Three main cards: Choose Power Supply (V=I×R), Avoid Burning Parts (P=V×I), Debug Circuits (KVL & KCL)
+- Each card includes: emoji icon, practical scenario title, formula highlight box, real-world example
+- Bottom section: Advanced EE Theory list (Maxwell's Equations, Transmission Line Theory, RF Circuit Analysis, Signal Integrity, EMI/EMC Analysis, Non-Linear Circuit Theory)
+- Design: Card-based layout with gradient backgrounds and scenario-focused content
+
+  1.3 **Parts** - quick intro of electric and electronic parts
 
 - Structure: title and big image(state 1), title 2x2 named matrix of two-image units(state 2)
 - State 1 image: https://www.ultralibrarian.com/wp-content/uploads/2022/06/shutterstock_7865275181.jpg
-- State 1 Notes: title “Vendors”, Item: Digikey, Mouser
-- State 2: Use title “and Modules”. The four units(wraps) in the matrix are: Eval.jpg and Eval.gif with name “Evaluation Board”; connector.jpg and otherConn.jpg with name “Connector”; Pwr1 and Pwr2 with name “Power”; act1.jpg and act4.webp with name “Actuator"
-- State 2 Notes: title “Vendors”, Item: Adafruit, Sparkfun, Seeed Studio
+- State 1 Notes: title "Vendors", Item: Digikey, Mouser
+- State 2: Use title "and Modules". Compact 2×2 grid layout with tighter spacing (gap: 15px 10px)
+- Four modules: Evaluation Board, Connector, Power, Actuator (each with paired images, height: 200px)
+- State 2 Notes: title "Vendors", Item: Adafruit, Sparkfun, Seeed Studio
+- Design: Optimized spacing with reduced title-to-image gaps (12px) and smaller image gaps (3px)
   <!-- We can think them as modules                  this is the framework which I think is the best fit for us to design and implement circuits.  -->
-
-  1.3 **Laws** - quick intro of related physics
-
-- Structure: Iceberg Chart
 
   1.4 **MCU** - microcontroller systems and development platforms
 
-- Structure: conceptual overview with glassmorphism design (state 1) and detailed technical comparison (state 2)
-- State 1: MCU collage with floating equation
+- Structure: conceptual overview with technical definition (state 1) and side-by-side comparison (state 2)
+- State 1: MCU collage with technical explanation and equation
+  Technical definition: "Integrated circuit with CPU, memory, and I/O peripherals on a single chip"
   Image: MCU.jpg collage showing various microcontroller examples
-  Overlay: Pink glassmorphism text box positioned above image (-80px from top)
   Equation: "Arduino" or "microcontroller" = MCU Chip + Development Board + Peripherals
-  Design: 60% opacity pink background with blur effects, white text, enhanced shadows
-- State 2: Comprehensive MCU comparison matrix
-  Layout: Top section (MCU Chips) with 4-column grid comparison
-  MCU Types: ARM Cortex-M, ESP32/ESP8266, RISC-V, AVR architectures
-  Features: Pros/cons analysis with enlarged text (1.3em headers, 1em content)
-  Development Boards: Bottom section with platform examples and research citations
-  Notes: Links to Seeed Studio Xiao, Adafruit QT Py, Teensy platforms
+  Design: Pink glassmorphism equation box with blur effects
+- State 2: Side-by-side comparison layout
+  Left side: MCU Chips comparison (2×2 grid) - ARM Cortex-M, ESP32/ESP8266, RISC-V, AVR
+  Right side: Development Boards with research citations
+  Seeed Studio Xiao: Text description + 3 research images (Retnanto et al. 2024, Brooks et al. 2024, Kong et al. 2024)
+  Teensy & High Performance: Title + DeVrio & Harrison 2025 citation image
+  Container: Single unified layout with left/right sections, page-level padding (5vw)
 
   1.5 **Prototyping** - prototyping methods and tools
 
@@ -232,14 +242,21 @@ HTPAAC/
 
   1.6 **Software** - programming environments and tools for hardware
 
-- Structure: list with images on the left and text on the right
+- Structure: Vertical card layout with centered text alignment
+- Primary IDEs: Arduino IDE, PlatformIO, Keil µVision with icons on left, text centered
+- Specialized Tools: Two-column grid for chip-specific IDEs and high-level languages
 
   1.7 **Protocol** - signal/communication protocols and method
-  Structure: list with images on the left and text on the right
+
+- Structure: Feature boxes with subtitle "Wired communication between parts and the architectures"
+- Two main sections: Serial Protocols and High-Speed Protocols
+- Bottom examples: 4 real-world application cards (Arduino↔Sensors, Wearable Devices, LED Strip Control, Robot Motors)
 
   1.8 **Networking** - methods to (wirelessly) interconnect hardware
 
-- Structure: list with images on the left and text on the right
+- Structure: Feature boxes with subtitle "Wireless communication between nodes and localities"
+- Two main sections: Local Networks and Wide Area Networks (Network Topologies section removed)
+- Bottom examples: 4 real-world application cards (Health Monitoring, IoT for Nature, Smart Clothing, Prosthetics)
 
   2.0 **Part 2** - Part 2 Cover
 

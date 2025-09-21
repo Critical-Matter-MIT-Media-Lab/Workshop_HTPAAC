@@ -11,23 +11,32 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 # Try multiple PDF libraries for better compatibility
+PDFKIT_AVAILABLE = False
+WEASYPRINT_AVAILABLE = False
+PLAYWRIGHT_AVAILABLE = False
+
 try:
     import pdfkit
     PDFKIT_AVAILABLE = True
 except ImportError:
-    PDFKIT_AVAILABLE = False
-
-try:
-    from weasyprint import HTML, CSS
-    WEASYPRINT_AVAILABLE = True
-except ImportError:
-    WEASYPRINT_AVAILABLE = False
+    pass
 
 try:
     from playwright.sync_api import sync_playwright
     PLAYWRIGHT_AVAILABLE = True
 except ImportError:
-    PLAYWRIGHT_AVAILABLE = False
+    pass
+
+# Only import weasyprint when needed to avoid dependency issues
+def import_weasyprint():
+    global WEASYPRINT_AVAILABLE
+    try:
+        from weasyprint import HTML, CSS
+        WEASYPRINT_AVAILABLE = True
+        return HTML, CSS
+    except ImportError:
+        WEASYPRINT_AVAILABLE = False
+        return None, None
 
 
 def convert_with_pdfkit(input_source, output_path, options=None):
@@ -64,6 +73,7 @@ def convert_with_pdfkit(input_source, output_path, options=None):
 
 def convert_with_weasyprint(input_source, output_path):
     """Convert using WeasyPrint"""
+    HTML, CSS = import_weasyprint()
     if not WEASYPRINT_AVAILABLE:
         raise ImportError("weasyprint is not installed. Install with: pip install weasyprint")
 
@@ -110,6 +120,9 @@ def convert_with_playwright(input_source, output_path):
             browser = p.chromium.launch(headless=True)
             page = browser.new_page()
 
+            # Set a larger viewport for better rendering
+            page.set_viewport_size({'width': 1920, 'height': 1080})
+
             if input_source.startswith('http://') or input_source.startswith('https://'):
                 page.goto(input_source, wait_until='networkidle')
             else:
@@ -117,20 +130,71 @@ def convert_with_playwright(input_source, output_path):
                 file_path = Path(input_source).resolve()
                 page.goto(f'file://{file_path}', wait_until='networkidle')
 
-            # Wait for content to load
-            page.wait_for_timeout(2000)
+            # Wait for JavaScript to execute and content to render
+            print("Waiting for JavaScript content to render...")
+            page.wait_for_timeout(5000)  # Give more time for dynamic content
+
+            # Try to wait for specific content if it exists
+            try:
+                page.wait_for_selector('.slide', timeout=5000)
+            except:
+                pass  # Continue even if selector not found
+
+            # For HTPAAC project - trigger all slides to render their content
+            # This ensures all innerHTML content is generated
+            print("Rendering all slides content...")
+            page.evaluate('''
+                (() => {
+                    // Try to render all slides if the functions exist
+                    if (typeof initializeSlideStates === 'function') {
+                        initializeSlideStates();
+                    }
+
+                    // Force all slides to be visible for PDF export
+                    const allSlides = document.querySelectorAll('.slide');
+                    allSlides.forEach((slide, index) => {
+                        slide.style.display = 'block';
+                        slide.style.pageBreakAfter = 'always';
+                        slide.style.marginBottom = '50px';
+                    });
+
+                    // Hide navigation elements for cleaner PDF
+                    const navElements = document.querySelectorAll('.nav-btn, .progress-container, .chamber');
+                    navElements.forEach(el => {
+                        if (el) el.style.display = 'none';
+                    });
+
+                    // Ensure all images are loaded
+                    const images = document.querySelectorAll('img');
+                    const promises = Array.from(images).map(img => {
+                        if (img.complete) return Promise.resolve();
+                        return new Promise((resolve) => {
+                            img.addEventListener('load', resolve);
+                            img.addEventListener('error', resolve);
+                        });
+                    });
+
+                    return Promise.all(promises);
+                })();
+            ''')
+
+            # Additional wait for any async operations
+            page.wait_for_timeout(3000)
 
             # Generate PDF with options for better formatting
+            print("Generating PDF...")
             page.pdf(
                 path=output_path,
                 format='A4',
                 print_background=True,
                 margin={
-                    'top': '20mm',
-                    'right': '20mm',
-                    'bottom': '20mm',
-                    'left': '20mm'
-                }
+                    'top': '15mm',
+                    'right': '15mm',
+                    'bottom': '15mm',
+                    'left': '15mm'
+                },
+                display_header_footer=False,
+                prefer_css_page_size=True
             )
 
             browser.close()
