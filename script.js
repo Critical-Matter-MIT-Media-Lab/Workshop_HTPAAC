@@ -570,15 +570,17 @@ function handlePartsSlideState(state) {
         <div style="text-align: center;">
           <h3 style="color: #FF1493; margin-bottom: 12px; font-size: 1.6em;">Power</h3>
           <div style="display: flex; gap: 3px; justify-content: center;">
-            <img src="img/pwr1.jpg" alt="Power Module 1" style="height: 200px; width: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/260x200/333/fff?text=Pwr1'">
-            <img src="img/pwr2.webp" alt="Power Module 2" style="height: 200px; width: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/260x200/333/fff?text=Pwr2'">
+            <img src="img/Pwr1.jpg" alt="Power Module 1" style="height: 200px; width: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/260x200/333/fff?text=Pwr1'">
+            <img src="img/Pwr2.webp" alt="Power Module 2" style="height: 200px; width: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/260x200/333/fff?text=Pwr2'">
           </div>
         </div>
         <div style="text-align: center;">
           <h3 style="color: #FF1493; margin-bottom: 12px; font-size: 1.6em;">Actuator</h3>
           <div style="display: flex; gap: 3px; justify-content: center;">
             <img src="img/act1.jpg" alt="Actuator 1" style="height: 200px; width: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/260x200/333/fff?text=Act1'">
-            <img src="img/act4.webp" alt="Actuator 4" style="height: 200px; width: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/260x200/333/fff?text=Act4'">
+            <a href="https://www.youtube.com/watch?v=tgTY2wmgIA4" target="_blank" style="display: inline-block; text-decoration: none;">
+              <img src="img/act4.webp" alt="Actuator 4" style="height: 200px; width: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2); cursor: pointer; transition: transform 0.2s ease;" onerror="this.src='https://via.placeholder.com/260x200/333/fff?text=Act4'" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            </a>
           </div>
         </div>
       </div>
@@ -1093,7 +1095,9 @@ function handleActuatorSlideState(state) {
           <img src="img/act1.jpg" alt="Act1" style="height: 280px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/280x280/333/fff?text=Act1'">
           <img src="img/act2.gif" alt="Act2" style="height: 280px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/280x280/333/fff?text=Act2'">
           <img src="img/act3.gif" alt="Act3" style="height: 280px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/280x280/333/fff?text=Act3'">
-          <img src="img/act4.webp" alt="Act4" style="height: 280px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/280x280/333/fff?text=Act4'">
+          <a href="https://www.youtube.com/watch?v=tgTY2wmgIA4" target="_blank" style="display: inline-block; text-decoration: none;">
+            <img src="img/act4.webp" alt="Act4" style="height: 280px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1); cursor: pointer; transition: transform 0.2s ease;" onerror="this.src='https://via.placeholder.com/280x280/333/fff?text=Act4'" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          </a>
         </div>
       </div>
     `;
@@ -1458,6 +1462,10 @@ document.addEventListener("keydown", function (event) {
     if (slideNumber < slides.length) {
       goToSlide(slideNumber);
     }
+  } else if (event.key === "Tab") {
+    // Prevent Tab key from causing focus changes and layout shifts
+    // This prevents the slideshow from shifting left when Tab is pressed
+    event.preventDefault();
   }
 });
 

@@ -66,7 +66,7 @@ HTPAAC/
 
 - **Optimized Arrow Keys**: Smart detection between fast clicks vs. hold (1sec delay for auto-repeat)
 - **Gamepad Support**: D-pad/analog stick navigation, L/L2 buttons for SSM state switching
-- **Keyboard Navigation**: Arrow keys, Space, Enter, number keys 1-9, ESC, P key, L key for SSM, R key for reset
+- **Keyboard Navigation**: Arrow keys, Space, Enter, number keys 1-9, ESC, P key, L key for SSM, R key for reset, Tab key disabled to prevent layout shifts
 - **Smart Mouse Navigation**: 60px edge zones for navigation, 200px detection zones for visual feedback
 - **Touch Support**: Swipe gestures for slide transitions
 - **Auto-play**: Toggle with P key
