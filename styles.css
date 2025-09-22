@@ -692,16 +692,12 @@ code {
     margin-right: auto !important;
   }
 
-  /* Center project outline accordions on large screens */
-  .slide div[style*="margin-left: 180px"] {
-    margin-left: auto !important;
-    margin-right: auto !important;
-  }
+  /* Center project outline accordions on large screens - no longer needed with flex centering */
 
   /* p5.js vertical accordion adjustments for large screens */
   #p5js-vertical-tab {
-    left: -100px !important;
-    width: 80px !important;
+    left: -120px !important;
+    width: 100px !important;
   }
 
   #p5js-vertical-tab span:first-child {
@@ -712,12 +708,8 @@ code {
     font-size: 0.85em !important;
   }
 
-  #p5js-accordion-content {
-    left: -100px !important;
-  }
-
   #p5js-accordion-content > div {
-    min-width: 1000px !important;
+    min-width: 800px !important;
     padding: 25px 25px 25px 25px !important;
     padding-top: 1vw !important;
   }

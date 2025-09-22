@@ -1810,10 +1810,11 @@ function handleHardModeSlideState(state) {
   } else if (state === 1) {
     contentContainer.innerHTML = `
       ${wrapTitleWithStateIndicators("Project Outline", 1, 3)}
-      <div style="margin-top: 40px; max-width: 800px; margin-left: 180px; margin-right: auto; position: relative;">
+      <div style="margin-top: 40px; display: flex; justify-content: center; width: 100%; position: relative;">
+        <div style="max-width: 800px; position: relative;">
         
         <!-- Vertical p5.js Tab -->
-        <div id="p5js-vertical-tab" style="position: absolute; left: -80px; top: 0; bottom: 0; width: 60px; background: linear-gradient(135deg, rgba(255, 20, 147, 0.15) 0%, rgba(255, 20, 147, 0.05) 100%); border: 2px solid rgba(255, 20, 147, 0.4); border-radius: 12px; cursor: pointer; z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.3s ease;" onclick="event.stopPropagation(); toggleP5jsAccordion()">
+        <div id="p5js-vertical-tab" style="position: absolute; left: -90px; top: 0; bottom: 0; width: 80px; background: linear-gradient(135deg, rgba(255, 20, 147, 0.15) 0%, rgba(255, 20, 147, 0.05) 100%); border: 2px solid rgba(255, 20, 147, 0.4); border-radius: 12px; cursor: pointer; z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.3s ease;" onclick="event.stopPropagation(); toggleP5jsAccordion()">
           <span style="color: #FF1493; font-size: 1.4em; font-weight: bold; letter-spacing: 1px; text-shadow: 0 0 8px rgba(255, 20, 147, 0.3);">p5.js</span>
           <span style="color: rgba(255, 255, 255, 0.6); font-size: 0.75em; font-weight: normal; margin-top: 4px; letter-spacing: 0.5px; font-style: italic;">
             *bonus
@@ -1822,7 +1823,7 @@ function handleHardModeSlideState(state) {
         </div>
         
         <!-- p5.js Accordion Content -->
-        <div id="p5js-accordion-content" style="position: absolute; left: -80px; top: 0; width: 0; height: 100%; background: rgba(255, 20, 147, 0.25); backdrop-filter: blur(25px) saturate(1.5); -webkit-backdrop-filter: blur(25px) saturate(1.5); border: 2px solid rgba(255, 20, 147, 0.6); border-radius: 12px; z-index: 15; overflow: hidden; transition: width 0.4s ease, opacity 0.3s ease; opacity: 0; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);">
+        <div id="p5js-accordion-content" style="position: absolute; left: 0; top: 0; width: 0; height: 100%; background: rgba(255, 20, 147, 0.25); backdrop-filter: blur(25px) saturate(1.5); -webkit-backdrop-filter: blur(25px) saturate(1.5); border: 2px solid rgba(255, 20, 147, 0.6); border-radius: 12px; z-index: 15; overflow: hidden; transition: width 0.4s ease, opacity 0.3s ease; opacity: 0; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);">
           
           <!-- Large p5.js Logo positioned at absolute top-left -->
           <div style="position: absolute !important; top: 0 !important; left: 0 !important; width: 120px !important; height: 100px !important; z-index: 25 !important; margin: 0 !important; padding: 0 !important;">
@@ -1831,7 +1832,7 @@ function handleHardModeSlideState(state) {
             </a>
           </div>
           
-          <div style="padding: 20px; padding-top: 1vw; height: 100%; overflow: hidden; min-width: 860px; scrollbar-width: none; -ms-overflow-style: none;">
+          <div style="padding: 20px; padding-top: 1vw; height: 100%; overflow: hidden; min-width: 800px; scrollbar-width: none; -ms-overflow-style: none;">
             <!-- Header with centered title and close button -->
             <div style="position: relative; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
               <h3 style="color: #FF1493; font-size: 1.4em; margin: 0; text-shadow: 0 0 8px rgba(255, 20, 147, 0.5); line-height: 1; text-align: center;">
@@ -1845,7 +1846,7 @@ function handleHardModeSlideState(state) {
             </div>
             <div style="color: #ddd; font-size: 0.95em; line-height: 1.5;">
               <p style="margin-bottom: 12px; text-align: center; font-size: 1em; color: #FFB3DA;">
-                JavaScript library of processing, a web-based router for all creative computing applications
+                JavaScript library of processing,<br>a web-based router for all creative computing applications
               </p>
               
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
@@ -2018,6 +2019,7 @@ function handleHardModeSlideState(state) {
             </div>
           </div>
 
+        </div>
         </div>
       </div>
     `;
@@ -2294,8 +2296,8 @@ function toggleP5jsAccordion() {
       }
     });
 
-    // Expand p5.js accordion
-    const expandedWidth = window.innerWidth >= 1921 ? "1000px" : "860px";
+    // Expand p5.js accordion to cover only the accordion list area
+    const expandedWidth = window.innerWidth >= 1921 ? "800px" : "800px";
     content.style.width = expandedWidth;
     setTimeout(() => {
       content.style.opacity = "1";
