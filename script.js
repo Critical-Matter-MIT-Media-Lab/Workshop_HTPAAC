@@ -1274,14 +1274,13 @@ function handleKitSlideState(state) {
         
         <!-- Main Kit Image -->
         <div style="margin-bottom: 50px; text-align: center;">
-          <img src="https://via.placeholder.com/700x450/333/fff?text=Workshop+Kit+Image" alt="Workshop Kit" 
-               style="width: 700px; height: auto; max-width: 85%; border-radius: 15px; box-shadow: 0 15px 40px rgba(255, 255, 255, 0.15); display: block; margin: 0 auto;" 
-               onerror="this.src='https://via.placeholder.com/700x450/333/fff?text=Workshop+Kit+Image'">
+          <img src="img/mykit.jpeg" alt="Workshop Kit" 
+               style="width: 500px; height: auto; max-width: 70%; border-radius: 15px; box-shadow: 0 15px 40px rgba(255, 255, 255, 0.15); display: block; margin: 0 auto;" 
+               onerror="this.src='https://via.placeholder.com/500x350/333/fff?text=Workshop+Kit+Image'">
         </div>
 
         <!-- Kit Contents Description -->
         <div style="text-align: center; max-width: 800px;">
-          <h2 style="color: #FF1493; font-size: 1.8em; margin-bottom: 25px;">What's Included</h2>
           
           <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; text-align: left; margin-bottom: 20px;">
             <div style="background: rgba(255, 20, 147, 0.1); border-left: 4px solid #FF1493; padding: 15px; border-radius: 8px;">
@@ -1304,10 +1303,6 @@ function handleKitSlideState(state) {
               <p style="color: #ddd; font-size: 1em; line-height: 1.4; margin: 0;">Jumper wires, breadboard, and essential components</p>
             </div>
           </div>
-          
-          <p style="color: #ddd; font-size: 1.1em; font-style: italic; margin-top: 20px;">
-            Everything you need to build interactive biometric projects
-          </p>
         </div>
       </div>
     `;
