@@ -22,7 +22,7 @@ This is an interactive web-based slideshow presentation system titled "HOW TO PR
 
 ```
 HTPAAC/
-├── index.html          # Main HTML file containing 16 slides
+├── index.html          # Main HTML file containing 18 slides
 ├── script.js           # JavaScript control logic with SSM and gamepad support
 ├── styles.css          # CSS styling with responsive design and animations
 ├── context.md          # This document - project context
@@ -52,7 +52,7 @@ HTPAAC/
 
 #### Unique Revolver Progress Indicator
 
-- 16 chambers corresponding to 16 slides
+- 18 chambers corresponding to 18 slides
 - Displays slide numbers as defined in markdown (0, 1.0, 1.1, 1.2, etc.)
 - Enhanced visual effects: glowing active chamber with pulse animation
 - Responsive sizing: 280px standard, 320px large screens, 200px mobile
@@ -313,16 +313,27 @@ HTPAAC/
 
   3.1 **Your Kit** - introducing the kit
 
-- Structure: image (state 1) and form (state 2)
+- Structure: kit overview (state 0) and detailed specifications (state 1)
+- State 0: Large central image with 2×2 grid of kit components below
+  Components: Xiao ESP32-S3, Grove GSR Sensor, WS2812 LED Strip, Prototyping Materials
+  Each component has colored card with emoji icon, title, and description
+- State 1: Detailed specifications with technical details for each component
+  ESP32-S3: processor specs, memory, connectivity, GPIO details
+  GSR Sensor: functionality, interface, compatibility
+  Prototyping Kit: complete list of included materials and cables
 
   3.2 **Warm-up** - initial exercise for hardware (15min)
 
-- Structure: image (state 1) and form (state 2)
+- Structure: project introduction (state 0) and wiring diagram (state 1)
+- State 0: Large centered text "Building a simple sensor-actuator system" with subtitle
+- State 1: Workshop wiring diagram (Workshop_Wiring_bb.png) with connection instructions
+  Shows GSR sensor connection to Grove port A0 and LED strip data pin to GPIO D2
 
   3.3 **Hard Mode** - hard task covering many topics covered (45min)
 
-- Structure: image (state 1) and form (state 2)
-
-  3.4 **System Diagram** - Hardware-web system and signal flow
-
-- Structure: image (state 1) and form (state 2)
+- Structure: warning introduction (state 0), project outline (state 1), and system architecture (state 2)
+- State 0: Large red "DANGER ZONE" title with warning emoji and glow effect, followed by description "This is a system combining practically everything we just covered."
+- State 1: 1×5 vertical accordion list of project component cards with interactive glassmorphism expansion
+  Cards cover: Prototyping Fundamentals, Hardware Integration, Networking Technologies, Software Development, Complete System
+  Each card explains how course topics apply to the final project with detailed bullet points and resource links
+- State 2: System diagram (hard_diagram.png, 800px, no glow) + 3 architecture explanation cards

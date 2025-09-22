@@ -8,7 +8,7 @@
 // =============================================================================
 
 const CONFIG = {
-  SLIDE_COUNT: 19,
+  SLIDE_COUNT: 18,
   KEY_HOLD_WAIT_TIME: 1000,
   FAST_FLIP_INTERVAL: 150,
   EDGE_THRESHOLD: 120,
@@ -76,7 +76,6 @@ const slideTitles = [
   "Your Kit", // 3.1
   "Warm-up", // 3.2
   "Hard Mode", // 3.3
-  "System Diagram", // 3.4
 ];
 
 // Slide numbers as defined in markdown (ordered)
@@ -99,7 +98,6 @@ const slideNumbers = [
   "3.1", // Your Kit
   "3.2", // Warm-up
   "3.3", // Hard Mode
-  "3.4", // System Diagram
 ];
 
 // =============================================================================
@@ -178,7 +176,7 @@ function updateProgressBar() {
   });
 
   // Rotate the wheel to bring active chamber to top
-  const rotationAngle = -currentSlide * (360 / 20); // 360/20 = 18 degrees per chamber
+  const rotationAngle = -currentSlide * (360 / 18); // 360/18 = 20 degrees per chamber
   revolverWheel.style.transform = `rotate(${rotationAngle}deg)`;
 
   // Update slide title and number
@@ -239,10 +237,24 @@ function wrapTitleWithStateIndicators(title, currentState, totalStates) {
   const stateIndicators = generateStateIndicators(currentState, totalStates);
   if (!stateIndicators) return `<h1>${title}</h1>`;
 
+  // Smart VW compensation based on title length
+  let vwCompensation = 5; // Base compensation
+
+  if (title.length > 15) {
+    vwCompensation = 8; // Long titles need more space
+  } else if (title.length > 10) {
+    vwCompensation = 6.5; // Medium titles need moderate space
+  }
+  // Short titles (≤10 chars) use base 5vw
+
   return `
-    <div style="display: flex; align-items: center; justify-content: center; gap: 1vw; margin-bottom: 30px;">
-      <h1 style="margin: 0; text-align: center;">${title}</h1>
+     <div style="position: relative; margin-bottom: 30px; text-align: center;">
+       <h1 style="margin: 0; display: inline-block; position: relative;">${title}</h1>
+       <div style="position: absolute; left: calc(50% + ${
+         title.length * 0.55
+       }em + 0.5em + ${vwCompensation}vw); top: 50%; transform: translateY(-50%); white-space: nowrap;">
       ${stateIndicators}
+       </div>
     </div>
   `;
 }
@@ -338,9 +350,8 @@ document.addEventListener("DOMContentLoaded", function () {
   setSlideMaxStates(12, 3); // Slide 2.2 (Sensor) has 3 states: intro, analog, MEMS
   setSlideMaxStates(13, 2); // Slide 2.3 (Biometric) has 2 states: image and list
   setSlideMaxStates(15, 2); // Slide 3.1 (Your Kit) has 2 states: image and form
-  setSlideMaxStates(16, 2); // Slide 3.2 (Warm-up) has 2 states: image and form
-  setSlideMaxStates(17, 2); // Slide 3.3 (Hard Mode) has 2 states: image and form
-  setSlideMaxStates(18, 2); // Slide 3.4 (System Diagram) has 2 states: image and form
+  setSlideMaxStates(16, 3); // Slide 3.2 (Warm-up) has 3 states: intro, wiring, and details
+  setSlideMaxStates(17, 3); // Slide 3.3 (Hard Mode) has 3 states: warning, project outline, and diagram
 
   // Restore saved slide position
   if (currentSlide > 0 && currentSlide < slides.length) {
@@ -403,6 +414,54 @@ window.addEventListener("load", function () {
     }, 300); // Start fade-in while loading overlay is still fading out
   }, 100);
 });
+
+// =============================================================================
+// UTILITY FUNCTIONS
+// =============================================================================
+
+// Common style generators to reduce repetition
+function createGlassPanel(content, additionalClasses = "") {
+  return `<div class="glass-panel ${additionalClasses}">${content}</div>`;
+}
+
+function createColoredCard(color, title, content, borderLeft = true) {
+  const borderStyle = borderLeft ? `border-left: 4px solid ${color};` : "";
+  return `
+    <div style="background: ${color
+      .replace("rgb", "rgba")
+      .replace(
+        ")",
+        ", 0.1)"
+      )}; ${borderStyle} padding: 15px; border-radius: 8px;">
+      <h4 style="color: ${color}; font-size: 1.1em; margin-bottom: 8px;">${title}</h4>
+      <p style="color: #ddd; font-size: 0.95em; line-height: 1.4; margin: 0;">${content}</p>
+    </div>
+  `;
+}
+
+function createImageElement(src, alt, height, additionalStyles = "") {
+  return `<img src="${src}" alt="${alt}" style="height: ${height}px; width: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2); ${additionalStyles}" onerror="this.src='https://via.placeholder.com/260x200/333/fff?text=${alt}'">`;
+}
+
+function createTechInfoCard(color, title, content) {
+  return `
+    <div>
+      <h4 style="color: ${color}; font-size: 1.1em; margin-bottom: 8px;">${title}</h4>
+      <p style="color: ${COLORS.text}; font-size: 0.9em; line-height: 1.3; margin: 0;">${content}</p>
+    </div>
+  `;
+}
+
+// Color constants to reduce repetition
+const COLORS = {
+  primary: "#FF1493",
+  green: "#4CAF50",
+  orange: "#FF9800",
+  blue: "#2196F3",
+  purple: "#9C27B0",
+  red: "#f44336",
+  text: "#ddd",
+};
 
 // =============================================================================
 // SLIDE STATE MANAGEMENT (SSM)
@@ -474,9 +533,6 @@ function resetSlideState(slideIndex) {
   } else if (slideIndex === 17) {
     // Slide 3.3 (Hard Mode)
     handleHardModeSlideState(0);
-  } else if (slideIndex === 18) {
-    // Slide 3.4 (System Diagram)
-    handleSystemDiagramSlideState(0);
   }
 }
 
@@ -491,6 +547,14 @@ function triggerSlideStateChange(slideIndex, newState) {
   console.log(
     `SSM: Triggering state change for slide ${slideIndex}, new state: ${newState}`
   );
+
+  // Clean up code panel unless we're going to Warm-up State 2 or Hard Mode State 1
+  if (
+    !(slideIndex === 16 && newState === 2) &&
+    !(slideIndex === 17 && newState === 1)
+  ) {
+    cleanupCodePanel();
+  }
 
   // Handle specific slide state changes
   if (slideIndex === 4) {
@@ -520,9 +584,6 @@ function triggerSlideStateChange(slideIndex, newState) {
   } else if (slideIndex === 17) {
     // Slide 3.3 (Hard Mode)
     handleHardModeSlideState(newState);
-  } else if (slideIndex === 18) {
-    // Slide 3.4 (System Diagram)
-    handleSystemDiagramSlideState(newState);
   }
 
   // Dispatch custom event for external listeners
@@ -578,9 +639,10 @@ function handlePartsSlideState(state) {
           <h3 style="color: #FF1493; margin-bottom: 12px; font-size: 1.6em;">Actuator</h3>
           <div style="display: flex; gap: 3px; justify-content: center;">
             <img src="img/act1.jpg" alt="Actuator 1" style="height: 200px; width: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);" onerror="this.src='https://via.placeholder.com/260x200/333/fff?text=Act1'">
-            <a href="https://www.youtube.com/watch?v=tgTY2wmgIA4" target="_blank" style="display: inline-block; text-decoration: none;">
-              <img src="img/act4.webp" alt="Actuator 4" style="height: 200px; width: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2); cursor: pointer; transition: transform 0.2s ease;" onerror="this.src='https://via.placeholder.com/260x200/333/fff?text=Act4'" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-            </a>
+            <div style="position: relative; display: inline-block; max-width: 100%;">
+              <img src="img/act4.webp" alt="Actuator 4" style="height: 200px; width: auto; object-fit: contain; border-radius: 12px; box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2); transition: transform 0.2s ease; max-width: 100%;" onerror="this.src='https://via.placeholder.com/260x200/333/fff?text=Act4'" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+              <a href="https://www.youtube.com/watch?v=tgTY2wmgIA4" target="_blank" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; text-decoration: none; cursor: pointer; z-index: 1;"></a>
+            </div>
           </div>
         </div>
       </div>
@@ -616,7 +678,6 @@ function initializeSlideStates() {
   // Initialize new Part 3 slides
   handleWarmupSlideState(slideStates[16] || 0);
   handleHardModeSlideState(slideStates[17] || 0);
-  handleSystemDiagramSlideState(slideStates[18] || 0);
 }
 
 // Additional slide state handlers
@@ -1095,9 +1156,10 @@ function handleActuatorSlideState(state) {
           <img src="img/act1.jpg" alt="Act1" style="height: 280px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/280x280/333/fff?text=Act1'">
           <img src="img/act2.gif" alt="Act2" style="height: 280px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/280x280/333/fff?text=Act2'">
           <img src="img/act3.gif" alt="Act3" style="height: 280px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);" onerror="this.src='https://via.placeholder.com/280x280/333/fff?text=Act3'">
-          <a href="https://www.youtube.com/watch?v=tgTY2wmgIA4" target="_blank" style="display: inline-block; text-decoration: none;">
-            <img src="img/act4.webp" alt="Act4" style="height: 280px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1); cursor: pointer; transition: transform 0.2s ease;" onerror="this.src='https://via.placeholder.com/280x280/333/fff?text=Act4'" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-          </a>
+          <div style="position: relative; display: inline-block; max-width: 100%;">
+            <img src="img/act4.webp" alt="Act4" style="height: 280px; width: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1); transition: transform 0.2s ease; max-width: 100%;" onerror="this.src='https://via.placeholder.com/280x280/333/fff?text=Act4'" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <a href="https://www.youtube.com/watch?v=tgTY2wmgIA4" target="_blank" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; text-decoration: none; cursor: pointer; z-index: 1;"></a>
+          </div>
         </div>
       </div>
     `;
@@ -1207,18 +1269,100 @@ function handleKitSlideState(state) {
 
   if (state === 0) {
     contentContainer.innerHTML = `
-      <p style="margin-top: 60px; font-size: 1.4em; color: #ddd;">
-        [Placeholder: Kit image]<br>
-        Workshop kit overview and contents
-      </p>
+      ${wrapTitleWithStateIndicators("Your Kit", 0, 2)}
+      <div style="display: flex; flex-direction: column; align-items: center; margin-top: 40px; max-width: 1000px; margin-left: auto; margin-right: auto;">
+        
+        <!-- Main Kit Image -->
+        <div style="margin-bottom: 50px; text-align: center;">
+          <img src="https://via.placeholder.com/700x450/333/fff?text=Workshop+Kit+Image" alt="Workshop Kit" 
+               style="width: 700px; height: auto; max-width: 85%; border-radius: 15px; box-shadow: 0 15px 40px rgba(255, 255, 255, 0.15); display: block; margin: 0 auto;" 
+               onerror="this.src='https://via.placeholder.com/700x450/333/fff?text=Workshop+Kit+Image'">
+        </div>
+
+        <!-- Kit Contents Description -->
+        <div style="text-align: center; max-width: 800px;">
+          <h2 style="color: #FF1493; font-size: 1.8em; margin-bottom: 25px;">What's Included</h2>
+          
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; text-align: left; margin-bottom: 20px;">
+            <div style="background: rgba(255, 20, 147, 0.1); border-left: 4px solid #FF1493; padding: 15px; border-radius: 8px;">
+              <h3 style="color: #FF1493; font-size: 1.3em; margin-bottom: 8px;">🔧 Xiao ESP32-S3</h3>
+              <p style="color: #ddd; font-size: 1em; line-height: 1.4; margin: 0;">Powerful microcontroller with Wi-Fi and Bluetooth capabilities</p>
+            </div>
+            
+            <div style="background: rgba(76, 175, 80, 0.1); border-left: 4px solid #4CAF50; padding: 15px; border-radius: 8px;">
+              <h3 style="color: #4CAF50; font-size: 1.3em; margin-bottom: 8px;">📊 Grove GSR Sensor</h3>
+              <p style="color: #ddd; font-size: 1em; line-height: 1.4; margin: 0;">Galvanic Skin Response sensor for biometric monitoring</p>
+            </div>
+            
+            <div style="background: rgba(255, 152, 0, 0.1); border-left: 4px solid #FF9800; padding: 15px; border-radius: 8px;">
+              <h3 style="color: #FF9800; font-size: 1.3em; margin-bottom: 8px;">💡 WS2812 LED Strip</h3>
+              <p style="color: #ddd; font-size: 1em; line-height: 1.4; margin: 0;">Programmable RGB LED strip for visual feedback</p>
+            </div>
+            
+            <div style="background: rgba(156, 39, 176, 0.1); border-left: 4px solid #9C27B0; padding: 15px; border-radius: 8px;">
+              <h3 style="color: #9C27B0; font-size: 1.3em; margin-bottom: 8px;">🔗 Prototyping Materials</h3>
+              <p style="color: #ddd; font-size: 1em; line-height: 1.4; margin: 0;">Jumper wires, breadboard, and essential components</p>
+            </div>
+          </div>
+          
+          <p style="color: #ddd; font-size: 1.1em; font-style: italic; margin-top: 20px;">
+            Everything you need to build interactive biometric projects
+          </p>
+        </div>
+      </div>
     `;
   } else if (state === 1) {
     contentContainer.innerHTML = `
-      <div style="margin-top: 40px;">
-        <p style="font-size: 1.4em; color: #ddd;">
-          [Placeholder: Kit form/details]<br>
-          Detailed kit specifications and usage instructions
-        </p>
+      ${wrapTitleWithStateIndicators("Kit Specifications", 1, 2)}
+      <div style="margin-top: 40px; max-width: 900px; margin-left: auto; margin-right: auto;">
+        
+        <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+          
+          <!-- ESP32-S3 Details -->
+          <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 25px; border: 1px solid rgba(255, 255, 255, 0.1);">
+            <h3 style="color: #FF1493; font-size: 1.4em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+              🔧 Seeed Studio Xiao ESP32-S3
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; color: #ddd; font-size: 1em;">
+              <div>• Dual-core 240MHz processor</div>
+              <div>• 8MB PSRAM, 8MB Flash</div>
+              <div>• Wi-Fi 802.11 b/g/n</div>
+              <div>• Bluetooth 5.0 LE</div>
+              <div>• 11 GPIO pins</div>
+              <div>• USB-C connectivity</div>
+            </div>
+          </div>
+
+          <!-- Sensor Details -->
+          <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 25px; border: 1px solid rgba(255, 255, 255, 0.1);">
+            <h3 style="color: #4CAF50; font-size: 1.4em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+              📊 Grove GSR Sensor
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; color: #ddd; font-size: 1em;">
+              <div>• Measures skin conductance</div>
+              <div>• Grove connector interface</div>
+              <div>• Real-time biometric data</div>
+              <div>• Adjustable sensitivity</div>
+              <div>• 3.3V/5V compatible</div>
+              <div>• Finger electrode pads</div>
+            </div>
+          </div>
+
+          <!-- Additional Components -->
+          <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 25px; border: 1px solid rgba(255, 255, 255, 0.1);">
+            <h3 style="color: #FF9800; font-size: 1.4em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+              🛠️ Complete Prototyping Kit
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; color: #ddd; font-size: 1em;">
+              <div>• WS2812 RGB LED strip (1m)</div>
+              <div>• Jumper wires (M-M, F-F, M-F)</div>
+              <div>• Mini breadboard</div>
+              <div>• USB-C cable</div>
+              <div>• Grove cables</div>
+              <div>• Resistors and capacitors</div>
+            </div>
+          </div>
+        </div>
       </div>
     `;
   }
@@ -1229,22 +1373,420 @@ function handleWarmupSlideState(state) {
   const contentContainer = warmupSlide.querySelector(".slide-content");
   if (!contentContainer) return;
 
+  // Clean up any existing code panel when changing states (handled globally now)
+  cleanupCodePanel();
+
   if (state === 0) {
     contentContainer.innerHTML = `
-      <p style="margin-top: 60px; font-size: 1.4em; color: #ddd;">
-        [Placeholder: Warm-up exercise image]<br>
-        Initial hardware exercise (15 minutes)
-      </p>
-    `;
-  } else if (state === 1) {
-    contentContainer.innerHTML = `
-      <div style="margin-top: 40px;">
-        <p style="font-size: 1.4em; color: #ddd;">
-          [Placeholder: Warm-up exercise form/details]<br>
-          Step-by-step instructions and requirements
+      ${wrapTitleWithStateIndicators("Warm-up", 0, 3)}
+      <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 80px;">
+        <h2 style="color: #FF1493; font-size: 2.5em; margin-bottom: 30px; text-align: center; line-height: 1.2; max-width: 800px;">
+          Building a simple sensor-actuator system
+        </h2>
+        <p style="color: #ddd; font-size: 1.3em; text-align: center; max-width: 600px; line-height: 1.5; margin-top: 20px;">
+          Let's start with a basic project to get familiar with the components
         </p>
       </div>
     `;
+  } else if (state === 1) {
+    contentContainer.innerHTML = `
+      ${wrapTitleWithStateIndicators("Wiring Diagram", 1, 3)}
+      <div style="display: flex; flex-direction: column; align-items: center; margin-top: 40px;">
+        
+        <div style="margin-bottom: 30px;">
+          <img src="img/Workshop_Wiring_bb.png" alt="Workshop Wiring Diagram" 
+               style="width: 1200px; height: auto; max-width: 98%; border-radius: 15px; box-shadow: 0 15px 40px rgba(255, 255, 255, 0.15); display: block; margin: 0 auto;" 
+               onerror="this.src='https://via.placeholder.com/1200x800/333/fff?text=Workshop+Wiring+Diagram'">
+        </div>
+        
+        <div style="text-align: center; max-width: 1200px;">
+          <!-- Compact Technical Overview -->
+          <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; margin-top: 20px;">
+            
+            <!-- Single row layout for all key points -->
+            <div class="grid-1x4 text-left">
+              ${createTechInfoCard(
+                COLORS.primary,
+                "🎯 System Core",
+                `<strong style="color: ${COLORS.green};">Microcontroller</strong> + <strong style="color: ${COLORS.primary};">GSR sensor</strong> + <strong style="color: ${COLORS.orange};">WS2812 LED</strong>`
+              )}
+              ${createTechInfoCard(
+                COLORS.orange,
+                "⚡ Power",
+                `<strong style="color: ${COLORS.green};">3.3V logic</strong> but using <strong style="color: ${COLORS.orange};">5V USB input</strong>`
+              )}
+              ${createTechInfoCard(
+                COLORS.primary,
+                "📊 GSR Input",
+                `Analog to <strong>ADC</strong> via Grove A0`
+              )}
+              ${createTechInfoCard(
+                COLORS.orange,
+                "💡 LED Control",
+                `<strong>One-wire</strong> to GPIO D2`
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  } else if (state === 2) {
+    contentContainer.innerHTML = `
+      ${wrapTitleWithStateIndicators("Implementation Guide", 2, 3)}
+      
+      <!-- Main content area - Arduino Flashing Tutorial -->
+      <div style="margin-top: 15px; max-width: 900px; margin-left: 150px; margin-right: auto;">
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 10px;">
+          
+          <!-- Step 1: ESP32 Board Installation -->
+          <div style="background: rgba(156, 39, 176, 0.1); border-left: 4px solid #9C27B0; border-radius: 8px; padding: 15px; text-align: left;">
+            <h3 style="color: #9C27B0; font-size: 1em; margin-bottom: 8px;">🔧 Step 1: Install ESP32</h3>
+            <div style="color: #ddd; font-size: 0.8em; line-height: 1.2;">
+              <p style="margin-bottom: 4px;">• <a href="https://docs.arduino.cc/software/ide-v2/tutorials/getting-started/ide-v2-installing-a-library/" target="_blank" style="color: #9C27B0; text-decoration: none;">File → Preferences</a></p>
+              <p style="margin-bottom: 4px;">• Add <span style="position: relative; cursor: pointer;" onclick="navigator.clipboard.writeText('https://dl.espressif.com/dl/package_esp32_index.json'); showCopyMessage(this);"><strong style="color: #FF9800;">ESP32 URL</strong><span style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: transparent;"></span></span> to <a href="https://support.arduino.cc/hc/en-us/articles/360016466340-Add-third-party-platforms-to-the-Boards-Manager-in-Arduino-IDE" target="_blank" style="color: #FF9800; text-decoration: none;"><strong>Board Manager URLs</strong></a></p>
+              <p style="margin-bottom: 4px;">• <a href="https://docs.arduino.cc/software/ide-v2/tutorials/ide-v2-board-manager/" target="_blank" style="color: #2196F3; text-decoration: none;">Tools → Boards Manager</a></p>
+              <p style="margin: 0;">• Install <strong style="color: #4CAF50;">"ESP32"</strong> by Espressif</p>
+            </div>
+          </div>
+
+          <!-- Step 2: Library Installation -->
+          <div style="background: rgba(76, 175, 80, 0.1); border-left: 4px solid #4CAF50; border-radius: 8px; padding: 15px; text-align: left;">
+            <h3 style="color: #4CAF50; font-size: 1em; margin-bottom: 8px;">📚 Step 2: Libraries</h3>
+            <div style="color: #ddd; font-size: 0.8em; line-height: 1.2;">
+              <p style="margin-bottom: 4px;">• <a href="https://support.arduino.cc/hc/en-us/articles/5145457742236-Add-libraries-to-Arduino-IDE" target="_blank" style="color: #4CAF50; text-decoration: none;">Tools → Manage Libraries</a></p>
+              <p style="margin-bottom: 4px;">• Search <a href="https://github.com/adafruit/Adafruit_NeoPixel" target="_blank" style="color: #FF9800; text-decoration: none;">"Adafruit NeoPixel"</a></p>
+              <p style="margin-bottom: 4px;">• Install <strong style="color: #4CAF50;">NeoPixel</strong> library</p>
+              <p style="margin: 0;">• <strong style="color: #9C27B0;">GSRVisualizer</strong> is a custom library developed for this project ✅</p>
+            </div>
+          </div>
+
+          <!-- Step 3: Board Selection -->
+          <div style="background: rgba(33, 150, 243, 0.1); border-left: 4px solid #2196F3; border-radius: 8px; padding: 15px; text-align: left;">
+            <h3 style="color: #2196F3; font-size: 1em; margin-bottom: 8px;">🎯 Step 3: Select Board</h3>
+            <div style="color: #ddd; font-size: 0.8em; line-height: 1.2;">
+              <p style="margin-bottom: 4px;">• <a href="https://support.arduino.cc/hc/en-us/articles/4406856349970-Select-board-and-port-in-Arduino-IDE" target="_blank" style="color: #2196F3; text-decoration: none;">Tools → Board</a></p>
+              <p style="margin-bottom: 4px;">• Find <a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/boards/XIAO_ESP32S3.html" target="_blank" style="color: #FF9800; text-decoration: none;">"ESP32S3 Dev Module"</a></p>
+              <p style="margin-bottom: 4px;">• Select <a href="https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/" target="_blank" style="color: #4CAF50; text-decoration: none;">Seeed Xiao ESP32S3</a></p>
+              <p style="margin: 0;">• Check status bar ✅</p>
+            </div>
+          </div>
+
+          <!-- Step 4: Port Detection -->
+          <div style="background: rgba(255, 152, 0, 0.1); border-left: 4px solid #FF9800; border-radius: 8px; padding: 15px; text-align: left;">
+            <h3 style="color: #FF9800; font-size: 1em; margin-bottom: 8px;">🔌 Step 4: Find Port</h3>
+            <div style="color: #ddd; font-size: 0.8em; line-height: 1.2;">
+              <p style="margin-bottom: 4px;">• Connect via <a href="https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/#hardware-preparation" target="_blank" style="color: #FF9800; text-decoration: none;">USB-C cable</a></p>
+              <p style="margin-bottom: 4px;">• <a href="https://support.arduino.cc/hc/en-us/articles/4406856349970-Select-board-and-port-in-Arduino-IDE" target="_blank" style="color: #2196F3; text-decoration: none;">Tools → Port</a></p>
+              <p style="margin-bottom: 4px;">• Find <a href="https://support.arduino.cc/hc/en-us/articles/4406856349970-Select-board-and-port-in-Arduino-IDE" target="_blank" style="color: #4CAF50; text-decoration: none;">COM/tty port</a></p>
+              <p style="margin: 0;">• Select active port ✅</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Single row for final steps -->
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 15px; margin-bottom: 10px;">
+          <!-- Step 5: Upload -->
+          <div style="background: rgba(156, 39, 176, 0.1); border-left: 4px solid #9C27B0; border-radius: 8px; padding: 15px; text-align: left;">
+            <h3 style="color: #9C27B0; font-size: 1em; margin-bottom: 8px;">⚡ Step 5: Upload</h3>
+            <div style="color: #ddd; font-size: 0.8em; line-height: 1.2;">
+              <p style="margin-bottom: 4px;">• Click <a href="https://docs.arduino.cc/software/ide-v2/tutorials/getting-started/ide-v2-uploading-a-sketch/" target="_blank" style="color: #9C27B0; text-decoration: none;">Upload (→)</a></p>
+              <p style="margin-bottom: 4px;">• Watch <strong style="color: #4CAF50;">compilation</strong></p>
+              <p style="margin: 0;">• Success: <strong style="color: #4CAF50;">"Done"</strong></p>
+            </div>
+          </div>
+
+          <!-- Compact Troubleshooting -->
+          <div style="background: rgba(244, 67, 54, 0.1); border-left: 4px solid #f44336; border-radius: 8px; padding: 15px; text-align: left;">
+            <h3 style="color: #f44336; font-size: 1em; margin-bottom: 8px;">🚨 Common Issues</h3>
+            <div style="color: #ddd; font-size: 0.75em; line-height: 1.2;">
+              <p style="margin-bottom: 3px;"><strong style="color: #f44336;">No ESP32 board?</strong> <a href="https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/" target="_blank" style="color: #f44336; text-decoration: none;">Install ESP32 package</a> first</p>
+              <p style="margin-bottom: 3px;"><strong style="color: #f44336;">Upload failed?</strong> <a href="https://docs.espressif.com/projects/esptool/en/latest/esp32/troubleshooting.html" target="_blank" style="color: #f44336; text-decoration: none;">Hold BOOT button</a></p>
+              <p style="margin: 0;"><strong style="color: #f44336;">No LEDs?</strong> <a href="https://learn.adafruit.com/adafruit-neopixel-uberguide/basic-connections" target="_blank" style="color: #f44336; text-decoration: none;">Check GPIO2/GPIO3</a> pins</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    `;
+
+    // Add absolute positioned code panel after content is set
+    setTimeout(() => {
+      const codePanel = document.createElement("div");
+      codePanel.id = "warmup-code-panel";
+      codePanel.className = "warmup-code-panel";
+
+      codePanel.innerHTML = `
+        <div style="padding: 15px 15px 5px 15px; margin-top: 30px; margin-bottom: 5px;">
+          <h3 style="color: #FF1493; font-size: 1.3em; margin: 0; text-align: left;">1_Hardware_Starter</h3>
+        </div>
+
+        <pre style="background: transparent; padding: 15px; margin: 0; font-size: 0.65em; line-height: 1.2; color: #FF1493; white-space: pre-wrap;"><code><span style="color: #4CAF50;">/*
+╔══════════════════════════════════════════════════════════════════════════╗
+║                    GSR SENSOR + LED STRIP VISUALIZER                      ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+ WHAT IS GSR?
+ ------------
+ GSR measures skin conductance, which changes with emotional arousal,
+ stress, or excitement. Higher conductance = higher arousal/stress.
+
+ HARDWARE CONNECTIONS:
+ --------------------
+ • GSR Sensor → Analog Pin A0 (GPIO 2 for ESP32)
+ • LED Strip → Digital Pin 6 (GPIO 3 for ESP32)
+ • Power → 5V and GND to both components
+
+ FUNCTIONALITY:
+ -------------
+ 1. Calibrates baseline GSR (5 seconds)
+ 2. Reads & filters GSR data
+ 3. Visualizes on LEDs (blue=calm → red=stressed)
+ 4. Outputs data to Serial Plotter
+
+ ABOUT THIS CODE:
+ ---------------
+ This simplified version uses our custom GSRVisualizer library to keep the
+ main code clean and readable. The library handles all complex signal
+ processing, LED animations, and filtering algorithms, allowing you to
+ focus on understanding the core GSR sensing concepts.
+
+ Library files: GSRVisualizer.h and GSRVisualizer.cpp
+*/</span>
+
+<span style="color: #FF1493;">#include</span> <span style="color: #FF9800;">&lt;Adafruit_NeoPixel.h&gt;</span>
+<span style="color: #FF1493;">#include</span> <span style="color: #FF9800;">"GSRVisualizer.h"</span>  <span style="color: #4CAF50;">// Our custom library for clean, modular code</span>
+
+<span style="color: #4CAF50;">//━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//                         HARDWARE CONFIGURATION
+//━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+
+<span style="color: #4CAF50;">// Pin Definitions</span>
+<span style="color: #FF1493;">const int</span> GSR_PIN = <span style="color: #FF9800;">2</span>;     <span style="color: #4CAF50;">// Analog pin for GSR sensor (A0 on Arduino, GPIO on ESP32)</span>
+<span style="color: #FF1493;">const int</span> LED_PIN = <span style="color: #FF9800;">3</span>;     <span style="color: #4CAF50;">// Digital pin for LED strip data</span>
+<span style="color: #FF1493;">const int</span> NUM_LEDS = <span style="color: #FF9800;">20</span>;   <span style="color: #4CAF50;">// Number of LEDs in your strip</span>
+
+<span style="color: #4CAF50;">// Create LED strip object</span>
+<span style="color: #FF1493;">Adafruit_NeoPixel</span> strip(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
+
+<span style="color: #4CAF50;">// Create visualizer object</span>
+<span style="color: #FF1493;">GSRVisualizer*</span> visualizer;
+
+<span style="color: #4CAF50;">//━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//                          GLOBAL VARIABLES
+//━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+//──────── Sensor State ────────</span>
+<span style="color: #FF1493;">int</span> gsrValue = <span style="color: #FF9800;">0</span>;          <span style="color: #4CAF50;">// Current raw sensor reading</span>
+<span style="color: #FF1493;">int</span> gsrMin = <span style="color: #FF9800;">1023</span>;         <span style="color: #4CAF50;">// Minimum value (for calibration)</span>
+<span style="color: #FF1493;">int</span> gsrMax = <span style="color: #FF9800;">0</span>;            <span style="color: #4CAF50;">// Maximum value (for calibration)</span>
+<span style="color: #FF1493;">bool</span> isCalibrated = <span style="color: #FF9800;">false</span>; <span style="color: #4CAF50;">// Has calibration completed?</span>
+
+<span style="color: #4CAF50;">//──────── Moving Average Filter ────────</span>
+<span style="color: #2196F3;">const int</span> numReadings = <span style="color: #FF9800;">10</span>;
+<span style="color: #2196F3;">int</span> readings[numReadings];
+<span style="color: #2196F3;">int</span> readIndex = <span style="color: #FF9800;">0</span>;
+<span style="color: #2196F3;">int</span> total = <span style="color: #FF9800;">0</span>;
+<span style="color: #2196F3;">int</span> average = <span style="color: #FF9800;">0</span>;
+
+<span style="color: #4CAF50;">//──────── Advanced Filters ────────</span>
+<span style="color: #2196F3;">float</span> filteredValue = <span style="color: #FF9800;">0</span>;        <span style="color: #4CAF50;">// Exponentially smoothed value</span>
+<span style="color: #2196F3;">float</span> baseline = <span style="color: #FF9800;">0</span>;             <span style="color: #4CAF50;">// Your personal baseline</span>
+<span style="color: #2196F3;">float</span> baselineAdjusted = <span style="color: #FF9800;">0</span>;     <span style="color: #4CAF50;">// Deviation from baseline</span>
+
+<span style="color: #4CAF50;">//━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//                            SETUP FUNCTION
+//━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+
+<span style="color: #9C27B0;">void</span> <span style="color: #FF1493;">setup</span>() {
+  <span style="color: #4CAF50;">// Initialize serial communication</span>
+  <span style="color: #FF1493;">Serial</span>.<span style="color: #2196F3;">begin</span>(<span style="color: #FF9800;">9600</span>);
+
+  <span style="color: #4CAF50;">// Initialize LED strip</span>
+  <span style="color: #FF1493;">strip</span>.<span style="color: #2196F3;">begin</span>();
+
+  <span style="color: #4CAF50;">/*████████████████████████████████████████████████████████████████████
+  ██ CHALLENGE #1: CHANGE LED BRIGHTNESS!                              ██
+  ██ ➤ Try values: 10 (dim), 50 (medium), 100 (bright), 255 (maximum) ██
+  ████████████████████████████████████████████████████████████████████*/</span>
+  <span style="color: #FF1493;">strip</span>.<span style="color: #2196F3;">setBrightness</span>(<span style="color: #FF9800;">50</span>);  <span style="color: #4CAF50;">// Set brightness (0-255)</span>
+
+  <span style="color: #FF1493;">strip</span>.<span style="color: #2196F3;">show</span>();              <span style="color: #4CAF50;">// Turn off all LEDs initially</span>
+
+  <span style="color: #4CAF50;">// Initialize visualizer</span>
+  visualizer = <span style="color: #9C27B0;">new</span> <span style="color: #FF1493;">GSRVisualizer</span>(<span style="color: #FF1493;">strip</span>, <span style="color: #FF9800;">10</span>);
+
+  <span style="color: #4CAF50;">// Initialize arrays</span>
+  <span style="color: #2196F3;">initializeArrays</span>();
+
+  <span style="color: #4CAF50;">// Perform calibration</span>
+  <span style="color: #2196F3;">performCalibration</span>();
+}
+
+<span style="color: #4CAF50;">//━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//                             MAIN LOOP
+//━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+
+<span style="color: #9C27B0;">void</span> <span style="color: #FF1493;">loop</span>() {
+  <span style="color: #4CAF50;">// Wait for calibration to complete</span>
+  <span style="color: #9C27B0;">if</span> (!isCalibrated) {
+    <span style="color: #9C27B0;">return</span>;
+  }
+
+  <span style="color: #4CAF50;">// 1. READ SENSOR</span>
+  gsrValue = <span style="color: #2196F3;">analogRead</span>(<span style="color: #FF1493;">GSR_PIN</span>);
+
+  <span style="color: #4CAF50;">// 2. APPLY FILTERS</span>
+  average = <span style="color: #2196F3;">calculateMovingAverage</span>(gsrValue);
+  filteredValue = <span style="color: #2196F3;">applyExponentialFilter</span>(gsrValue);
+  baselineAdjusted = filteredValue - baseline;
+
+  <span style="color: #4CAF50;">// 3. DETECT ANOMALIES</span>
+  <span style="color: #2196F3;">checkForSpikes</span>();
+
+  <span style="color: #4CAF50;">// 4. UPDATE LED VISUALIZATION</span>
+  visualizer-><span style="color: #2196F3;">updateLEDDisplay</span>(filteredValue, gsrMin, gsrMax);
+
+  <span style="color: #4CAF50;">// 5. OUTPUT DATA FOR PLOTTING</span>
+  <span style="color: #2196F3;">outputSerialData</span>();
+
+  <span style="color: #4CAF50;">// 6. CONTROL SAMPLING RATE</span>
+  <span style="color: #4CAF50;">/*████████████████████████████████████████████████████████████████████
+  ██ CHALLENGE #2: ADJUST SAMPLING SPEED!                              ██
+  ██ ➤ delay(5) = 200Hz (very fast)                                    ██
+  ██ ➤ delay(10) = 100Hz (current)                                     ██
+  ██ ➤ delay(20) = 50Hz (smooth)                                       ██
+  ██ ➤ delay(50) = 20Hz (very smooth)                                  ██
+  ████████████████████████████████████████████████████████████████████*/</span>
+  <span style="color: #2196F3;">delay</span>(<span style="color: #FF9800;">10</span>);  <span style="color: #4CAF50;">// 100Hz sampling</span>
+}
+
+<span style="color: #4CAF50;">//━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//                         CORE FUNCTIONS
+//━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+
+<span style="color: #4CAF50;">// Initialize arrays</span>
+<span style="color: #FF1493;">void</span> initializeArrays() {
+  <span style="color: #FF1493;">for</span> (<span style="color: #FF1493;">int</span> i = <span style="color: #FF9800;">0</span>; i < numReadings; i++) {
+    readings[i] = <span style="color: #FF9800;">0</span>;
+  }
+}
+
+<span style="color: #4CAF50;">// Calibration process</span>
+<span style="color: #FF1493;">void</span> performCalibration() {
+  <span style="color: #FF1493;">unsigned long</span> startTime = millis();
+  <span style="color: #FF1493;">int</span> sampleCount = <span style="color: #FF9800;">0</span>;
+  <span style="color: #FF1493;">float</span> sum = <span style="color: #FF9800;">0</span>;
+
+  <span style="color: #4CAF50;">/*████████████████████████████████████████████████████████████████████
+  ██ CHALLENGE #3: CHANGE CALIBRATION TIME!                            ██
+  ██ ➤ 3000 = 3 seconds (quick) ➤ 5000 = 5 seconds ➤ 10000 = 10 sec   ██
+  ████████████████████████████████████████████████████████████████████*/</span>
+  <span style="color: #FF1493;">while</span> (millis() - startTime < <span style="color: #FF9800;">5000</span>) {
+    <span style="color: #FF1493;">int</span> reading = analogRead(GSR_PIN);
+    <span style="color: #FF1493;">if</span> (reading < gsrMin) gsrMin = reading;
+    <span style="color: #FF1493;">if</span> (reading > gsrMax) gsrMax = reading;
+    sum += reading;
+    sampleCount++;
+    visualizer->showCalibrationAnimation();
+    delay(<span style="color: #FF9800;">20</span>);
+  }
+  baseline = sum / sampleCount;
+  isCalibrated = <span style="color: #FF9800;">true</span>;
+}
+
+<span style="color: #4CAF50;">// Moving average filter</span>
+<span style="color: #FF1493;">int</span> calculateMovingAverage(<span style="color: #FF1493;">int</span> newReading) {
+  total = total - readings[readIndex];
+  readings[readIndex] = newReading;
+  total = total + readings[readIndex];
+  readIndex = (readIndex + <span style="color: #FF9800;">1</span>) % numReadings;
+  <span style="color: #FF1493;">return</span> total / numReadings;
+}
+
+<span style="color: #4CAF50;">// Exponential filter</span>
+<span style="color: #FF1493;">float</span> applyExponentialFilter(<span style="color: #FF1493;">int</span> newReading) {
+  <span style="color: #FF1493;">const float</span> alpha = <span style="color: #FF9800;">0.3</span>;
+  <span style="color: #FF1493;">return</span> alpha * newReading + (<span style="color: #FF9800;">1</span> - alpha) * filteredValue;
+}
+
+<span style="color: #4CAF50;">/*████████████████████████████████████████████████████████████████████
+██ CHALLENGE #4: ADJUST SPIKE SENSITIVITY!                            ██
+██ ➤ 50.0 = Very sensitive ➤ 100.0 = Normal ➤ 200.0 = Less sensitive ██
+████████████████████████████████████████████████████████████████████*/</span>
+<span style="color: #FF1493;">float</span> spikeThreshold = <span style="color: #FF9800;">100.0</span>;
+
+<span style="color: #4CAF50;">// Spike detection</span>
+<span style="color: #FF1493;">void</span> checkForSpikes() {
+  <span style="color: #FF1493;">float</span> change = abs(filteredValue - lastFilteredValue);
+  <span style="color: #FF1493;">if</span> (change > spikeThreshold) {
+    <span style="color: #4CAF50;">// Flash red during spike</span>
+    <span style="color: #FF1493;">for</span> (<span style="color: #FF1493;">int</span> i = <span style="color: #FF9800;">0</span>; i < NUM_LEDS; i++) {
+      strip.setPixelColor(i, strip.Color(<span style="color: #FF9800;">255</span>, <span style="color: #FF9800;">0</span>, <span style="color: #FF9800;">0</span>));
+    }
+    strip.show();
+  }
+}
+
+<span style="color: #4CAF50;">// Serial output for plotting</span>
+<span style="color: #FF1493;">void</span> outputSerialData() {
+  Serial.print(<span style="color: #FF9800;">"Raw:"</span>); Serial.print(gsrValue); Serial.print(<span style="color: #FF9800;">","</span>);
+  Serial.print(<span style="color: #FF9800;">"Filtered:"</span>); Serial.print(filteredValue, <span style="color: #FF9800;">1</span>);
+  Serial.println();
+}
+
+<span style="color: #4CAF50;">// END OF CODE</span></code></pre>
+
+        <div style="margin: 20px 15px 15px 15px; padding: 15px; background: rgba(255, 152, 0, 0.1); border-radius: 8px;">
+          <h4 style="color: #FF9800; font-size: 1em; margin-bottom: 10px;">🎯 Challenges</h4>
+          <div style="color: #ddd; font-size: 0.8em; line-height: 1.4;">
+            <p style="margin-bottom: 6px;"><strong style="color: #FF1493;">#1:</strong> Change LED brightness <span style="color: #4CAF50;">(setup function)</span></p>
+            <p style="margin-bottom: 6px;"><strong style="color: #FF1493;">#2:</strong> Adjust sampling speed <span style="color: #4CAF50;">(main loop)</span></p>
+            <p style="margin-bottom: 6px;"><strong style="color: #FF1493;">#3:</strong> Change calibration time <span style="color: #4CAF50;">(calibration)</span></p>
+            <p style="margin: 0;"><strong style="color: #FF1493;">#4:</strong> Adjust spike sensitivity <span style="color: #4CAF50;">(spike detection)</span></p>
+          </div>
+        </div>
+      `;
+
+      // Add to slide container (not slide content)
+      const slideContainer = document.querySelector(".slideshow-container");
+      if (slideContainer) {
+        slideContainer.appendChild(codePanel);
+
+        // Trigger smooth entrance animation (half-hidden)
+        setTimeout(() => {
+          codePanel.classList.add("visible");
+        }, 50);
+
+        // Add dynamic mouse proximity detection
+        let mouseProximityHandler = (e) => {
+          const rightEdge = window.innerWidth;
+          const mouseX = e.clientX;
+
+          // Dynamic detection area based on panel state
+          const isCurrentlyRevealed = codePanel.classList.contains("revealed");
+          const baseThreshold = 300; // Base detection area (half-hidden state)
+          const expandedThreshold = 600; // Expanded detection area (revealed state)
+
+          const proximityThreshold = isCurrentlyRevealed
+            ? expandedThreshold
+            : baseThreshold;
+
+          if (rightEdge - mouseX < proximityThreshold) {
+            codePanel.classList.add("revealed");
+          } else {
+            codePanel.classList.remove("revealed");
+          }
+        };
+
+        // Add event listeners
+        document.addEventListener("mousemove", mouseProximityHandler);
+
+        // Store handler for cleanup
+        codePanel._mouseHandler = mouseProximityHandler;
+      }
+    }, 100);
   }
 }
 
@@ -1255,44 +1797,585 @@ function handleHardModeSlideState(state) {
 
   if (state === 0) {
     contentContainer.innerHTML = `
-      <p style="margin-top: 60px; font-size: 1.4em; color: #ddd;">
-        [Placeholder: Hard Mode challenge image]<br>
-        Advanced challenge covering multiple topics (45 minutes)
-      </p>
+      ${wrapTitleWithStateIndicators("Hard Mode", 0, 3)}
+      <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 80px; text-align: center;">
+        <h2 style="color: #f44336; font-size: 3em; margin-bottom: 30px; text-shadow: 0 0 20px rgba(244, 67, 54, 0.5);">
+          ⚠️ DANGER ZONE ⚠️
+        </h2>
+        <p style="color: #ddd; font-size: 1.4em; line-height: 1.4; max-width: 600px;">
+          This is a system combining practically everything we just covered.
+        </p>
+      </div>
     `;
   } else if (state === 1) {
     contentContainer.innerHTML = `
-      <div style="margin-top: 40px;">
-        <p style="font-size: 1.4em; color: #ddd;">
-          [Placeholder: Hard Mode challenge form/details]<br>
-          Comprehensive project requirements and guidelines
+      ${wrapTitleWithStateIndicators("Project Outline", 1, 3)}
+      <div style="margin-top: 40px; max-width: 800px; margin-left: 180px; margin-right: auto; position: relative;">
+        
+        <!-- Vertical p5.js Tab -->
+        <div id="p5js-vertical-tab" style="position: absolute; left: -80px; top: 0; bottom: 0; width: 60px; background: linear-gradient(135deg, rgba(255, 20, 147, 0.15) 0%, rgba(255, 20, 147, 0.05) 100%); border: 2px solid rgba(255, 20, 147, 0.4); border-radius: 12px; cursor: pointer; z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.3s ease;" onclick="event.stopPropagation(); toggleP5jsAccordion()">
+          <span style="color: #FF1493; font-size: 1.4em; font-weight: bold; letter-spacing: 1px; text-shadow: 0 0 8px rgba(255, 20, 147, 0.3);">p5.js</span>
+          <span style="color: rgba(255, 255, 255, 0.6); font-size: 0.75em; font-weight: normal; margin-top: 4px; letter-spacing: 0.5px; font-style: italic;">
+            *bonus
+          </span>
+          <span id="p5js-arrow-icon" style="position: absolute; top: 8px; right: 8px; color: #FF1493; font-size: 1.4em; transition: transform 0.3s ease;">▶</span>
+        </div>
+        
+        <!-- p5.js Accordion Content -->
+        <div id="p5js-accordion-content" style="position: absolute; left: -80px; top: 0; width: 0; height: 100%; background: rgba(255, 20, 147, 0.25); backdrop-filter: blur(25px) saturate(1.5); -webkit-backdrop-filter: blur(25px) saturate(1.5); border: 2px solid rgba(255, 20, 147, 0.6); border-radius: 12px; z-index: 15; overflow: hidden; transition: width 0.4s ease, opacity 0.3s ease; opacity: 0; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);">
+          
+          <!-- Large p5.js Logo positioned at absolute top-left -->
+          <div style="position: absolute !important; top: 0 !important; left: 0 !important; width: 120px !important; height: 100px !important; z-index: 25 !important; margin: 0 !important; padding: 0 !important;">
+            <a href="https://p5js.org/" target="_blank" style="display: block; text-decoration: none; margin: 0 !important; padding: 0 !important; width: 120px !important; height: 100px !important;">
+              <img src="https://pbs.twimg.com/profile_images/502135348663578624/-oslcYof_400x400.png" alt="p5.js Logo" style="width: auto !important; height: 100px !important; max-width: 120px !important; border-radius: 12px 0 0 0; filter: drop-shadow(0 4px 8px rgba(255, 20, 147, 0.4)); transition: transform 0.3s ease; margin: 0 !important; padding: 0 !important; display: block !important; object-fit: contain !important;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+            </a>
+          </div>
+          
+          <div style="padding: 20px; padding-top: 1vw; height: 100%; overflow: hidden; min-width: 860px; scrollbar-width: none; -ms-overflow-style: none;">
+            <!-- Header with centered title and close button -->
+            <div style="position: relative; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+              <h3 style="color: #FF1493; font-size: 1.4em; margin: 0; text-shadow: 0 0 8px rgba(255, 20, 147, 0.5); line-height: 1; text-align: center;">
+                p5.js Creative Coding Framework
+              </h3>
+              
+              <!-- Close button positioned absolutely to right -->
+              <button id="p5js-close-btn" style="position: absolute; right: 0; background: none; border: 2px solid rgba(255, 20, 147, 0.4); color: #FF1493; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.3em; transition: all 0.3s ease; z-index: 30 !important;" onclick="event.stopPropagation(); toggleP5jsAccordion()" onmouseover="this.style.background='rgba(255, 20, 147, 0.1)'; this.style.borderColor='rgba(255, 20, 147, 0.6)'" onmouseout="this.style.background='none'; this.style.borderColor='rgba(255, 20, 147, 0.4)'">
+                ×
+              </button>
+            </div>
+            <div style="color: #ddd; font-size: 0.95em; line-height: 1.5;">
+              <p style="margin-bottom: 12px; text-align: center; font-size: 1em; color: #FFB3DA;">
+                JavaScript library of processing, a web-based router for all creative computing applications
+              </p>
+              
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 12px;">
+                  <h4 style="color: #FF69B4; margin-bottom: 8px; font-size: 1.1em;">🎯 Core Features</h4>
+                  <ul style="margin: 0; padding-left: 15px; color: #ddd; font-size: 0.95em; line-height: 1.5;">
+                    <li>Interactive canvas graphics</li>
+                    <li>Real-time animation</li>
+                    <li>Built-in drawing functions</li>
+                    <li>Event handling support</li>
+                    <li>HTML/CSS integration</li>
+                  </ul>
+                </div>
+                
+                <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 12px;">
+                  <h4 style="color: #FF69B4; margin-bottom: 8px; font-size: 1.1em;">🔗 Hardware Integration</h4>
+                  <ul style="margin: 0; padding-left: 15px; color: #ddd; font-size: 0.95em; line-height: 1.5;">
+                    <li><a href="https://itp.nyu.edu/physcomp/labs/labs-serial-communication/lab-webserial-input-to-p5-js/" target="_blank" style="color: #FFB3DA; text-decoration: none;">WebSerial API</a> communication</li>
+                    <li>Real-time sensor visualization</li>
+                    <li>Interactive control interfaces</li>
+                    <li>WebSocket IoT support</li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div style="background: rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 15px; margin-bottom: 12px;">
+                <h4 style="color: #FF1493; margin-bottom: 10px; font-size: 1.2em; text-align: center;">🚀 Project Applications</h4>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                  <div style="text-align: center; padding: 10px; background: rgba(255, 20, 147, 0.1); border-radius: 6px;">
+                    <div style="font-size: 1.5em; margin-bottom: 4px;">📊</div>
+                    <div style="color: #FFB3DA; font-weight: bold; margin-bottom: 3px; font-size: 0.9em;">Data Visualization</div>
+                    <div style="font-size: 0.85em; color: #ddd;">Real-time sensor graphs</div>
+                  </div>
+                  <div style="text-align: center; padding: 10px; background: rgba(255, 20, 147, 0.1); border-radius: 6px;">
+                    <div style="font-size: 1.5em; margin-bottom: 4px;">🎮</div>
+                    <div style="color: #FFB3DA; font-weight: bold; margin-bottom: 3px; font-size: 0.9em;">Interactive Control</div>
+                    <div style="font-size: 0.85em; color: #ddd;">Touch/click interfaces</div>
+                  </div>
+                  <div style="text-align: center; padding: 10px; background: rgba(255, 20, 147, 0.1); border-radius: 6px;">
+                    <div style="font-size: 1.5em; margin-bottom: 4px;">🎨</div>
+                    <div style="color: #FFB3DA; font-weight: bold; margin-bottom: 3px; font-size: 0.9em;">Generative Art</div>
+                    <div style="font-size: 0.85em; color: #ddd;">Algorithm-based visuals</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr; gap: 15px; align-items: start;">
+          
+          <!-- Prototyping Fundamentals -->
+          <div class="accordion-card" style="position: relative; background: linear-gradient(135deg, rgba(76, 175, 80, 0.15) 0%, rgba(76, 175, 80, 0.05) 100%); border: 2px solid rgba(76, 175, 80, 0.4); border-radius: 12px; overflow: visible; cursor: pointer; z-index: 1;" onclick="event.stopPropagation(); toggleAccordion(this)">
+            <div style="padding: 20px; text-align: left;">
+              <h3 style="color: #4CAF50; font-size: 1.4em; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; justify-content: space-between;">
+                <span>🔧 Prototyping Fundamentals</span>
+                <span class="accordion-icon" style="font-size: 1.2em; transition: transform 0.3s ease;">▼</span>
+              </h3>
+              <p style="color: #ddd; font-size: 1em; line-height: 1.4; margin: 0;">
+                Use breadboards, jumper wires, and basic materials to build and test circuit prototypes before final implementation.
         </p>
+      </div>
+            <div class="accordion-content" style="position: absolute; top: 100%; left: 0; right: 0; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.3s ease; background: rgba(76, 175, 80, 0.25); backdrop-filter: blur(25px) saturate(1.5); -webkit-backdrop-filter: blur(25px) saturate(1.5); border: 2px solid rgba(76, 175, 80, 0.6); border-top: none; border-radius: 0 0 12px 12px; z-index: 10; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1); opacity: 0;">
+              <div style="padding: 20px;">
+                <ul style="color: #ddd; font-size: 0.95em; line-height: 1.5; margin: 0; padding-left: 20px;">
+                  <li>Master breadboard layouts and component placement techniques</li>
+                  <li>Use jumper wires for flexible, solderless connections</li>
+                  <li>Select and source basic electronic components (resistors, LEDs, sensors)</li>
+                  <li>Apply rapid prototyping methods for quick iteration and testing</li>
+                  <li>Troubleshoot circuits using multimeters and visual inspection</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hardware Integration -->
+          <div class="accordion-card" style="position: relative; background: linear-gradient(135deg, rgba(255, 152, 0, 0.15) 0%, rgba(255, 152, 0, 0.05) 100%); border: 2px solid rgba(255, 152, 0, 0.4); border-radius: 12px; overflow: visible; cursor: pointer; z-index: 1;" onclick="event.stopPropagation(); toggleAccordion(this)">
+            <div style="padding: 20px; text-align: left;">
+              <h3 style="color: #FF9800; font-size: 1.4em; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; justify-content: space-between;">
+                <span>🔌 Hardware Integration</span>
+                <span class="accordion-icon" style="font-size: 1.2em; transition: transform 0.3s ease;">▼</span>
+              </h3>
+              <p style="color: #ddd; font-size: 1em; line-height: 1.4; margin: 0;">
+                Integrate MCU, sensors (GSR), and actuators (LED strip). Handle analog/digital signal processing.
+              </p>
+            </div>
+            <div class="accordion-content" style="position: absolute; top: 100%; left: 0; right: 0; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.3s ease; background: rgba(255, 152, 0, 0.25); backdrop-filter: blur(25px) saturate(1.5); -webkit-backdrop-filter: blur(25px) saturate(1.5); border: 2px solid rgba(255, 152, 0, 0.6); border-top: none; border-radius: 0 0 12px 12px; z-index: 10; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1); opacity: 0;">
+              <div style="padding: 20px;">
+                <ul style="color: #ddd; font-size: 0.95em; line-height: 1.5; margin: 0; padding-left: 20px;">
+                  <li>Connect ESP32-S3 microcontroller as main processing unit</li>
+                  <li>Interface Grove GSR sensor for biometric input</li>
+                  <li>Control WS2812 LED strip for visual output</li>
+                  <li>Handle analog sensor data and digital LED control</li>
+                  <li>Manage power distribution and signal integrity</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Networking Technologies -->
+          <div class="accordion-card" style="position: relative; background: linear-gradient(135deg, rgba(33, 150, 243, 0.15) 0%, rgba(33, 150, 243, 0.05) 100%); border: 2px solid rgba(33, 150, 243, 0.4); border-radius: 12px; overflow: visible; cursor: pointer; z-index: 1;" onclick="event.stopPropagation(); toggleAccordion(this)">
+            <div style="padding: 20px; text-align: left;">
+              <h3 style="color: #2196F3; font-size: 1.4em; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; justify-content: space-between;">
+                <span>🌐 Networking Technologies</span>
+                <span class="accordion-icon" style="font-size: 1.2em; transition: transform 0.3s ease;">▼</span>
+              </h3>
+              <p style="color: #ddd; font-size: 1em; line-height: 1.4; margin: 0;">
+                Connect hardware to web applications using p5.js, WebSockets, and WebSerial for real-time data visualization and interaction.
+              </p>
+            </div>
+            <div class="accordion-content" style="position: absolute; top: 100%; left: 0; right: 0; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.3s ease; background: rgba(33, 150, 243, 0.25); backdrop-filter: blur(25px) saturate(1.5); -webkit-backdrop-filter: blur(25px) saturate(1.5); border: 2px solid rgba(33, 150, 243, 0.6); border-top: none; border-radius: 0 0 12px 12px; z-index: 10; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1); opacity: 0;">
+              <div style="padding: 20px;">
+                <ul style="color: #ddd; font-size: 0.95em; line-height: 1.5; margin: 0; padding-left: 20px;">
+                  <li>Use <a href="https://itp.nyu.edu/physcomp/labs/labs-serial-communication/lab-webserial-input-to-p5-js/" target="_blank" style="color: #64B5F6; text-decoration: none;">p5.js WebSerial</a> for direct browser-to-microcontroller communication</li>
+                  <li>Implement WebSockets for real-time bidirectional data streaming</li>
+                  <li>Create interactive web visualizations that respond to sensor data</li>
+                  <li>Build collaborative interfaces with synchronized multi-client updates</li>
+                  <li>Handle asynchronous data flow and connection management</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Software Development -->
+          <div class="accordion-card" style="position: relative; background: linear-gradient(135deg, rgba(156, 39, 176, 0.15) 0%, rgba(156, 39, 176, 0.05) 100%); border: 2px solid rgba(156, 39, 176, 0.4); border-radius: 12px; overflow: visible; cursor: pointer; z-index: 1;" onclick="event.stopPropagation(); toggleAccordion(this)">
+            <div style="padding: 20px; text-align: left;">
+              <h3 style="color: #9C27B0; font-size: 1.4em; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; justify-content: space-between;">
+                <span>💻 Software Development</span>
+                <span class="accordion-icon" style="font-size: 1.2em; transition: transform 0.3s ease;">▼</span>
+              </h3>
+              <p style="color: #ddd; font-size: 1em; line-height: 1.4; margin: 0;">
+                Develop embedded software for ESP32 using Arduino IDE. Organize code structure and manage libraries effectively.
+              </p>
+            </div>
+            <div class="accordion-content" style="position: absolute; bottom: 100%; left: 0; right: 0; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.3s ease; background: rgba(156, 39, 176, 0.25); backdrop-filter: blur(25px) saturate(1.5); -webkit-backdrop-filter: blur(25px) saturate(1.5); border: 2px solid rgba(156, 39, 176, 0.6); border-bottom: none; border-radius: 12px 12px 0 0; z-index: 10; box-shadow: 0 -15px 40px rgba(0, 0, 0, 0.5), inset 0 -1px 0 rgba(255, 255, 255, 0.1); opacity: 0;">
+              <div style="padding: 20px;">
+                <ul style="color: #ddd; font-size: 0.95em; line-height: 1.5; margin: 0; padding-left: 20px;">
+                  <li>Configure <a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/" target="_blank" style="color: #CE93D8; text-decoration: none;">ESP32 Arduino Core</a> in Arduino IDE environment</li>
+                  <li>Organize embedded software: setup(), loop(), and custom functions</li>
+                  <li>Manage library dependencies: WiFi.h, WebServer.h, FastLED.h</li>
+                  <li>Implement modular code structure with header files (.h) and source files (.cpp)</li>
+                  <li>Apply embedded programming patterns: state machines, interrupts, timers</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Complete System -->
+          <div class="accordion-card" style="position: relative; background: linear-gradient(135deg, rgba(244, 67, 54, 0.15) 0%, rgba(244, 67, 54, 0.05) 100%); border: 2px solid rgba(244, 67, 54, 0.4); border-radius: 12px; overflow: visible; cursor: pointer; z-index: 1;" onclick="event.stopPropagation(); toggleAccordion(this)">
+            <div style="padding: 20px; text-align: left;">
+              <h3 style="color: #f44336; font-size: 1.4em; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; justify-content: space-between;">
+                <span>🔥 Complete System</span>
+                <span class="accordion-icon" style="font-size: 1.2em; transition: transform 0.3s ease;">▼</span>
+              </h3>
+              <p style="color: #ddd; font-size: 1em; line-height: 1.4; margin: 0;">
+                Build a biometric-responsive LED system that visualizes stress levels in real-time with wireless monitoring capabilities.
+              </p>
+            </div>
+            <div class="accordion-content" style="position: absolute; bottom: 100%; left: 0; right: 0; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.3s ease; background: rgba(244, 67, 54, 0.25); backdrop-filter: blur(25px) saturate(1.5); -webkit-backdrop-filter: blur(25px) saturate(1.5); border: 2px solid rgba(244, 67, 54, 0.6); border-bottom: none; border-radius: 12px 12px 0 0; z-index: 10; box-shadow: 0 -15px 40px rgba(0, 0, 0, 0.5), inset 0 -1px 0 rgba(255, 255, 255, 0.1); opacity: 0;">
+              <div style="padding: 20px;">
+                <ul style="color: #ddd; font-size: 0.95em; line-height: 1.5; margin: 0; padding-left: 20px;">
+                  <li>Integrate all components into working prototype</li>
+                  <li>Calibrate GSR sensor for accurate stress detection</li>
+                  <li>Create dynamic LED visualizations (colors, patterns, intensity)</li>
+                  <li>Implement wireless monitoring dashboard</li>
+                  <li>Test system reliability and real-time performance</li>
+                  <li>Debug integration issues and optimize performance</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    `;
+
+    // Add Hard Mode code panel for State 1
+    setTimeout(() => {
+      const codePanel = document.createElement("div");
+      codePanel.id = "hardmode-code-panel";
+      codePanel.className = "warmup-code-panel"; // Reuse the same CSS class
+
+      codePanel.innerHTML = `
+        <div style="padding: 15px 15px 5px 15px; margin-top: 30px; margin-bottom: 5px;">
+          <h3 style="color: #FF1493; font-size: 1.3em; margin: 0; text-align: left;">2_Hard_Mode</h3>
+        </div>
+
+        <pre style="background: transparent; padding: 15px; margin: 0; font-size: 0.65em; line-height: 1.2; color: #FF1493; white-space: pre-wrap;"><code><span style="color: #4CAF50;">/*
+╔══════════════════════════════════════════════════════════════════════════╗
+║              GSR SENSOR WITH WEB SERIAL COMMUNICATION                     ║
+║                    Advanced Version with p5.js Integration                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+ ABOUT THIS CODE:
+ ---------------
+ This advanced version builds upon the basic GSR sensor by adding Web Serial
+ communication for real-time data visualization in p5.js. We use our custom
+ GSRVisualizer library to maintain clean, readable code while handling
+ complex features.
+
+ THE GSRVISUALIZER LIBRARY:
+ -------------------------
+ We created this custom library to modularize and simplify the code:
+ • Separates complex algorithms from main logic
+ • Makes the code more maintainable and readable
+ • Allows easy reuse of functions between projects
+ • Keeps advanced features organized and accessible
+
+ Library Components:
+ • GSRVisualizer.h - Header file with class definitions
+ • GSRVisualizer.cpp - Implementation of all methods
+ • Handles: signal processing, LED animations, web serial, and more
+
+ KEY FEATURES:
+ ------------
+ • Real-time GSR data streaming to browser (JSON format)
+ • Bidirectional communication with p5.js
+ • Advanced LED animations with trail effects
+ • Group-based color coding for workshops
+ • Command processing from web interface
+
+ HARDWARE:
+ --------
+ • GSR Sensor → GPIO 2 (ESP32) or A0 (Arduino)
+ • LED Strip → GPIO 3 (ESP32) or Pin 6 (Arduino)
+ • Serial → 115200 baud for Web Serial API
+*/</span>
+
+<span style="color: #FF1493;">#include</span> <span style="color: #FF9800;">&lt;Adafruit_NeoPixel.h&gt;</span>
+<span style="color: #FF1493;">#include</span> <span style="color: #FF9800;">"GSRVisualizer.h"</span>  <span style="color: #4CAF50;">// Our custom library</span>
+
+<span style="color: #4CAF50;">/*████████████████████████████████████████████████████████████████████
+██ CHALLENGE #1: SET YOUR GROUP NUMBER!                               ██
+██ ➤ Change to your group number (1-5)                                ██
+██ ➤ Each group gets a unique color:                                  ██
+██   1=Red, 2=Green, 3=Blue, 4=Orange, 5=Purple                       ██
+████████████████████████████████████████████████████████████████████*/</span>
+<span style="color: #2196F3;">const int</span> GROUP_NUMBER = <span style="color: #FF9800;">1</span>; <span style="color: #4CAF50;">// Your group number (1-5)</span>
+
+<span style="color: #4CAF50;">/*████████████████████████████████████████████████████████████████████
+██ CHALLENGE #2: ADJUST DATA SENDING FREQUENCY!                       ██
+██ ➤ 20 = Send data 50 times/second (very responsive)                 ██
+██ ➤ 50 = Send data 20 times/second (current, balanced)              ██
+██ ➤ 100 = Send data 10 times/second (less network traffic)          ██
+████████████████████████████████████████████████████████████████████*/</span>
+<span style="color: #2196F3;">const int</span> SEND_INTERVAL = <span style="color: #FF9800;">50</span>;   <span style="color: #4CAF50;">// Send data every 50ms (20Hz)</span>
+
+<span style="color: #4CAF50;">// Advanced Web Serial features available in complete code...</span></code></pre>
+
+        <div style="margin: 20px 15px 15px 15px; padding: 15px; background: rgba(244, 67, 54, 0.1); border-radius: 8px;">
+          <h4 style="color: #f44336; font-size: 1em; margin-bottom: 10px;">🔥 Advanced Challenges</h4>
+          <div style="color: #ddd; font-size: 0.8em; line-height: 1.4;">
+            <p style="margin-bottom: 6px;"><strong style="color: #FF1493;">CHALLENGE #1:</strong> Set your group number for unique colors <span style="color: #4CAF50;">(line 31)</span></p>
+            <p style="margin-bottom: 6px;"><strong style="color: #FF1493;">CHALLENGE #2:</strong> Adjust data sending frequency to p5.js <span style="color: #4CAF50;">(line 58)</span></p>
+            <p style="margin-bottom: 6px;"><strong style="color: #FF1493;">CHALLENGE #3:</strong> Modify animation trail length <span style="color: #4CAF50;">(line 72)</span></p>
+            <p style="margin-bottom: 6px;"><strong style="color: #FF1493;">CHALLENGE #4:</strong> Change animation speed response <span style="color: #4CAF50;">(line 102)</span></p>
+            <p style="margin: 0;"><strong style="color: #FF1493;">CHALLENGE #5:</strong> Add a custom command handler <span style="color: #4CAF50;">(line 116)</span></p>
+          </div>
+        </div>
+      `;
+
+      const slideContainer = document.querySelector(".slideshow-container");
+      if (slideContainer) {
+        slideContainer.appendChild(codePanel);
+
+        // Trigger smooth entrance animation (half-hidden)
+        setTimeout(() => {
+          codePanel.classList.add("visible");
+        }, 50);
+
+        // Add dynamic mouse proximity detection (same as warmup)
+        let mouseProximityHandler = (e) => {
+          const rightEdge = window.innerWidth;
+          const mouseX = e.clientX;
+
+          const isCurrentlyRevealed = codePanel.classList.contains("revealed");
+          const baseThreshold = 300;
+          const expandedThreshold = 600;
+
+          const proximityThreshold = isCurrentlyRevealed
+            ? expandedThreshold
+            : baseThreshold;
+
+          if (rightEdge - mouseX < proximityThreshold) {
+            codePanel.classList.add("revealed");
+          } else {
+            codePanel.classList.remove("revealed");
+          }
+        };
+
+        document.addEventListener("mousemove", mouseProximityHandler);
+        codePanel._mouseHandler = mouseProximityHandler;
+      }
+    }, 100);
+  } else if (state === 2) {
+    contentContainer.innerHTML = `
+      ${wrapTitleWithStateIndicators("System Diagram", 2, 3)}
+      <div style="display: flex; flex-direction: column; align-items: center; margin-top: 40px;">
+        
+        <div style="margin-bottom: 30px;">
+          <img src="img/hard_diagram.png" alt="Hard Mode System Diagram" 
+               style="width: 800px; height: auto; max-width: 85%; border-radius: 15px; display: block; margin: 0 auto;" 
+               onerror="this.src='https://via.placeholder.com/800x600/333/fff?text=Hard+Mode+System+Diagram'">
+        </div>
+        
+        <div style="text-align: center; max-width: 800px;">
+          <p style="color: #ddd; font-size: 1.1em; line-height: 1.5; margin-bottom: 20px;">
+            Complete system architecture showing all integrated components and data flow
+          </p>
+          
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 25px;">
+            <div style="background: rgba(255, 20, 147, 0.1); border-left: 4px solid #FF1493; padding: 15px; border-radius: 8px; text-align: left;">
+              <h4 style="color: #FF1493; font-size: 1.1em; margin-bottom: 8px;">🔧 Hardware Layer</h4>
+              <p style="color: #ddd; font-size: 0.9em; line-height: 1.3; margin: 0;">
+                ESP32, GSR sensor, LED strip integration
+              </p>
+            </div>
+            
+            <div style="background: rgba(33, 150, 243, 0.1); border-left: 4px solid #2196F3; padding: 15px; border-radius: 8px; text-align: left;">
+              <h4 style="color: #2196F3; font-size: 1.1em; margin-bottom: 8px;">📡 Communication</h4>
+              <p style="color: #ddd; font-size: 0.9em; line-height: 1.3; margin: 0;">
+                Web Serial API, p5.js data streaming
+              </p>
+            </div>
+            
+            <div style="background: rgba(156, 39, 176, 0.1); border-left: 4px solid #9C27B0; padding: 15px; border-radius: 8px; text-align: left;">
+              <h4 style="color: #9C27B0; font-size: 1.1em; margin-bottom: 8px;">🎨 Visualization</h4>
+              <p style="color: #ddd; font-size: 0.9em; line-height: 1.3; margin: 0;">
+                Real-time LED effects, group colors
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     `;
   }
 }
 
-function handleSystemDiagramSlideState(state) {
-  const systemDiagramSlide = slides[18]; // Slide 3.4 (System Diagram)
-  const contentContainer = systemDiagramSlide.querySelector(".slide-content");
-  if (!contentContainer) return;
+// =============================================================================
+// COPY FUNCTIONALITY
+// =============================================================================
 
-  if (state === 0) {
-    contentContainer.innerHTML = `
-      <p style="margin-top: 60px; font-size: 1.4em; color: #ddd;">
-        [Placeholder: System diagram image]<br>
-        Hardware-web system and signal flow
-      </p>
-    `;
-  } else if (state === 1) {
-    contentContainer.innerHTML = `
-      <div style="margin-top: 40px;">
-        <p style="font-size: 1.4em; color: #ddd;">
-          [Placeholder: System diagram form/details]<br>
-          Technical specifications and implementation details
-        </p>
-      </div>
-    `;
+function showCopyMessage(element) {
+  // Create temporary message
+  const message = document.createElement("div");
+  message.textContent = "✅ URL Copied!";
+  message.style.cssText = `
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(76, 175, 80, 0.9);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.7em;
+    font-weight: bold;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  `;
+
+  element.style.position = "relative";
+  element.appendChild(message);
+
+  // Show message
+  setTimeout(() => (message.style.opacity = "1"), 10);
+
+  // Hide and remove message
+  setTimeout(() => {
+    message.style.opacity = "0";
+    setTimeout(() => {
+      if (message.parentNode) {
+        message.parentNode.removeChild(message);
+      }
+    }, 300);
+  }, 2000);
+}
+
+// =============================================================================
+// CODE PANEL CLEANUP
+// =============================================================================
+
+function cleanupCodePanel() {
+  // Clean up warmup code panel
+  const warmupPanel = document.getElementById("warmup-code-panel");
+  if (warmupPanel) {
+    if (warmupPanel._mouseHandler) {
+      document.removeEventListener("mousemove", warmupPanel._mouseHandler);
+    }
+    warmupPanel.remove();
+  }
+
+  // Clean up hard mode code panel
+  const hardModePanel = document.getElementById("hardmode-code-panel");
+  if (hardModePanel) {
+    if (hardModePanel._mouseHandler) {
+      document.removeEventListener("mousemove", hardModePanel._mouseHandler);
+    }
+    hardModePanel.remove();
+  }
+}
+
+// =============================================================================
+// ACCORDION FUNCTIONALITY
+// =============================================================================
+
+function toggleP5jsAccordion() {
+  const tab = document.getElementById("p5js-vertical-tab");
+  const content = document.getElementById("p5js-accordion-content");
+  const arrowIcon = document.getElementById("p5js-arrow-icon");
+
+  if (!tab || !content) return;
+
+  const isExpanded = content.style.width && content.style.width !== "0px";
+
+  if (isExpanded) {
+    // Collapse
+    content.style.opacity = "0";
+    setTimeout(() => {
+      content.style.width = "0px";
+    }, 150);
+    tab.style.background =
+      "linear-gradient(135deg, rgba(255, 20, 147, 0.15) 0%, rgba(255, 20, 147, 0.05) 100%)";
+    tab.style.borderColor = "rgba(255, 20, 147, 0.4)";
+
+    // Change arrow back to right arrow
+    if (arrowIcon) {
+      arrowIcon.textContent = "▶";
+    }
+  } else {
+    // Collapse any open regular accordions first
+    const allCards = document.querySelectorAll(".accordion-card");
+    allCards.forEach((card) => {
+      const otherContent = card.querySelector(".accordion-content");
+      const otherIcon = card.querySelector(".accordion-icon");
+      if (otherContent && otherIcon) {
+        otherContent.style.opacity = "0";
+        setTimeout(() => {
+          otherContent.style.maxHeight = "0px";
+        }, 150);
+        otherIcon.style.transform = "rotate(0deg)";
+        otherIcon.textContent = "▼";
+        card.style.zIndex = "1";
+      }
+    });
+
+    // Expand p5.js accordion
+    const expandedWidth = window.innerWidth >= 1921 ? "1000px" : "860px";
+    content.style.width = expandedWidth;
+    setTimeout(() => {
+      content.style.opacity = "1";
+    }, 150);
+    tab.style.background =
+      "linear-gradient(135deg, rgba(255, 20, 147, 0.25) 0%, rgba(255, 20, 147, 0.15) 100%)";
+    tab.style.borderColor = "rgba(255, 20, 147, 0.6)";
+
+    // Change arrow to left arrow when expanded
+    if (arrowIcon) {
+      arrowIcon.textContent = "◀";
+    }
+  }
+}
+
+function toggleAccordion(cardElement) {
+  const content = cardElement.querySelector(".accordion-content");
+  const icon = cardElement.querySelector(".accordion-icon");
+
+  if (!content || !icon) return;
+
+  const isExpanded =
+    content.style.maxHeight && content.style.maxHeight !== "0px";
+
+  if (isExpanded) {
+    // Collapse
+    content.style.opacity = "0";
+    setTimeout(() => {
+      content.style.maxHeight = "0px";
+    }, 150); // Start height collapse after opacity fade
+    icon.style.transform = "rotate(0deg)";
+    icon.textContent = "▼";
+    cardElement.style.zIndex = "1"; // Reset z-index when collapsed
+  } else {
+    // Collapse p5.js accordion first if it's open
+    const p5jsContent = document.getElementById("p5js-accordion-content");
+    const p5jsTab = document.getElementById("p5js-vertical-tab");
+    const p5jsArrow = document.getElementById("p5js-arrow-icon");
+    if (p5jsContent && p5jsTab && p5jsContent.style.width !== "0px") {
+      p5jsContent.style.opacity = "0";
+      setTimeout(() => {
+        p5jsContent.style.width = "0px";
+      }, 150);
+      p5jsTab.style.background =
+        "linear-gradient(135deg, rgba(255, 20, 147, 0.15) 0%, rgba(255, 20, 147, 0.05) 100%)";
+      p5jsTab.style.borderColor = "rgba(255, 20, 147, 0.4)";
+
+      // Reset arrow to right arrow
+      if (p5jsArrow) {
+        p5jsArrow.textContent = "▶";
+      }
+    }
+
+    // Collapse all other accordions first
+    const allCards =
+      cardElement.parentElement.querySelectorAll(".accordion-card");
+    allCards.forEach((card) => {
+      if (card !== cardElement) {
+        const otherContent = card.querySelector(".accordion-content");
+        const otherIcon = card.querySelector(".accordion-icon");
+        if (otherContent && otherIcon) {
+          otherContent.style.opacity = "0";
+          setTimeout(() => {
+            otherContent.style.maxHeight = "0px";
+          }, 150);
+          otherIcon.style.transform = "rotate(0deg)";
+          otherIcon.textContent = "▼";
+          card.style.zIndex = "1";
+        }
+      }
+    });
+
+    // Expand this one
+    content.style.maxHeight = content.scrollHeight + "px";
+    setTimeout(() => {
+      content.style.opacity = "1";
+    }, 150); // Start opacity fade after height expansion
+    icon.style.transform = "rotate(180deg)";
+    icon.textContent = "▲";
+    cardElement.style.zIndex = "20"; // Bring expanded card to front
   }
 }
 
@@ -1362,6 +2445,9 @@ function preloadAdjacentSlides(slideIndex) {
 // =============================================================================
 
 function changeSlide(direction) {
+  // Clean up any floating panels before slide change
+  cleanupCodePanel();
+
   slides[currentSlide].classList.remove("active");
   // Remove fade-in class from previous slide if it was the first slide
   if (currentSlide === 0) {
@@ -1397,6 +2483,9 @@ function changeSlide(direction) {
 
 function goToSlide(slideIndex) {
   if (slideIndex >= 0 && slideIndex < slides.length) {
+    // Clean up any floating panels before slide change
+    cleanupCodePanel();
+
     slides[currentSlide].classList.remove("active");
     // Remove fade-in class from previous slide if it was the first slide
     if (currentSlide === 0) {

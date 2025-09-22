@@ -83,7 +83,6 @@ def screenshot_slides_to_pdf(input_file='index.html', output_file='HTPAAC_Screen
                     window.maxSlideStates[15] = 2;  // Your Kit - 2 states (placeholder)
                     window.maxSlideStates[16] = 2;  // Warm-up - 2 states (placeholder)
                     window.maxSlideStates[17] = 2;  // Hard Mode - 2 states (placeholder)
-                    window.maxSlideStates[18] = 2;  // System Diagram - 2 states (placeholder)
 
                     return window.maxSlideStates;
                 })()
