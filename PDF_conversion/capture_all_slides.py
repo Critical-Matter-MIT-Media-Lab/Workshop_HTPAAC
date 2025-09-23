@@ -195,13 +195,22 @@ def capture_all_slides(input_file='index.html', output_file='HTPAAC_AllSlides.pd
                 </html>
             '''
 
-            # Navigate to a data URL with our content
-            import base64
-            html_bytes = full_html.encode('utf-8')
-            base64_html = base64.b64encode(html_bytes).decode('utf-8')
-            data_url = f'data:text/html;base64,{base64_html}'
-            page.goto(data_url)
+            # Write HTML to a temporary file instead of using data URL
+            import tempfile
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.html', delete=False) as tmp_file:
+                tmp_file.write(full_html)
+                temp_html_path = tmp_file.name
+
+            # Navigate to the temporary file
+            page.goto(f'file://{temp_html_path}', timeout=60000)
             page.wait_for_timeout(2000)
+
+            # Clean up temp file after use
+            import os as os_temp
+            try:
+                os_temp.unlink(temp_html_path)
+            except:
+                pass
 
             # Generate PDF
             print("Generating PDF...")
